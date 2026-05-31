@@ -1,15 +1,19 @@
 ﻿import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { logout } from "../services/authService";
+import { useNavigate, Link } from "react-router-dom";
+import { logout, getCurrentUser } from "../services/authService";
 import { getProducts, createProduct, updateProduct, deleteProduct } from "../services/productService";
 import type { Product, ProductFormData } from "../types/product";
 
 export default function Dashboard() {
     const navigate = useNavigate();
     const [products, setProducts] = useState<Product[]>([]);
+    const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
     
+    const user = getCurrentUser();
+    const isAdmin = user?.role === "Admin";
+
     const [formData, setFormData] = useState<ProductFormData>({
         name: "",
         stock: 0,
@@ -76,13 +80,26 @@ export default function Dashboard() {
         }
     };
 
+    const filteredProducts = products.filter(product => 
+        product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return (
         <div className="min-h-screen bg-gray-50">
             <nav className="bg-white shadow-sm border-b">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16 items-center">
-                        <h1 className="text-xl font-bold text-gray-800">Inventario Pyme</h1>
-                        <button onClick={handleLogout} className="text-sm font-medium text-red-600 hover:text-red-800">Cerrar Sesión</button>
+                        <div className="flex items-center space-x-8">
+                            <h1 className="text-xl font-bold text-gray-800">Inventario Pyme</h1>
+                            <div className="space-x-4">
+                                <Link to="/" className="font-semibold text-blue-600">Productos</Link>
+                                {isAdmin && <Link to="/users" className="text-gray-600 hover:text-gray-900">Usuarios</Link>}
+                            </div>
+                        </div>
+                        <div className="flex items-center space-x-4">
+                            <span className="text-sm font-medium text-gray-600">Hola, {user?.name}</span>
+                            <button onClick={handleLogout} className="text-sm font-medium text-red-600 hover:text-red-800">Cerrar Sesión</button>
+                        </div>
                     </div>
                 </div>
             </nav>
@@ -91,6 +108,10 @@ export default function Dashboard() {
                 <div className="px-4 sm:px-0 flex justify-between items-center mb-4">
                     <h2 className="text-2xl font-semibold text-gray-900">Productos</h2>
                     <button onClick={() => handleOpenModal()} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">+ Nuevo Producto</button>
+                </div>
+
+                <div className="px-4 sm:px-0 mb-4">
+                    <input type="text" placeholder="Buscar por nombre..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full sm:max-w-md border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
                 </div>
 
                 <div className="bg-white shadow overflow-hidden sm:rounded-md">
@@ -104,10 +125,10 @@ export default function Dashboard() {
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                            {products.length === 0 ? (
-                                <tr><td colSpan={4} className="px-6 py-4 text-center text-gray-500">No hay productos registrados.</td></tr>
+                            {filteredProducts.length === 0 ? (
+                                <tr><td colSpan={4} className="px-6 py-4 text-center text-gray-500">No se encontraron productos.</td></tr>
                             ) : (
-                                products.map((product) => (
+                                filteredProducts.map((product) => (
                                     <tr key={product.productResourceId}>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{product.name}</td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.stock}</td>
@@ -123,25 +144,15 @@ export default function Dashboard() {
                     </table>
                 </div>
             </main>
-
             {isModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 overflow-y-auto">
                     <div className="relative w-full max-w-lg rounded-lg bg-white p-6 shadow-xl">
                         <form onSubmit={handleSubmit}>
                             <h3 className="text-lg font-medium text-gray-900 mb-4">{editingId ? "Editar Producto" : "Nuevo Producto"}</h3>
                             <div className="space-y-4">
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700">Nombre</label>
-                                    <input type="text" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700">Stock</label>
-                                    <input type="number" required min="0" value={formData.stock} onChange={e => setFormData({...formData, stock: parseInt(e.target.value)})} className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700">Precio</label>
-                                    <input type="number" required min="0" step="0.01" value={formData.price} onChange={e => setFormData({...formData, price: parseFloat(e.target.value)})} className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
-                                </div>
+                                <div><label className="block text-sm font-medium text-gray-700">Nombre</label><input type="text" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500" /></div>
+                                <div><label className="block text-sm font-medium text-gray-700">Stock</label><input type="number" required min="0" value={formData.stock} onChange={e => setFormData({...formData, stock: parseInt(e.target.value)})} className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500" /></div>
+                                <div><label className="block text-sm font-medium text-gray-700">Precio</label><input type="number" required min="0" step="0.01" value={formData.price} onChange={e => setFormData({...formData, price: parseFloat(e.target.value)})} className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500" /></div>
                             </div>
                             <div className="mt-6 flex justify-end space-x-3">
                                 <button type="button" onClick={handleCloseModal} className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none">Cancelar</button>
