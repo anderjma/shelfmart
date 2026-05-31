@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using InventoryBackend.Dto;
 using InventoryBackend.Facade.Interfaces;
 
 namespace InventoryBackend.Api.Controllers;
@@ -21,5 +22,19 @@ public class UsersController : ControllerBase
     {
         var users = await _userFacade.GetAllUsersAsync();
         return Ok(users);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateUserDto dto)
+    {
+        try 
+        {
+            var result = await _userFacade.CreateUserAsync(dto);
+            return Ok(result);
+        }
+        catch (System.Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 }
