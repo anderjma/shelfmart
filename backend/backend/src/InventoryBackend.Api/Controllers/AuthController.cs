@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using InventoryBackend.Dto;
 using InventoryBackend.Facade.Interfaces;
-using InventoryBackend.Exceptions;
 
 namespace InventoryBackend.Api.Controllers;
 
@@ -19,28 +18,14 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] LoginRequestDto request)
     {
-        try
-        {
-            var result = await _authFacade.RegisterAsync(request);
-            return Created("", result);
-        }
-        catch (BadRequestResponseException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var result = await _authFacade.RegisterAsync(request);
+        return Created("", result);
     }
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
     {
-        try
-        {
-            var result = await _authFacade.LoginAsync(request);
-            return Ok(result);
-        }
-        catch (UnauthorizedResponseException ex)
-        {
-            return Unauthorized(new { message = ex.Message });
-        }
+        var result = await _authFacade.LoginAsync(request);
+        return Ok(result);
     }
 }
