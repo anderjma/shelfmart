@@ -1,6 +1,7 @@
 ﻿using InventoryBackend.Domain.Entities;
 using InventoryBackend.DomainService.Interfaces;
 using InventoryBackend.Dto;
+using InventoryBackend.Exceptions;
 
 namespace InventoryBackend.DomainService;
 
@@ -25,6 +26,20 @@ public class ProductService : IProductService
         });
     }
 
+    public async Task<ProductDto> GetProductByIdAsync(Guid id)
+    {
+        var product = await _productRepository.GetByIdAsync(id);
+        if (product == null) throw new ResourceNotFoundException("Producto no encontrado.");
+
+        return new ProductDto
+        {
+            ProductResourceId = product.ProductResourceId,
+            Name = product.Name,
+            Stock = product.Stock,
+            Price = product.Price
+        };
+    }
+
     public async Task<ProductDto> CreateProductAsync(CreateProductDto dto)
     {
         var product = new Product
@@ -44,5 +59,33 @@ public class ProductService : IProductService
             Stock = createdProduct.Stock,
             Price = createdProduct.Price
         };
+    }
+
+    public async Task<ProductDto> UpdateProductAsync(Guid id, UpdateProductDto dto)
+    {
+        var product = await _productRepository.GetByIdAsync(id);
+        if (product == null) throw new ResourceNotFoundException("Producto no encontrado.");
+
+        product.Name = dto.Name;
+        product.Stock = dto.Stock;
+        product.Price = dto.Price;
+
+        await _productRepository.UpdateAsync(product);
+
+        return new ProductDto
+        {
+            ProductResourceId = product.ProductResourceId,
+            Name = product.Name,
+            Stock = product.Stock,
+            Price = product.Price
+        };
+    }
+
+    public async Task DeleteProductAsync(Guid id)
+    {
+        var product = await _productRepository.GetByIdAsync(id);
+        if (product == null) throw new ResourceNotFoundException("Producto no encontrado.");
+
+        await _productRepository.DeleteAsync(product);
     }
 }

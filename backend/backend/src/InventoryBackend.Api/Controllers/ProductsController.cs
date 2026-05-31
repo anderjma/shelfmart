@@ -24,10 +24,31 @@ public class ProductsController : ControllerBase
         return Ok(products);
     }
 
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetById(Guid id)
+    {
+        var product = await _productFacade.GetProductByIdAsync(id);
+        return Ok(product);
+    }
+
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateProductDto request)
     {
         var created = await _productFacade.CreateProductAsync(request);
-        return Created("", created);
+        return CreatedAtAction(nameof(GetById), new { id = created.ProductResourceId }, created);
+    }
+
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateProductDto request)
+    {
+        var updated = await _productFacade.UpdateProductAsync(id, request);
+        return Ok(updated);
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        await _productFacade.DeleteProductAsync(id);
+        return NoContent();
     }
 }

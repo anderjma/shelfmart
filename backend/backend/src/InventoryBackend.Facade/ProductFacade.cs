@@ -18,8 +18,23 @@ public class ProductFacade : IProductFacade
         return await _productService.GetAllProductsAsync();
     }
 
+    public async Task<ProductDto> GetProductByIdAsync(Guid id)
+    {
+        return await _productService.GetProductByIdAsync(id);
+    }
+
     public async Task<ProductDto> CreateProductAsync(CreateProductDto dto)
     {
         return await _productService.CreateProductAsync(dto);
+    }
+
+    public async Task<ProductDto> UpdateProductAsync(Guid id, UpdateProductDto dto)
+    {
+        return await _productService.UpdateProductAsync(id, dto);
+    }
+
+    public async Task DeleteProductAsync(Guid id)
+    {
+        await _productService.DeleteProductAsync(id);
     }
 }
