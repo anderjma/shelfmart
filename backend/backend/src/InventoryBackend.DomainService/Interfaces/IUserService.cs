@@ -7,4 +7,5 @@ public interface IUserService
 {
     Task<UserDto> CreateUserAsync(User user, string plainPassword);
     Task<User?> ValidateUserCredentialsAsync(string username, string plainPassword);
+    Task<IEnumerable<UserDto>> GetAllUsersAsync();
 }

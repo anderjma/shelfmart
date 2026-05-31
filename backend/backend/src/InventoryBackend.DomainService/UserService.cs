@@ -2,7 +2,6 @@
 using InventoryBackend.DomainService.Interfaces;
 using InventoryBackend.Dto;
 using InventoryBackend.Exceptions;
-using BCrypt.Net;
 
 namespace InventoryBackend.DomainService;
 
@@ -46,5 +45,17 @@ public class UserService : IUserService
         }
 
         return user;
+    }
+
+    public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
+    {
+        var users = await _userRepository.GetAllAsync();
+        return users.Select(u => new UserDto
+        {
+            UserResourceId = u.UserResourceId,
+            Name = u.Name,
+            Username = u.Username,
+            Email = u.Email
+        });
     }
 }

@@ -55,6 +55,8 @@ builder.Services.AddScoped<IProductService, ProductService>();
 
 builder.Services.AddScoped<IAuthFacade, AuthFacade>();
 builder.Services.AddScoped<IProductFacade, ProductFacade>();
+builder.Services.AddScoped<IUserFacade, UserFacade>();
+builder.Services.AddScoped<IUserFacade, UserFacade>();
 
 builder.Services.AddOpenApi();
 
@@ -79,3 +81,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
+
+
