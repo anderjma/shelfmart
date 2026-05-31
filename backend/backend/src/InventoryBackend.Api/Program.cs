@@ -1,7 +1,8 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using InventoryBackend.Infrastructure;
 using InventoryBackend.DomainService.Interfaces;
 using InventoryBackend.Infrastructure.Repositories;
+using InventoryBackend.DomainService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,9 +12,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
-// Inyección de Repositorios
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddOpenApi();
 
