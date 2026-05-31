@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\InventoryBackend.Domain\InventoryBackend.Domain.csproj" />
+    <ProjectReference Include="..\InventoryBackend.Dto\InventoryBackend.Dto.csproj" />
+    <ProjectReference Include="..\InventoryBackend.Infrastructure\InventoryBackend.Infrastructure.csproj" />
+    <ProjectReference Include="..\InventoryBackend.Exceptions\InventoryBackend.Exceptions.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>
