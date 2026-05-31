@@ -73,18 +73,45 @@ export default function Dashboard() {
         product.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+    const totalProducts = products.length;
+    const lowStockCount = products.filter(p => p.stock <= 5).length;
+    const totalValue = products.reduce((sum, p) => sum + (p.price * p.stock), 0);
+
     return (
         <div>
-            <div className="px-4 sm:px-0 flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-semibold text-gray-900">Productos</h2>
-                <button onClick={() => handleOpenModal()} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">+ Nuevo Producto</button>
+            <div className="px-4 sm:px-0 flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-semibold text-gray-900">Panel de Control</h2>
+                <button onClick={() => handleOpenModal()} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 shadow-sm">
+                    + Nuevo Producto
+                </button>
+            </div>
+
+            <div className="px-4 sm:px-0 mb-8 grid grid-cols-1 gap-5 sm:grid-cols-3">
+                <div className="bg-white overflow-hidden shadow-sm rounded-lg border border-gray-100">
+                    <div className="px-4 py-5 sm:p-6">
+                        <dt className="text-sm font-medium text-gray-500 truncate">Total de Productos</dt>
+                        <dd className="mt-1 text-3xl font-semibold text-gray-900">{totalProducts}</dd>
+                    </div>
+                </div>
+                <div className="bg-white overflow-hidden shadow-sm rounded-lg border border-gray-100">
+                    <div className="px-4 py-5 sm:p-6">
+                        <dt className="text-sm font-medium text-gray-500 truncate">Stock Crítico (≤ 5)</dt>
+                        <dd className="mt-1 text-3xl font-semibold text-red-600">{lowStockCount}</dd>
+                    </div>
+                </div>
+                <div className="bg-white overflow-hidden shadow-sm rounded-lg border border-gray-100">
+                    <div className="px-4 py-5 sm:p-6">
+                        <dt className="text-sm font-medium text-gray-500 truncate">Valor del Inventario</dt>
+                        <dd className="mt-1 text-3xl font-semibold text-green-600">₡{totalValue.toLocaleString('es-CR')}</dd>
+                    </div>
+                </div>
             </div>
 
             <div className="px-4 sm:px-0 mb-4">
-                <input type="text" placeholder="Buscar por nombre..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full sm:max-w-md border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
+                <input type="text" placeholder="Buscar por nombre..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full sm:max-w-md border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
             </div>
 
-            <div className="bg-white shadow overflow-hidden sm:rounded-md">
+            <div className="bg-white shadow-sm overflow-hidden sm:rounded-md border border-gray-100">
                 <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                         <tr>
@@ -99,12 +126,14 @@ export default function Dashboard() {
                             <tr><td colSpan={4} className="px-6 py-4 text-center text-gray-500">No se encontraron productos.</td></tr>
                         ) : (
                             filteredProducts.map((product) => (
-                                <tr key={product.productResourceId}>
+                                <tr key={product.productResourceId} className="hover:bg-gray-50 transition-colors">
                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{product.name}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.stock}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">₡{product.price}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                                        <button onClick={() => handleOpenModal(product)} className="text-indigo-600 hover:text-indigo-900">Editar</button>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <span className={product.stock <= 5 ? "text-red-600 font-semibold" : ""}>{product.stock}</span>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">₡{product.price.toLocaleString('es-CR')}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-3">
+                                        <button onClick={() => handleOpenModal(product)} className="text-blue-600 hover:text-blue-900">Editar</button>
                                         <button onClick={() => handleDelete(product.productResourceId)} className="text-red-600 hover:text-red-900">Eliminar</button>
                                     </td>
                                 </tr>

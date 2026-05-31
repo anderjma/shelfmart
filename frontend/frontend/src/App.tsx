@@ -4,6 +4,7 @@ import Dashboard from "./pages/Dashboard";
 import Users from "./pages/Users";
 import Layout from "./components/Layout";
 import { getCurrentUser } from "./services/authService";
+import type { JSX } from "react";
 
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
     const token = localStorage.getItem("token");
