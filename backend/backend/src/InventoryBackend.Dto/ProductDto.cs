@@ -1,0 +1,11 @@
+﻿using System;
+
+namespace InventoryBackend.Dto;
+
+public class ProductDto
+{
+    public Guid ProductResourceId { get; set; }
+    public required string Name { get; set; }
+    public int Stock { get; set; }
+    public decimal Price { get; set; }
+}

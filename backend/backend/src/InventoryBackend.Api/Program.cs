@@ -39,10 +39,14 @@ builder.Services.AddAuthorization();
 // Inyección de Dependencias
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IAuthFacade, AuthFacade>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
-// Generador nativo de OpenAPI de .NET
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+
+builder.Services.AddScoped<IAuthFacade, AuthFacade>();
+builder.Services.AddScoped<IProductFacade, ProductFacade>();
+
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
