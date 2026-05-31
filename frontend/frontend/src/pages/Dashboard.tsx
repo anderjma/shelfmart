@@ -69,6 +69,30 @@ export default function Dashboard() {
         }
     };
 
+    const handleExportCSV = () => {
+        const headers = ["Nombre", "Stock", "Precio (CRC)"];
+        const rows = products.map(p => [
+            `"${p.name.replace(/"/g, '""')}"`, // Escapar comillas dobles
+            p.stock,
+            p.price
+        ]);
+        
+        const csvContent = [
+            headers.join(","),
+            ...rows.map(r => r.join(","))
+        ].join("\n");
+
+        // Añadir BOM para que Excel reconozca correctamente el UTF-8 (tildes, eñes)
+        const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "inventario_pyme.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
     const filteredProducts = products.filter(product => 
         product.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -81,9 +105,15 @@ export default function Dashboard() {
         <div>
             <div className="px-4 sm:px-0 flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-semibold text-gray-900">Panel de Control</h2>
-                <button onClick={() => handleOpenModal()} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 shadow-sm">
-                    + Nuevo Producto
-                </button>
+                <div className="flex space-x-3">
+                    <button onClick={handleExportCSV} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 shadow-sm flex items-center">
+                        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3辅0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                        Exportar CSV
+                    </button>
+                    <button onClick={() => handleOpenModal()} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 shadow-sm">
+                        + Nuevo Producto
+                    </button>
+                </div>
             </div>
 
             <div className="px-4 sm:px-0 mb-8 grid grid-cols-1 gap-5 sm:grid-cols-3">
