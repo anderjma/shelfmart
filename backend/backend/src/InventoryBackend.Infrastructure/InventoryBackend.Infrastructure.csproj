@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\InventoryBackend.Domain\InventoryBackend.Domain.csproj" />
+    <ProjectReference Include="..\InventoryBackend.DomainService\InventoryBackend.DomainService.csproj" />
   </ItemGroup>
 
   <ItemGroup>

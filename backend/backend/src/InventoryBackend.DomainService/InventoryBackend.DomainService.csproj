@@ -3,8 +3,11 @@
   <ItemGroup>
     <ProjectReference Include="..\InventoryBackend.Domain\InventoryBackend.Domain.csproj" />
     <ProjectReference Include="..\InventoryBackend.Dto\InventoryBackend.Dto.csproj" />
-    <ProjectReference Include="..\InventoryBackend.Infrastructure\InventoryBackend.Infrastructure.csproj" />
     <ProjectReference Include="..\InventoryBackend.Exceptions\InventoryBackend.Exceptions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.2.0" />
   </ItemGroup>
 
   <PropertyGroup>
