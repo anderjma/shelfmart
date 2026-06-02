@@ -27,3 +27,9 @@ export const getCurrentUser = () => {
         return null;
     }
 };
+
+export const registerCustomer = async (data: any) => {
+    const response = await axiosClient.post('/Customers/register', data);
+    return response.data;
+};
+
