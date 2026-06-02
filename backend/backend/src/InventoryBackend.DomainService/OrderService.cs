@@ -29,18 +29,23 @@ public class OrderService : IOrderService
 
     public async Task<CartDto> AddItemToCartAsync(Guid userId, AddToCartDto dto)
     {
+        // 1. Buscamos el producto
         var product = await _productRepository.GetByIdAsync(dto.ProductId);
         if (product == null) throw new NotFoundResponseException("Producto no encontrado.");
 
+        // 2. Buscamos el carrito activo
         var cart = await _orderRepository.GetActiveCartByUserIdAsync(userId);
+        bool isNewCart = false;
         
+        // 3. Si no existe, lo inicializamos solo en memoria (SIN GUARDAR AÚN)
         if (cart == null)
         {
             cart = new Order { UserResourceId = userId };
-            cart = await _orderRepository.CreateOrderAsync(cart);
+            isNewCart = true;
         }
 
-        var existingItem = cart.OrderItems.FirstOrDefault(i => i.ProductResourceId == dto.ProductId);
+        // 4. Agregamos el producto a la lista en memoria
+        var existingItem = cart.OrderItems.FirstOrDefault(i => i.ProductResourceId == product.ProductResourceId);
         if (existingItem != null)
         {
             existingItem.Quantity += dto.Quantity;
@@ -49,15 +54,25 @@ public class OrderService : IOrderService
         {
             cart.OrderItems.Add(new OrderItem
             {
-                OrderId = cart.OrderId,
                 ProductResourceId = product.ProductResourceId,
+                Product = product,
                 Quantity = dto.Quantity,
                 UnitPrice = product.Price
             });
         }
 
+        // 5. Calculamos el nuevo total
         cart.TotalAmount = cart.OrderItems.Sum(i => i.Quantity * i.UnitPrice);
-        await _orderRepository.UpdateOrderAsync(cart);
+
+        // 6. GUARDADO ATÓMICO: Una única transacción final a la base de datos
+        if (isNewCart)
+        {
+            await _orderRepository.CreateOrderAsync(cart); // Guarda carrito e ítems
+        }
+        else
+        {
+            await _orderRepository.UpdateOrderAsync(cart); // Actualiza carrito e ítems nuevos
+        }
 
         return MapToCartDto(cart);
     }
@@ -71,7 +86,6 @@ public class OrderService : IOrderService
             throw new BadRequestResponseException("El carrito está vacío. Agregue productos antes de procesar la compra.");
         }
 
-        // Validación y deducción de inventario
         foreach (var item in cart.OrderItems)
         {
             var product = await _productRepository.GetByIdAsync(item.ProductResourceId);
@@ -86,7 +100,6 @@ public class OrderService : IOrderService
             await _productRepository.UpdateAsync(product);
         }
 
-        // Marcar orden como completada
         cart.Status = "Completed";
         await _orderRepository.UpdateOrderAsync(cart);
 

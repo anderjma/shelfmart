@@ -23,7 +23,12 @@ public class ProductRepository : IProductRepository
 
     public async Task<Product?> GetByIdAsync(Guid id)
     {
-        return await _context.Products.FindAsync(id);
+        var product = await _context.Products.FindAsync(id);
+        if (product == null)
+        {
+            product = await _context.Products.FirstOrDefaultAsync(p => p.ProductResourceId == id);
+        }
+        return product;
     }
 
     public async Task<Product> AddAsync(Product product)
@@ -35,7 +40,7 @@ public class ProductRepository : IProductRepository
 
     public async Task UpdateAsync(Product product)
     {
-        _context.Products.Update(product);
+        // Misma estrategia: guardar los cambios rastreados en memoria
         await _context.SaveChangesAsync();
     }
 

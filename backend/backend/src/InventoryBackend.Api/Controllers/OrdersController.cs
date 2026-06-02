@@ -4,6 +4,7 @@ using InventoryBackend.Dto;
 using InventoryBackend.DomainService.Interfaces;
 using System.Security.Claims;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace InventoryBackend.Api.Controllers;
@@ -14,36 +15,75 @@ namespace InventoryBackend.Api.Controllers;
 public class OrdersController : ControllerBase
 {
     private readonly IOrderService _orderService;
+    private readonly IUserRepository _userRepository;
 
-    public OrdersController(IOrderService orderService)
+    public OrdersController(IOrderService orderService, IUserRepository userRepository)
     {
         _orderService = orderService;
+        _userRepository = userRepository;
     }
 
-    private Guid GetUserId()
+    private async Task<Guid> GetUserIdAsync()
     {
-        var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        return Guid.Parse(userIdString!);
+        var claim = User.Claims.FirstOrDefault(c => 
+            c.Type == ClaimTypes.NameIdentifier || 
+            c.Type == "id" || 
+            c.Type == "UserId" || 
+            c.Type.Contains("nameidentifier"));
+
+        if (claim == null || string.IsNullOrWhiteSpace(claim.Value))
+        {
+            throw new Exception("El token no contiene un identificador válido.");
+        }
+
+        // 1. Intentamos leerlo como un código matemático (Guid)
+        if (Guid.TryParse(claim.Value, out Guid parsedId))
+        {
+            return parsedId;
+        }
+
+        // 2. Si falló, significa que el token trae el nombre de usuario (ej. "cliente1"). 
+        // Vamos a la base de datos a buscar su verdadero ID.
+        var user = await _userRepository.GetByUsernameAsync(claim.Value);
+        if (user == null)
+        {
+            throw new Exception("El usuario del token ya no existe en la base de datos.");
+        }
+
+        return user.UserId;
     }
 
     [HttpGet("cart")]
     public async Task<IActionResult> GetCart()
     {
-        var cart = await _orderService.GetCartAsync(GetUserId());
-        return Ok(cart);
+        try 
+        {
+            var userId = await GetUserIdAsync();
+            var cart = await _orderService.GetCartAsync(userId);
+            return Ok(cart);
+        }
+        catch (Exception ex)
+        {
+            var inner = ex.InnerException != null ? " | DB Error: " + ex.InnerException.Message : "";
+            return BadRequest(new { message = ex.Message + inner });
+        }
     }
 
     [HttpPost("cart/items")]
     public async Task<IActionResult> AddToCart([FromBody] AddToCartDto dto)
     {
+        if (!ModelState.IsValid) return BadRequest(new { message = "Datos inválidos enviados desde el navegador." });
+
         try 
         {
-            var cart = await _orderService.AddItemToCartAsync(GetUserId(), dto);
+            var userId = await GetUserIdAsync();
+            var cart = await _orderService.AddItemToCartAsync(userId, dto);
             return Ok(cart);
         }
         catch (Exception ex)
         {
-            return BadRequest(new { message = ex.Message });
+            var inner = ex.InnerException != null ? " | DB Error: " + ex.InnerException.Message : "";
+            return BadRequest(new { message = ex.Message + inner });
         }
     }
 
@@ -52,12 +92,14 @@ public class OrdersController : ControllerBase
     {
         try 
         {
-            var result = await _orderService.CheckoutAsync(GetUserId());
+            var userId = await GetUserIdAsync();
+            var result = await _orderService.CheckoutAsync(userId);
             return Ok(new { message = "Orden procesada exitosamente.", order = result });
         }
         catch (Exception ex)
         {
-            return BadRequest(new { message = ex.Message });
+            var inner = ex.InnerException != null ? " | DB Error: " + ex.InnerException.Message : "";
+            return BadRequest(new { message = ex.Message + inner });
         }
     }
 }
