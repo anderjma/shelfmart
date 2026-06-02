@@ -36,14 +36,11 @@ public class OrdersController : ControllerBase
             throw new Exception("El token no contiene un identificador válido.");
         }
 
-        // 1. Intentamos leerlo como un código matemático (Guid)
         if (Guid.TryParse(claim.Value, out Guid parsedId))
         {
             return parsedId;
         }
 
-        // 2. Si falló, significa que el token trae el nombre de usuario (ej. "cliente1"). 
-        // Vamos a la base de datos a buscar su verdadero ID.
         var user = await _userRepository.GetByUsernameAsync(claim.Value);
         if (user == null)
         {
@@ -95,6 +92,22 @@ public class OrdersController : ControllerBase
             var userId = await GetUserIdAsync();
             var result = await _orderService.CheckoutAsync(userId);
             return Ok(new { message = "Orden procesada exitosamente.", order = result });
+        }
+        catch (Exception ex)
+        {
+            var inner = ex.InnerException != null ? " | DB Error: " + ex.InnerException.Message : "";
+            return BadRequest(new { message = ex.Message + inner });
+        }
+    }
+
+    // ¡AQUÍ ESTÁ EL ENDPOINT QUE FALTABA PARA EL ADMINISTRADOR!
+    [HttpGet("all")]
+    public async Task<IActionResult> GetAllOrders()
+    {
+        try 
+        {
+            var orders = await _orderService.GetAllCompletedOrdersAsync();
+            return Ok(orders);
         }
         catch (Exception ex)
         {

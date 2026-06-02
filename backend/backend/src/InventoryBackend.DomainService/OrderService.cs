@@ -3,6 +3,7 @@ using InventoryBackend.DomainService.Interfaces;
 using InventoryBackend.Dto;
 using InventoryBackend.Exceptions;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -27,24 +28,39 @@ public class OrderService : IOrderService
         return MapToCartDto(cart);
     }
 
+    public async Task<IEnumerable<AdminOrderDto>> GetAllCompletedOrdersAsync()
+    {
+        var orders = await _orderRepository.GetAllCompletedOrdersAsync();
+        return orders.Select(o => new AdminOrderDto
+        {
+            OrderId = o.OrderId,
+            CustomerUsername = o.User?.Username ?? "Cliente Desconocido",
+            TotalAmount = o.TotalAmount,
+            Status = o.Status,
+            Items = o.OrderItems.Select(i => new CartItemDto
+            {
+                ProductId = i.ProductResourceId,
+                ProductName = i.Product?.Name ?? "Desconocido",
+                Quantity = i.Quantity,
+                UnitPrice = i.UnitPrice
+            }).ToList()
+        });
+    }
+
     public async Task<CartDto> AddItemToCartAsync(Guid userId, AddToCartDto dto)
     {
-        // 1. Buscamos el producto
         var product = await _productRepository.GetByIdAsync(dto.ProductId);
         if (product == null) throw new NotFoundResponseException("Producto no encontrado.");
 
-        // 2. Buscamos el carrito activo
         var cart = await _orderRepository.GetActiveCartByUserIdAsync(userId);
         bool isNewCart = false;
         
-        // 3. Si no existe, lo inicializamos solo en memoria (SIN GUARDAR AÚN)
         if (cart == null)
         {
             cart = new Order { UserResourceId = userId };
             isNewCart = true;
         }
 
-        // 4. Agregamos el producto a la lista en memoria
         var existingItem = cart.OrderItems.FirstOrDefault(i => i.ProductResourceId == product.ProductResourceId);
         if (existingItem != null)
         {
@@ -61,18 +77,10 @@ public class OrderService : IOrderService
             });
         }
 
-        // 5. Calculamos el nuevo total
         cart.TotalAmount = cart.OrderItems.Sum(i => i.Quantity * i.UnitPrice);
 
-        // 6. GUARDADO ATÓMICO: Una única transacción final a la base de datos
-        if (isNewCart)
-        {
-            await _orderRepository.CreateOrderAsync(cart); // Guarda carrito e ítems
-        }
-        else
-        {
-            await _orderRepository.UpdateOrderAsync(cart); // Actualiza carrito e ítems nuevos
-        }
+        if (isNewCart) await _orderRepository.CreateOrderAsync(cart);
+        else await _orderRepository.UpdateOrderAsync(cart);
 
         return MapToCartDto(cart);
     }
@@ -80,27 +88,22 @@ public class OrderService : IOrderService
     public async Task<CartDto> CheckoutAsync(Guid userId)
     {
         var cart = await _orderRepository.GetActiveCartByUserIdAsync(userId);
-        
-        if (cart == null || !cart.OrderItems.Any())
-        {
-            throw new BadRequestResponseException("El carrito está vacío. Agregue productos antes de procesar la compra.");
-        }
+        if (cart == null || !cart.OrderItems.Any()) throw new BadRequestResponseException("El carrito está vacío.");
 
         foreach (var item in cart.OrderItems)
         {
             var product = await _productRepository.GetByIdAsync(item.ProductResourceId);
-            if (product == null) throw new NotFoundResponseException($"El producto asociado a este ítem ya no existe.");
+            if (product == null) throw new NotFoundResponseException($"Producto no existe.");
+            if (product.Stock < item.Quantity) throw new BadRequestResponseException($"Stock insuficiente.");
 
-            if (product.Stock < item.Quantity)
-            {
-                throw new BadRequestResponseException($"Stock insuficiente para el producto: {product.Name}. Disponibles: {product.Stock}");
-            }
-
+            // EF Core rastreará este cambio en memoria SIN guardar todavía
             product.Stock -= item.Quantity;
-            await _productRepository.UpdateAsync(product);
         }
 
+        // Cambiamos el estado de la orden
         cart.Status = "Completed";
+        
+        // UN SOLO GUARDADO MAESTRO: actualiza el stock y el estado de la orden al mismo tiempo
         await _orderRepository.UpdateOrderAsync(cart);
 
         return MapToCartDto(cart);
