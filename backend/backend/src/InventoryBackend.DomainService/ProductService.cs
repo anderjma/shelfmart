@@ -2,6 +2,10 @@
 using InventoryBackend.DomainService.Interfaces;
 using InventoryBackend.Dto;
 using InventoryBackend.Exceptions;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace InventoryBackend.DomainService;
 
@@ -22,7 +26,8 @@ public class ProductService : IProductService
             ProductResourceId = p.ProductResourceId,
             Name = p.Name,
             Stock = p.Stock,
-            Price = p.Price
+            Price = p.Price,
+            ImageUrl = p.ImageUrl
         });
     }
 
@@ -36,7 +41,8 @@ public class ProductService : IProductService
             ProductResourceId = product.ProductResourceId,
             Name = product.Name,
             Stock = product.Stock,
-            Price = product.Price
+            Price = product.Price,
+            ImageUrl = product.ImageUrl
         };
     }
 
@@ -47,7 +53,8 @@ public class ProductService : IProductService
             ProductResourceId = Guid.NewGuid(),
             Name = dto.Name,
             Stock = dto.Stock,
-            Price = dto.Price
+            Price = dto.Price,
+            ImageUrl = dto.ImageUrl
         };
 
         var createdProduct = await _productRepository.AddAsync(product);
@@ -57,7 +64,8 @@ public class ProductService : IProductService
             ProductResourceId = createdProduct.ProductResourceId,
             Name = createdProduct.Name,
             Stock = createdProduct.Stock,
-            Price = createdProduct.Price
+            Price = createdProduct.Price,
+            ImageUrl = createdProduct.ImageUrl
         };
     }
 
@@ -69,6 +77,11 @@ public class ProductService : IProductService
         product.Name = dto.Name;
         product.Stock = dto.Stock;
         product.Price = dto.Price;
+        
+        if (!string.IsNullOrEmpty(dto.ImageUrl)) 
+        {
+            product.ImageUrl = dto.ImageUrl;
+        }
 
         await _productRepository.UpdateAsync(product);
 
@@ -77,7 +90,8 @@ public class ProductService : IProductService
             ProductResourceId = product.ProductResourceId,
             Name = product.Name,
             Stock = product.Stock,
-            Price = product.Price
+            Price = product.Price,
+            ImageUrl = product.ImageUrl
         };
     }
 
