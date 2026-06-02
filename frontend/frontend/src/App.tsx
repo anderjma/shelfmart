@@ -1,10 +1,15 @@
-﻿import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+﻿/* eslint-disable @typescript-eslint/no-unused-vars */
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import Register from "./pages/Register";
+import Cart from "./pages/Cart";
 import Users from "./pages/Users";
 import Layout from "./components/Layout";
+import Store from "./pages/Store";
 import { getCurrentUser } from "./services/authService";
 import type { JSX } from "react";
+import { Toaster } from "react-hot-toast";
 
 // Componente temporal para páginas en construcción
 const Placeholder = ({ title }: { title: string }) => <div className="p-8 text-center text-xl text-gray-500 bg-white rounded shadow-sm">{title} (En construcción)</div>;
@@ -22,20 +27,21 @@ const AdminRoute = ({ children }: { children: JSX.Element }) => {
 function App() {
     return (
         <BrowserRouter>
+            <Toaster position="bottom-right" />
             <Routes>
                 {/* Rutas sin Layout */}
                 <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Placeholder title="Registro de Cliente" />} />
+                <Route path="/register" element={<Register />} />
                 
                 {/* Rutas con Layout */}
                 <Route element={<Layout />}>
                     {/* Públicas */}
-                    <Route path="/" element={<Placeholder title="Catálogo de Productos" />} />
+                    <Route path="/" element={<Store />} />
                     
                     {/* Privadas: Clientes */}
                     <Route path="/cart" element={
                         <PrivateRoute>
-                            <Placeholder title="Carrito de Compras" />
+                            <Cart />
                         </PrivateRoute>
                     } />
 
@@ -57,3 +63,6 @@ function App() {
 }
 
 export default App;
+
+
+
