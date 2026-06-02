@@ -23,8 +23,12 @@ export default function Layout() {
                                 <Link to="/">Inventario Pyme</Link>
                             </h1>
                             <div className="space-x-4">
-                                {/* Rutas Públicas / Clientes */}
-                                <Link to="/" className="text-gray-600 hover:text-gray-900 font-medium">Catálogo</Link>
+                                {/* Rutas Públicas */}
+                                <Link to="/" className="text-gray-600 hover:text-gray-900 font-medium">Inicio</Link>
+                                <Link to="/catalogo" className="text-gray-600 hover:text-gray-900 font-medium">Catálogo</Link>
+                                <Link to="/nosotros" className="text-gray-600 hover:text-gray-900 font-medium">Nosotros</Link>
+                                <Link to="/contacto" className="text-gray-600 hover:text-gray-900 font-medium">Contacto</Link>
+                                
                                 {isCustomer && (
                                     <Link to="/cart" className="text-gray-600 hover:text-gray-900 font-medium">Mi Carrito</Link>
                                 )}
