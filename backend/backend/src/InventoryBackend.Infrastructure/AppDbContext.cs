@@ -13,6 +13,9 @@ public class AppDbContext : DbContext
     public DbSet<UserRole> UserRoles { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
+    
+    // NUEVA TABLA DE AUDITORÍA
+    public DbSet<AuditLog> AuditLogs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -20,6 +23,7 @@ public class AppDbContext : DbContext
         
         modelBuilder.Entity<Product>().HasKey(p => p.ProductResourceId);
         modelBuilder.Entity<User>().HasKey(u => u.UserId);
+        modelBuilder.Entity<AuditLog>().HasKey(a => a.AuditLogId);
         
         modelBuilder.Entity<UserRole>().HasKey(ur => new { ur.UserId, ur.RoleId });
         modelBuilder.Entity<UserRole>().HasOne(ur => ur.User).WithMany(u => u.UserRoles).HasForeignKey(ur => ur.UserId);

@@ -37,6 +37,8 @@ builder.Services.AddScoped<IProductFacade, ProductFacade>();
 
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IAuditRepository, AuditRepository>();
+builder.Services.AddScoped<IAuditService, AuditService>();
 
 // Registro de la fachada de autenticación
 builder.Services.AddScoped<IAuthFacade, AuthFacade>();
@@ -65,4 +67,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
+
+
 

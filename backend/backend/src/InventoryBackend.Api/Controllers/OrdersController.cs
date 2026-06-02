@@ -16,11 +16,13 @@ public class OrdersController : ControllerBase
 {
     private readonly IOrderService _orderService;
     private readonly IUserRepository _userRepository;
+    private readonly IAuditService _auditService; // <- 1. Inyectamos el servicio
 
-    public OrdersController(IOrderService orderService, IUserRepository userRepository)
+    public OrdersController(IOrderService orderService, IUserRepository userRepository, IAuditService auditService)
     {
         _orderService = orderService;
         _userRepository = userRepository;
+        _auditService = auditService;
     }
 
     private async Task<Guid> GetUserIdAsync()
@@ -32,20 +34,12 @@ public class OrdersController : ControllerBase
             c.Type.Contains("nameidentifier"));
 
         if (claim == null || string.IsNullOrWhiteSpace(claim.Value))
-        {
             throw new Exception("El token no contiene un identificador válido.");
-        }
 
-        if (Guid.TryParse(claim.Value, out Guid parsedId))
-        {
-            return parsedId;
-        }
+        if (Guid.TryParse(claim.Value, out Guid parsedId)) return parsedId;
 
         var user = await _userRepository.GetByUsernameAsync(claim.Value);
-        if (user == null)
-        {
-            throw new Exception("El usuario del token ya no existe en la base de datos.");
-        }
+        if (user == null) throw new Exception("El usuario del token ya no existe en la base de datos.");
 
         return user.UserId;
     }
@@ -59,11 +53,7 @@ public class OrdersController : ControllerBase
             var cart = await _orderService.GetCartAsync(userId);
             return Ok(cart);
         }
-        catch (Exception ex)
-        {
-            var inner = ex.InnerException != null ? " | DB Error: " + ex.InnerException.Message : "";
-            return BadRequest(new { message = ex.Message + inner });
-        }
+        catch (Exception ex) { return BadRequest(new { message = ex.Message }); }
     }
 
     [HttpPost("cart/items")]
@@ -77,11 +67,7 @@ public class OrdersController : ControllerBase
             var cart = await _orderService.AddItemToCartAsync(userId, dto);
             return Ok(cart);
         }
-        catch (Exception ex)
-        {
-            var inner = ex.InnerException != null ? " | DB Error: " + ex.InnerException.Message : "";
-            return BadRequest(new { message = ex.Message + inner });
-        }
+        catch (Exception ex) { return BadRequest(new { message = ex.Message }); }
     }
 
     [HttpPost("checkout")]
@@ -91,6 +77,14 @@ public class OrdersController : ControllerBase
         {
             var userId = await GetUserIdAsync();
             var result = await _orderService.CheckoutAsync(userId);
+            
+            // 2. Extraemos el nombre de usuario del token (o asignamos "Cliente" por defecto)
+            var nameClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name || c.Type.Contains("name"));
+            string username = nameClaim?.Value ?? "Cliente";
+
+            // 3. ¡AQUÍ ESCRIBIMOS EN LA BITÁCORA!
+            await _auditService.LogActionAsync(username, $"Finalizó una compra por ₡{result.TotalAmount.ToString("N2")}");
+
             return Ok(new { message = "Orden procesada exitosamente.", order = result });
         }
         catch (Exception ex)
@@ -100,7 +94,6 @@ public class OrdersController : ControllerBase
         }
     }
 
-    // ¡AQUÍ ESTÁ EL ENDPOINT QUE FALTABA PARA EL ADMINISTRADOR!
     [HttpGet("all")]
     public async Task<IActionResult> GetAllOrders()
     {
@@ -109,10 +102,6 @@ public class OrdersController : ControllerBase
             var orders = await _orderService.GetAllCompletedOrdersAsync();
             return Ok(orders);
         }
-        catch (Exception ex)
-        {
-            var inner = ex.InnerException != null ? " | DB Error: " + ex.InnerException.Message : "";
-            return BadRequest(new { message = ex.Message + inner });
-        }
+        catch (Exception ex) { return BadRequest(new { message = ex.Message }); }
     }
 }
