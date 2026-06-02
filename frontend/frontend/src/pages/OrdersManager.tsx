@@ -27,7 +27,7 @@ export default function OrdersManager() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
             <div className="flex justify-between items-center bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                 <h2 className="text-2xl font-bold text-gray-900">Módulo de Despachos</h2>
-                <Link to="/dashboard" className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors font-medium">
+                <Link to="/admin/dashboard" className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors font-medium">
                     Volver al Inventario
                 </Link>
             </div>
@@ -73,3 +73,4 @@ export default function OrdersManager() {
         </div>
     );
 }
+

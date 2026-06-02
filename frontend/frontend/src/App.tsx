@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import OrdersManager from "./pages/OrdersManager";
+import AuditDashboard from "./pages/AuditDashboard";
 import Register from "./pages/Register";
 import Cart from "./pages/Cart";
 import Users from "./pages/Users";
@@ -57,6 +58,7 @@ function App() {
                             <Users />
                         </AdminRoute>
                     } />
+                    <Route path="/admin/audit" element={<AdminRoute><AuditDashboard /></AdminRoute>} />
                     <Route path="/admin/orders" element={
                         <AdminRoute>
                             <OrdersManager />
@@ -69,3 +71,4 @@ function App() {
 }
 
 export default App;
+

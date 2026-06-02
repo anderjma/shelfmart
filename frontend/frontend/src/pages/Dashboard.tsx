@@ -145,7 +145,7 @@ export default function Dashboard() {
             <div className="px-4 sm:px-0 flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-semibold text-gray-900">Panel de Control</h2>
                 <div className="flex gap-3">
-                    <Link to="/admin/orders" className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 shadow-sm flex items-center transition-colors font-medium">
+                    <Link to="/admin/audit" className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 shadow-sm flex items-center transition-colors font-medium">📊 Auditoría</Link>                    <Link to="/admin/orders" className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 shadow-sm flex items-center transition-colors font-medium">
                         📦 Ver Órdenes
                     </Link>
                     <button onClick={handleExportCSV} className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 shadow-sm flex items-center transition-colors font-medium">
@@ -267,3 +267,4 @@ export default function Dashboard() {
         </div>
     );
 }
+
