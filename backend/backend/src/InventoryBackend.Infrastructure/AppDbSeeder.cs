@@ -5,37 +5,34 @@ namespace InventoryBackend.Infrastructure;
 
 public static class AppDbSeeder
 {
-    public static async Task SeedAsync(AppDbContext context)
+    public static void Seed(AppDbContext context)
     {
-        if (!await context.Roles.AnyAsync())
+        context.Database.Migrate();
+
+        if (!context.Roles.Any())
         {
-            var adminRole = new Role { Name = "Admin", RoleResourceId = Guid.NewGuid() };
-            var employeeRole = new Role { Name = "Empleado", RoleResourceId = Guid.NewGuid() };
-            
-            context.Roles.AddRange(adminRole, employeeRole);
-            await context.SaveChangesAsync();
+            var adminRole = new Role { Name = "Admin" };
+            var customerRole = new Role { Name = "Customer" };
+            context.Roles.AddRange(adminRole, customerRole);
+            context.SaveChanges();
 
             var adminUser = new User
             {
-                UserResourceId = Guid.NewGuid(),
-                Name = "Administrador Pyme",
+                Name = "Administrador",
                 Username = "admin",
-                Email = "admin@pyme.cr",
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123*")
+                Email = "admin@pyme.com",
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123!")
             };
-            
             context.Users.Add(adminUser);
-            await context.SaveChangesAsync();
+            context.SaveChanges();
 
-            context.UserRoles.Add(new UserRole
-            {
-                UserId = adminUser.UserId,
+            context.UserRoles.Add(new UserRole { 
+                UserId = adminUser.UserId, 
+                RoleId = adminRole.RoleId,
                 User = adminUser,
-                RoleId = adminRole.Id,
                 Role = adminRole
             });
-            
-            await context.SaveChangesAsync();
+            context.SaveChanges();
         }
     }
 }

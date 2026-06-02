@@ -1,85 +1,62 @@
-﻿using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.EntityFrameworkCore;
 using InventoryBackend.Infrastructure;
 using InventoryBackend.DomainService.Interfaces;
-using InventoryBackend.Infrastructure.Repositories;
 using InventoryBackend.DomainService;
+using InventoryBackend.Infrastructure.Repositories;
 using InventoryBackend.Facade.Interfaces;
 using InventoryBackend.Facade;
-using InventoryBackend.Api.Middlewares;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
-);
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-var jwtKey = builder.Configuration["Jwt:Key"];
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey!))
-        };
-    });
-builder.Services.AddAuthorization();
-
-// Permisos para el entorno de desarrollo local frontend
+// 1. Configurar política CORS para el frontend
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowVite", policy =>
-    {
-        policy.WithOrigins("http://localhost:5173")
-              .AllowAnyHeader()
-              .AllowAnyMethod();
-    });
+    options.AddPolicy("AllowReactFrontend",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5173")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
 });
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IRoleRepository, RoleRepository>();
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
-
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserFacade, UserFacade>();
+
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductService, ProductService>();
-
-builder.Services.AddScoped<IAuthFacade, AuthFacade>();
 builder.Services.AddScoped<IProductFacade, ProductFacade>();
-builder.Services.AddScoped<IUserFacade, UserFacade>();
-builder.Services.AddScoped<IUserFacade, UserFacade>();
 
-builder.Services.AddOpenApi();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options => {
+        options.TokenValidationParameters = new TokenValidationParameters {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
 
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    await AppDbSeeder.SeedAsync(dbContext);
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    AppDbSeeder.Seed(context);
 }
 
-app.UseMiddleware<ExceptionMiddleware>();
+// 2. Aplicar la política CORS en el pipeline (debe ir antes de UseAuthentication)
+app.UseCors("AllowReactFrontend");
 
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
-
-app.UseHttpsRedirection();
-app.UseCors("AllowVite");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
-
-

@@ -22,13 +22,13 @@ public class UserService : IUserService
         }
 
         user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(plainPassword);
-        user.UserResourceId = Guid.NewGuid();
+        user.UserId = Guid.NewGuid();
         
         var createdUser = await _userRepository.AddAsync(user);
 
         return new UserDto
         {
-            UserResourceId = createdUser.UserResourceId,
+            UserResourceId = createdUser.UserId,
             Name = createdUser.Name,
             Username = createdUser.Username,
             Email = createdUser.Email
@@ -38,12 +38,10 @@ public class UserService : IUserService
     public async Task<User?> ValidateUserCredentialsAsync(string username, string plainPassword)
     {
         var user = await _userRepository.GetByUsernameAsync(username);
-        
         if (user == null || !BCrypt.Net.BCrypt.Verify(plainPassword, user.PasswordHash))
         {
             throw new UnauthorizedResponseException("Invalid credentials.");
         }
-
         return user;
     }
 
@@ -52,7 +50,7 @@ public class UserService : IUserService
         var users = await _userRepository.GetAllAsync();
         return users.Select(u => new UserDto
         {
-            UserResourceId = u.UserResourceId,
+            UserResourceId = u.UserId,
             Name = u.Name,
             Username = u.Username,
             Email = u.Email
