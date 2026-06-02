@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using InventoryBackend.Domain.Entities;
+﻿using InventoryBackend.Domain.Entities;
 using InventoryBackend.DomainService.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace InventoryBackend.Infrastructure.Repositories;
 
@@ -11,6 +11,14 @@ public class UserRepository : IUserRepository
     public UserRepository(AppDbContext context)
     {
         _context = context;
+    }
+
+    public async Task<User?> GetByUsernameAsync(string username)
+    {
+        return await _context.Users
+            .Include(u => u.UserRoles)
+            .ThenInclude(ur => ur.Role)
+            .FirstOrDefaultAsync(u => u.Username == username);
     }
 
     public async Task<bool> ExistsAsync(string username)
@@ -25,16 +33,13 @@ public class UserRepository : IUserRepository
         return user;
     }
 
-    public async Task<User?> GetByUsernameAsync(string username)
-    {
-        return await _context.Users
-            .Include(u => u.UserRoles)
-            .ThenInclude(ur => ur.Role)
-            .FirstOrDefaultAsync(u => u.Username == username);
-    }
-
     public async Task<IEnumerable<User>> GetAllAsync()
     {
         return await _context.Users.ToListAsync();
+    }
+
+    public async Task<Role?> GetRoleByNameAsync(string roleName)
+    {
+        return await _context.Roles.FirstOrDefaultAsync(r => r.Name == roleName);
     }
 }

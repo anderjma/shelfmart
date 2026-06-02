@@ -18,12 +18,45 @@ public class UserService : IUserService
     {
         if (await _userRepository.ExistsAsync(user.Username))
         {
-            throw new BadRequestResponseException("Username already exists.");
+            throw new BadRequestResponseException("El nombre de usuario ya existe.");
         }
 
         user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(plainPassword);
         user.UserId = Guid.NewGuid();
-        
+
+        var createdUser = await _userRepository.AddAsync(user);
+
+        return new UserDto
+        {
+            UserResourceId = createdUser.UserId,
+            Name = createdUser.Name,
+            Username = createdUser.Username,
+            Email = createdUser.Email
+        };
+    }
+
+    public async Task<UserDto> RegisterCustomerAsync(User user, string plainPassword)
+    {
+        if (await _userRepository.ExistsAsync(user.Username))
+        {
+            throw new BadRequestResponseException("El nombre de usuario ya existe.");
+        }
+
+        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(plainPassword);
+        user.UserId = Guid.NewGuid();
+
+        var customerRole = await _userRepository.GetRoleByNameAsync("Customer");
+        if (customerRole != null)
+        {
+            user.UserRoles.Add(new UserRole
+            {
+                UserId = user.UserId,
+                RoleId = customerRole.RoleId,
+                User = user,
+                Role = customerRole
+            });
+        }
+
         var createdUser = await _userRepository.AddAsync(user);
 
         return new UserDto
@@ -40,7 +73,7 @@ public class UserService : IUserService
         var user = await _userRepository.GetByUsernameAsync(username);
         if (user == null || !BCrypt.Net.BCrypt.Verify(plainPassword, user.PasswordHash))
         {
-            throw new UnauthorizedResponseException("Invalid credentials.");
+            throw new UnauthorizedResponseException("Credenciales inválidas.");
         }
         return user;
     }
