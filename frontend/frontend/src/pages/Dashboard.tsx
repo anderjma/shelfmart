@@ -2,6 +2,7 @@
 import { getProducts, createProduct, updateProduct, deleteProduct } from "../services/productService";
 import type { Product, ProductFormData } from "../types/product";
 import { supabase } from "../lib/supabase";
+import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 
 export default function Dashboard() {
@@ -140,15 +141,18 @@ export default function Dashboard() {
     const totalValue = products.reduce((sum, p) => sum + (p.price * p.stock), 0);
 
     return (
-        <div>
+        <div className="max-w-7xl mx-auto">
             <div className="px-4 sm:px-0 flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-semibold text-gray-900">Panel de Control</h2>
-                <div className="flex space-x-3">
-                    <button onClick={handleExportCSV} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 shadow-sm flex items-center">
+                <div className="flex gap-3">
+                    <Link to="/admin/orders" className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 shadow-sm flex items-center transition-colors font-medium">
+                        📦 Ver Órdenes
+                    </Link>
+                    <button onClick={handleExportCSV} className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 shadow-sm flex items-center transition-colors font-medium">
                         <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
                         Exportar CSV
                     </button>
-                    <button onClick={() => handleOpenModal()} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 shadow-sm">
+                    <button onClick={() => handleOpenModal()} className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 shadow-sm transition-colors font-medium">
                         + Nuevo Producto
                     </button>
                 </div>
