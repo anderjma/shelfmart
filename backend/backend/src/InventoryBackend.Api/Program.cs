@@ -15,7 +15,6 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// 1. Configurar política CORS para el frontend
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactFrontend",
@@ -27,6 +26,7 @@ builder.Services.AddCors(options =>
         });
 });
 
+// Registro de componentes
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserFacade, UserFacade>();
@@ -34,6 +34,9 @@ builder.Services.AddScoped<IUserFacade, UserFacade>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductFacade, ProductFacade>();
+
+// Registro de la fachada de autenticación
+builder.Services.AddScoped<IAuthFacade, AuthFacade>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options => {
@@ -53,7 +56,6 @@ using (var scope = app.Services.CreateScope())
     AppDbSeeder.Seed(context);
 }
 
-// 2. Aplicar la política CORS en el pipeline (debe ir antes de UseAuthentication)
 app.UseCors("AllowReactFrontend");
 
 app.UseAuthentication();
