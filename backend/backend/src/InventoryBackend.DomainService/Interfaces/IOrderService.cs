@@ -8,4 +8,5 @@ public interface IOrderService
 {
     Task<CartDto> GetCartAsync(Guid userId);
     Task<CartDto> AddItemToCartAsync(Guid userId, AddToCartDto dto);
+    Task<CartDto> CheckoutAsync(Guid userId);
 }

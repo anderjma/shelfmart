@@ -1,6 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using InventoryBackend.Domain.Entities;
+﻿using InventoryBackend.Domain.Entities;
 using InventoryBackend.DomainService.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace InventoryBackend.Infrastructure.Repositories;
 
@@ -20,7 +23,7 @@ public class ProductRepository : IProductRepository
 
     public async Task<Product?> GetByIdAsync(Guid id)
     {
-        return await _context.Products.FirstOrDefaultAsync(p => p.ProductResourceId == id);
+        return await _context.Products.FindAsync(id);
     }
 
     public async Task<Product> AddAsync(Product product)

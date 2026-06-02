@@ -2,6 +2,9 @@
 using InventoryBackend.DomainService.Interfaces;
 using InventoryBackend.Dto;
 using InventoryBackend.Exceptions;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace InventoryBackend.DomainService;
 
@@ -54,6 +57,37 @@ public class OrderService : IOrderService
         }
 
         cart.TotalAmount = cart.OrderItems.Sum(i => i.Quantity * i.UnitPrice);
+        await _orderRepository.UpdateOrderAsync(cart);
+
+        return MapToCartDto(cart);
+    }
+
+    public async Task<CartDto> CheckoutAsync(Guid userId)
+    {
+        var cart = await _orderRepository.GetActiveCartByUserIdAsync(userId);
+        
+        if (cart == null || !cart.OrderItems.Any())
+        {
+            throw new BadRequestResponseException("El carrito está vacío. Agregue productos antes de procesar la compra.");
+        }
+
+        // Validación y deducción de inventario
+        foreach (var item in cart.OrderItems)
+        {
+            var product = await _productRepository.GetByIdAsync(item.ProductResourceId);
+            if (product == null) throw new NotFoundResponseException($"El producto asociado a este ítem ya no existe.");
+
+            if (product.Stock < item.Quantity)
+            {
+                throw new BadRequestResponseException($"Stock insuficiente para el producto: {product.Name}. Disponibles: {product.Stock}");
+            }
+
+            product.Stock -= item.Quantity;
+            await _productRepository.UpdateAsync(product);
+        }
+
+        // Marcar orden como completada
+        cart.Status = "Completed";
         await _orderRepository.UpdateOrderAsync(cart);
 
         return MapToCartDto(cart);
