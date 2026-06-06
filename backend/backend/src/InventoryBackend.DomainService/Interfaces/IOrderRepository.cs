@@ -11,4 +11,5 @@ public interface IOrderRepository
     Task<IEnumerable<Order>> GetAllCompletedOrdersAsync();
     Task<Order> CreateOrderAsync(Order order);
     Task UpdateOrderAsync(Order order);
+    Task<IEnumerable<Order>> GetOrdersByUserIdAsync(Guid userId);
 }

@@ -16,7 +16,7 @@ public class OrdersController : ControllerBase
 {
     private readonly IOrderService _orderService;
     private readonly IUserRepository _userRepository;
-    private readonly IAuditService _auditService; // <- 1. Inyectamos el servicio
+    private readonly IAuditService _auditService;
 
     public OrdersController(IOrderService orderService, IUserRepository userRepository, IAuditService auditService)
     {
@@ -78,11 +78,9 @@ public class OrdersController : ControllerBase
             var userId = await GetUserIdAsync();
             var result = await _orderService.CheckoutAsync(userId);
             
-            // 2. Extraemos el nombre de usuario del token (o asignamos "Cliente" por defecto)
             var nameClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name || c.Type.Contains("name"));
             string username = nameClaim?.Value ?? "Cliente";
 
-            // 3. ¡AQUÍ ESCRIBIMOS EN LA BITÁCORA!
             await _auditService.LogActionAsync(username, $"Finalizó una compra por ₡{result.TotalAmount.ToString("N2")}");
 
             return Ok(new { message = "Orden procesada exitosamente.", order = result });
@@ -100,6 +98,18 @@ public class OrdersController : ControllerBase
         try 
         {
             var orders = await _orderService.GetAllCompletedOrdersAsync();
+            return Ok(orders);
+        }
+        catch (Exception ex) { return BadRequest(new { message = ex.Message }); }
+    }
+
+    [HttpGet("my-orders")]
+    public async Task<IActionResult> GetMyOrders()
+    {
+        try 
+        {
+            var userId = await GetUserIdAsync();
+            var orders = await _orderService.GetCustomerOrdersAsync(userId);
             return Ok(orders);
         }
         catch (Exception ex) { return BadRequest(new { message = ex.Message }); }

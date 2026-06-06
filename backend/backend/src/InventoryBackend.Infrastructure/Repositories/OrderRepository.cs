@@ -27,7 +27,6 @@ public class OrderRepository : IOrderRepository
 
     public async Task<IEnumerable<Order>> GetAllCompletedOrdersAsync()
     {
-        // Traemos todas las órdenes que ya salieron del carrito
         return await _context.Orders
             .Include(o => o.User)
             .Include(o => o.OrderItems)
@@ -46,7 +45,6 @@ public class OrderRepository : IOrderRepository
 
     public async Task UpdateOrderAsync(Order order)
     {
-        // ¡LA PIEZA CLAVE! Obligamos a EF Core a reconocer que el estado cambió
         _context.Entry(order).State = EntityState.Modified;
 
         foreach (var item in order.OrderItems)
@@ -57,5 +55,16 @@ public class OrderRepository : IOrderRepository
             }
         }
         await _context.SaveChangesAsync();
+    }
+
+    public async Task<IEnumerable<Order>> GetOrdersByUserIdAsync(Guid userId)
+    {
+        return await _context.Orders
+            .Include(o => o.User)
+            .Include(o => o.OrderItems)
+            .ThenInclude(oi => oi.Product)
+            .Where(o => o.UserResourceId == userId && o.Status == "Completed")
+            .OrderByDescending(o => o.OrderId)
+            .ToListAsync();
     }
 }

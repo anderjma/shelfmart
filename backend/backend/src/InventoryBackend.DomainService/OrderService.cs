@@ -47,6 +47,25 @@ public class OrderService : IOrderService
         });
     }
 
+    public async Task<IEnumerable<AdminOrderDto>> GetCustomerOrdersAsync(Guid userId)
+    {
+        var orders = await _orderRepository.GetOrdersByUserIdAsync(userId);
+        return orders.Select(o => new AdminOrderDto
+        {
+            OrderId = o.OrderId,
+            CustomerUsername = o.User?.Username ?? "Cliente",
+            TotalAmount = o.TotalAmount,
+            Status = o.Status,
+            Items = o.OrderItems.Select(i => new CartItemDto
+            {
+                ProductId = i.ProductResourceId,
+                ProductName = i.Product?.Name ?? "Desconocido",
+                Quantity = i.Quantity,
+                UnitPrice = i.UnitPrice
+            }).ToList()
+        });
+    }
+
     public async Task<CartDto> AddItemToCartAsync(Guid userId, AddToCartDto dto)
     {
         var product = await _productRepository.GetByIdAsync(dto.ProductId);
@@ -96,14 +115,11 @@ public class OrderService : IOrderService
             if (product == null) throw new NotFoundResponseException($"Producto no existe.");
             if (product.Stock < item.Quantity) throw new BadRequestResponseException($"Stock insuficiente.");
 
-            // EF Core rastreará este cambio en memoria SIN guardar todavía
             product.Stock -= item.Quantity;
         }
 
-        // Cambiamos el estado de la orden
         cart.Status = "Completed";
-        
-        // UN SOLO GUARDADO MAESTRO: actualiza el stock y el estado de la orden al mismo tiempo
+        cart.CreatedAt = DateTime.UtcNow;
         await _orderRepository.UpdateOrderAsync(cart);
 
         return MapToCartDto(cart);

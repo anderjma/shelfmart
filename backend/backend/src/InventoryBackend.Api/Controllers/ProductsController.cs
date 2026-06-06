@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using InventoryBackend.Dto;
 using InventoryBackend.Facade.Interfaces;
+using System;
+using System.Threading.Tasks;
 
 namespace InventoryBackend.Api.Controllers;
 
@@ -17,6 +19,8 @@ public class ProductsController : ControllerBase
         _productFacade = productFacade;
     }
 
+    // ¡Pase libre! Cualquiera puede ver el catálogo
+    [AllowAnonymous] 
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
@@ -24,6 +28,8 @@ public class ProductsController : ControllerBase
         return Ok(products);
     }
 
+    // ¡Pase libre! Cualquiera puede ver un producto específico
+    [AllowAnonymous] 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(Guid id)
     {
@@ -31,6 +37,7 @@ public class ProductsController : ControllerBase
         return Ok(product);
     }
 
+    // Estas rutas siguen protegidas por el [Authorize] global de la clase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateProductDto request)
     {

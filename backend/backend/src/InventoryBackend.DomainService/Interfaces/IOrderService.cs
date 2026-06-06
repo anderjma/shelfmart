@@ -11,4 +11,5 @@ public interface IOrderService
     Task<CartDto> AddItemToCartAsync(Guid userId, AddToCartDto dto);
     Task<CartDto> CheckoutAsync(Guid userId);
     Task<IEnumerable<AdminOrderDto>> GetAllCompletedOrdersAsync();
+    Task<IEnumerable<AdminOrderDto>> GetCustomerOrdersAsync(Guid userId);
 }
