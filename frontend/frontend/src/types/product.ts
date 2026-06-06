@@ -1,10 +1,10 @@
 ﻿export interface Product {
-    productId: string;
     productResourceId: string;
     name: string;
     stock: number;
     price: number;
     imageUrl?: string;
+    category: string;
 }
 
 export interface ProductFormData {
@@ -12,4 +12,5 @@ export interface ProductFormData {
     stock: number;
     price: number;
     imageUrl?: string;
+    category: string;
 }
