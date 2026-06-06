@@ -25,6 +25,7 @@ public class ProductService : IProductService
         {
             ProductResourceId = p.ProductResourceId,
             Name = p.Name,
+            Category = p.Category, // ¡Mapeo agregado!
             Stock = p.Stock,
             Price = p.Price,
             ImageUrl = p.ImageUrl
@@ -40,6 +41,7 @@ public class ProductService : IProductService
         {
             ProductResourceId = product.ProductResourceId,
             Name = product.Name,
+            Category = product.Category, // ¡Mapeo agregado!
             Stock = product.Stock,
             Price = product.Price,
             ImageUrl = product.ImageUrl
@@ -52,6 +54,7 @@ public class ProductService : IProductService
         {
             ProductResourceId = Guid.NewGuid(),
             Name = dto.Name,
+            Category = string.IsNullOrWhiteSpace(dto.Category) ? "General" : dto.Category, // ¡Mapeo agregado con fallback!
             Stock = dto.Stock,
             Price = dto.Price,
             ImageUrl = dto.ImageUrl
@@ -63,6 +66,7 @@ public class ProductService : IProductService
         {
             ProductResourceId = createdProduct.ProductResourceId,
             Name = createdProduct.Name,
+            Category = createdProduct.Category, // ¡Mapeo agregado!
             Stock = createdProduct.Stock,
             Price = createdProduct.Price,
             ImageUrl = createdProduct.ImageUrl
@@ -78,6 +82,12 @@ public class ProductService : IProductService
         product.Stock = dto.Stock;
         product.Price = dto.Price;
         
+        // ¡Mapeo agregado!
+        if (!string.IsNullOrWhiteSpace(dto.Category))
+        {
+            product.Category = dto.Category;
+        }
+        
         if (!string.IsNullOrEmpty(dto.ImageUrl)) 
         {
             product.ImageUrl = dto.ImageUrl;
@@ -89,6 +99,7 @@ public class ProductService : IProductService
         {
             ProductResourceId = product.ProductResourceId,
             Name = product.Name,
+            Category = product.Category, // ¡Mapeo agregado!
             Stock = product.Stock,
             Price = product.Price,
             ImageUrl = product.ImageUrl
