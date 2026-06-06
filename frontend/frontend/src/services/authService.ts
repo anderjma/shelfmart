@@ -22,7 +22,10 @@ export const getCurrentUser = () => {
         const role = decoded.role || decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
         const name = decoded.name || decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"] || "Usuario";
         
-        return { name, role };
+        // Extraemos el username de los claims estándar de .NET
+        const username = decoded.unique_name || decoded.username || decoded.sub || name;
+        
+        return { name, role, username };
     } catch {
         return null;
     }
@@ -32,4 +35,3 @@ export const registerCustomer = async (data: any) => {
     const response = await axiosClient.post('/Customers/register', data);
     return response.data;
 };
-

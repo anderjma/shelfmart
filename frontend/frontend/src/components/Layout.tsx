@@ -45,10 +45,13 @@ export default function Layout() {
                         </div>
                         <div className="flex items-center space-x-4">
                             {user ? (
-                                <>
-                                    <span className="text-sm font-medium text-gray-600">Hola, {user.name}</span>
+                                <div className="flex items-center">
+                                    <Link to="/perfil" className="text-sm font-semibold text-gray-600 hover:text-blue-600 transition-colors mr-4">
+                                        👤 Mi Perfil
+                                    </Link>
+                                    <span className="text-sm font-medium text-gray-600 mr-4">Hola, {user.name}</span>
                                     <button onClick={handleLogout} className="text-sm font-medium text-red-600 hover:text-red-800">Cerrar Sesión</button>
-                                </>
+                                </div>
                             ) : (
                                 <>
                                     <Link to="/login" className="text-sm font-medium text-blue-600 hover:text-blue-800">Iniciar Sesión</Link>

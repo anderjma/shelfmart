@@ -12,6 +12,7 @@ import Store from "./pages/Store";
 import Home from "./pages/Home";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
+import Profile from "./pages/Profile";
 import { getCurrentUser } from "./services/authService";
 import type { JSX } from "react";
 import { Toaster } from "react-hot-toast";
@@ -44,6 +45,7 @@ function App() {
                     <Route path="/" element={<Home />} />`n                    <Route path="/catalogo" element={<Store />} />`n                    <Route path="/contacto" element={<Contact />} />`n                    <Route path="/nosotros" element={<About />} />
                     
                     {/* Privadas: Clientes */}
+                    <Route path="/perfil" element={<PrivateRoute><Profile /></PrivateRoute>} />
                     <Route path="/cart" element={
                         <PrivateRoute>
                             <Cart />
@@ -74,5 +76,6 @@ function App() {
 }
 
 export default App;
+
 
 

@@ -26,3 +26,8 @@ export const getAllOrders = async () => {
     const response = await axios.get(`${API_URL}/all`, getAuthHeaders());
     return response.data;
 };
+
+export const getMyOrders = async () => {
+    const response = await axios.get(`${API_URL}/my-orders`, getAuthHeaders());
+    return response.data;
+};
