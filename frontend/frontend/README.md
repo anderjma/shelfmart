@@ -1,73 +1,54 @@
-# React + TypeScript + Vite
+# Sistema de Control de Inventario - Frontend App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este repositorio contiene la aplicación cliente del sistema de control de inventarios. Está desarrollado como una **Single Page Application (SPA)** modular y responsiva, diseñada para consumir los servicios de la API de inventarios de forma segura y eficiente.
 
-Currently, two official plugins are available:
+La aplicación permite la interacción con el catálogo de productos, carrito de compras, gestión de usuarios, dashboard de analíticas y bitácora de auditoría del sistema.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## Tecnologías Utilizadas
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+| Componente | Tecnología |
+| :--- | :--- |
+| **Framework de Desarrollo** | React (versión 19) |
+| **Herramienta de Construcción** | Vite |
+| **Lenguaje** | TypeScript |
+| **Estructuración de Estilos** | Tailwind CSS (versión v4) |
+| **Enrutamiento** | React Router Dom (versión v7) |
+| **Gráficos y Visualización** | Recharts |
+| **Notificaciones y Feedback** | React Hot Toast |
+| **Cliente HTTP** | Axios |
+| **Iconografía** | Lucide React y React Icons |
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Estructura de la Aplicación (`/src`)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+*   **`components/`**
+    *   *Propósito:* Componentes de interfaz compartidos y reutilizables en múltiples vistas (ej. `Navbar`, `Footer`, `Layout`).
+*   **`pages/`**
+    *   *Propósito:* Vistas principales que componen el flujo de la aplicación:
+        *   `Home`: Página de bienvenida de la plataforma.
+        *   `Store`: Catálogo interactivo de productos con filtros y paginación.
+        *   `Cart`: Detalle del carrito de compras y proceso de checkout.
+        *   `Dashboard`: Gráficos y estadísticas clave de ventas e inventario (utilizando Recharts).
+        *   `OrdersManager`: Gestión y actualización del estado de las compras/pedidos.
+        *   `AuditDashboard`: Registro histórico de actividades críticas (Auditoría/Bitácora) para los administradores.
+        *   `Users`: Control y asignación de roles a los usuarios registrados.
+        *   `Login` / `Register`: Vistas de acceso y registro de nuevos clientes.
+        *   `Profile`: Perfil de usuario y edición de datos personales.
+*   **`services/`**
+    *   *Propósito:* Clientes y servicios HTTP configurados para interactuar con la API de backend de manera centralizada.
+*   **`types/`**
+    *   *Propósito:* Tipos e interfaces de TypeScript para mantener la integridad de los datos a lo largo de toda la aplicación.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Patrones de Diseño y Buenas Prácticas Aplicados
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+*   **Componentización Modular:** Aplicación del *Principio de Responsabilidad Única (SRP)* en los componentes de interfaz para facilitar su reutilización y mantenimiento.
+*   **Control de Accesos y Seguridad (Route Guarding):** Protección de rutas en el cliente basada en roles extraídos y decodificados desde los tokens JWT de sesión.
+*   **Gestión de Estado Eficiente:** Administración del carrito de compras y el estado de autenticación de forma reactiva, minimizando renders innecesarios.
+*   **Abstracción de Servicios:** Centralización de llamadas HTTP mediante servicios dedicados que desacoplan la lógica de consumo de datos de los componentes visuales.
+*   **Interfaz Responsiva y Accesible:** Diseño adaptable para diferentes tamaños de pantalla (*Mobile-First*) aplicando buenas prácticas de accesibilidad y transiciones suaves para mejorar la experiencia del usuario.
+*   **Carga de Datos Amigable (Skeleton Loaders):** Uso de marcadores de posición durante cargas asíncronas para mejorar el tiempo de carga percibido por el usuario.
