@@ -44,7 +44,9 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowReactFrontend",
         policy =>
         {
-            policy.WithOrigins("http://localhost:5173")
+            var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() 
+                                 ?? new[] { "http://localhost:5173" };
+            policy.WithOrigins(allowedOrigins)
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
@@ -78,11 +80,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+// Exponer siempre Swagger para portafolio y demo en la nube
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Portal Comercial API v1");
+    c.RoutePrefix = string.Empty; // Hace que Swagger sea la raíz del sitio (/)
+});
 
 using (var scope = app.Services.CreateScope())
 {
