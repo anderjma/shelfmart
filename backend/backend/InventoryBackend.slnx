@@ -8,4 +8,7 @@
     <Project Path="src/InventoryBackend.Facade/InventoryBackend.Facade.csproj" />
     <Project Path="src/InventoryBackend.Infrastructure/InventoryBackend.Infrastructure.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/InventoryBackend.UnitTests/InventoryBackend.UnitTests.csproj" />
+  </Folder>
 </Solution>
