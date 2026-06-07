@@ -3,6 +3,7 @@ import { getProducts, createProduct, updateProduct, deleteProduct } from "../ser
 import type { Product, ProductFormData } from "../types/product";
 import { supabase } from "../lib/supabase";
 import { Link } from "react-router-dom";
+import { BarChart3, Package, Download, Plus } from "lucide-react";
 import toast from "react-hot-toast";
 
 export default function Dashboard() {
@@ -129,7 +130,7 @@ export default function Dashboard() {
         const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = url;
-        link.setAttribute("download", "inventario_pyme.csv");
+        link.setAttribute("download", "reporte_comercial.csv");
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -145,10 +146,10 @@ export default function Dashboard() {
             <div className="px-4 sm:px-0 flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-semibold text-gray-900">Panel de Control</h2>
                 <div className="flex gap-3">
-                    <Link to="/admin/audit" className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 shadow-sm flex items-center font-medium">📊 Auditoría</Link>
-                    <Link to="/admin/orders" className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 shadow-sm flex items-center font-medium">📦 Ver Órdenes</Link>
-                    <button onClick={handleExportCSV} className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 shadow-sm flex items-center font-medium">Exportar CSV</button>
-                    <button onClick={() => handleOpenModal()} className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 shadow-sm font-medium">+ Nuevo Producto</button>
+                    <Link to="/admin/audit" className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 shadow-sm flex items-center font-medium"><BarChart3 className="w-4 h-4 mr-2" /> Auditoría</Link>
+                    <Link to="/admin/orders" className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 shadow-sm flex items-center font-medium"><Package className="w-4 h-4 mr-2" /> Ver Órdenes</Link>
+                    <button onClick={handleExportCSV} className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 shadow-sm flex items-center font-medium"><Download className="w-4 h-4 mr-2" /> Exportar CSV</button>
+                    <button onClick={() => handleOpenModal()} className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 shadow-sm font-medium"><Plus className="w-4 h-4 mr-2" /> Nuevo Producto</button>
                 </div>
             </div>
 
@@ -234,3 +235,5 @@ export default function Dashboard() {
         </div>
     );
 }
+
+

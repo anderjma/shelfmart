@@ -1,5 +1,6 @@
 ﻿import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Flame, Sparkles, Timer } from "lucide-react";
 import { getProducts } from "../services/productService";
 import type { Product } from "../types/product";
 
@@ -49,7 +50,7 @@ export default function Home() {
             <div className="relative bg-gray-900 h-96 flex items-center justify-center overflow-hidden">
                 <div className="absolute inset-0 opacity-40 bg-[url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center"></div>
                 <div className="relative z-10 text-center px-4">
-                    <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 shadow-sm">Bienvenido a Inventario Pyme</h1>
+                    <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 shadow-sm">Bienvenido al Portal Comercial</h1>
                     <p className="text-lg md:text-xl text-gray-200 mb-8 max-w-2xl mx-auto">Encuentra los mejores productos al mejor precio. Calidad y servicio garantizados en cada compra.</p>
                     <Link to="/catalogo" className="bg-blue-600 text-white px-8 py-3 rounded-full font-bold hover:bg-blue-700 transition-colors shadow-lg text-lg">
                         Ver Catálogo Completo
@@ -60,7 +61,7 @@ export default function Home() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
                 {/* Carrusel: Ofertas */}
                 <section>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-6 border-b pb-2">🔥 Ofertas Especiales</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-6 border-b pb-2"><Flame className="w-6 h-6 text-orange-500 inline-block mr-2" /> Ofertas Especiales</h2>
                     {offers.length > 0 ? (
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
                             {offers.map(product => <ProductCard key={`offer-${product.productResourceId}`} product={product} />)}
@@ -70,7 +71,7 @@ export default function Home() {
 
                 {/* Carrusel: Nuevos Productos */}
                 <section>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-6 border-b pb-2">✨ Recién Llegados</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-6 border-b pb-2"><Sparkles className="w-6 h-6 text-yellow-500 inline-block mr-2" /> Recién Llegados</h2>
                     {newArrivals.length > 0 ? (
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
                             {newArrivals.map(product => <ProductCard key={`new-${product.productResourceId}`} product={product} />)}
@@ -80,7 +81,7 @@ export default function Home() {
 
                 {/* Carrusel: Últimas Unidades */}
                 <section>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-6 border-b pb-2">⏳ ¡Últimas Unidades!</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-6 border-b pb-2"><Timer className="w-6 h-6 text-red-500 inline-block mr-2" /> ¡Últimas Unidades!</h2>
                     {lowStock.length > 0 ? (
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
                             {lowStock.slice(0, 4).map(product => (
@@ -110,3 +111,5 @@ export default function Home() {
         </div>
     );
 }
+
+
