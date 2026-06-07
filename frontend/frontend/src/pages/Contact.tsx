@@ -18,7 +18,7 @@ export default function Contact() {
                         <div className="flex items-center text-gray-700">
                             <Phone className="w-6 h-6 text-blue-600 mr-4" />
                             <div>
-                                <p className="font-medium">Teléfono / WhatsApp</p>
+                                <p className="font-medium">Teléfono</p>
                                 <a href="tel:+50688888888" className="text-blue-600 hover:underline">+506 8888-8888</a>
                             </div>
                         </div>
