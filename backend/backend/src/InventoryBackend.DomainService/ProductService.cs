@@ -25,10 +25,12 @@ public class ProductService : IProductService
         {
             ProductResourceId = p.ProductResourceId,
             Name = p.Name,
-            Category = p.Category, // ¡Mapeo agregado!
+            Category = p.Category,
             Stock = p.Stock,
             Price = p.Price,
-            ImageUrl = p.ImageUrl
+            ImageUrl = p.ImageUrl,
+            DiscountPercentage = p.DiscountPercentage,
+            CreatedAt = p.CreatedAt
         });
     }
 
@@ -41,10 +43,12 @@ public class ProductService : IProductService
         {
             ProductResourceId = product.ProductResourceId,
             Name = product.Name,
-            Category = product.Category, // ¡Mapeo agregado!
+            Category = product.Category,
             Stock = product.Stock,
             Price = product.Price,
-            ImageUrl = product.ImageUrl
+            ImageUrl = product.ImageUrl,
+            DiscountPercentage = product.DiscountPercentage,
+            CreatedAt = product.CreatedAt
         };
     }
 
@@ -54,10 +58,12 @@ public class ProductService : IProductService
         {
             ProductResourceId = Guid.NewGuid(),
             Name = dto.Name,
-            Category = string.IsNullOrWhiteSpace(dto.Category) ? "General" : dto.Category, // ¡Mapeo agregado con fallback!
+            Category = string.IsNullOrWhiteSpace(dto.Category) ? "General" : dto.Category,
             Stock = dto.Stock,
             Price = dto.Price,
-            ImageUrl = dto.ImageUrl
+            ImageUrl = dto.ImageUrl,
+            DiscountPercentage = dto.DiscountPercentage,
+            CreatedAt = DateTime.UtcNow // Grabamos la fecha exacta del servidor
         };
 
         var createdProduct = await _productRepository.AddAsync(product);
@@ -66,10 +72,12 @@ public class ProductService : IProductService
         {
             ProductResourceId = createdProduct.ProductResourceId,
             Name = createdProduct.Name,
-            Category = createdProduct.Category, // ¡Mapeo agregado!
+            Category = createdProduct.Category,
             Stock = createdProduct.Stock,
             Price = createdProduct.Price,
-            ImageUrl = createdProduct.ImageUrl
+            ImageUrl = createdProduct.ImageUrl,
+            DiscountPercentage = createdProduct.DiscountPercentage,
+            CreatedAt = createdProduct.CreatedAt
         };
     }
 
@@ -81,8 +89,8 @@ public class ProductService : IProductService
         product.Name = dto.Name;
         product.Stock = dto.Stock;
         product.Price = dto.Price;
+        product.DiscountPercentage = dto.DiscountPercentage;
         
-        // ¡Mapeo agregado!
         if (!string.IsNullOrWhiteSpace(dto.Category))
         {
             product.Category = dto.Category;
@@ -99,10 +107,12 @@ public class ProductService : IProductService
         {
             ProductResourceId = product.ProductResourceId,
             Name = product.Name,
-            Category = product.Category, // ¡Mapeo agregado!
+            Category = product.Category,
             Stock = product.Stock,
             Price = product.Price,
-            ImageUrl = product.ImageUrl
+            ImageUrl = product.ImageUrl,
+            DiscountPercentage = product.DiscountPercentage,
+            CreatedAt = product.CreatedAt
         };
     }
 
