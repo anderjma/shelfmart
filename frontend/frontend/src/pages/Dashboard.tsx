@@ -3,7 +3,6 @@ import { getProducts, createProduct, updateProduct, deleteProduct } from "../ser
 import type { Product, ProductFormData } from "../types/product";
 import { supabase } from "../lib/supabase";
 import { Link } from "react-router-dom";
-import { BarChart3, Package, Download, Plus } from "lucide-react";
 import toast from "react-hot-toast";
 
 export default function Dashboard() {
@@ -19,7 +18,8 @@ export default function Dashboard() {
         category: "General",
         stock: 0,
         price: 0,
-        imageUrl: ""
+        imageUrl: "",
+        discountPercentage: 0
     });
 
     const loadProducts = async () => {
@@ -44,11 +44,12 @@ export default function Dashboard() {
                 category: product.category || "General",
                 stock: product.stock, 
                 price: product.price, 
-                imageUrl: product.imageUrl || "" 
+                imageUrl: product.imageUrl || "",
+                discountPercentage: product.discountPercentage || 0
             });
         } else {
             setEditingId(null);
-            setFormData({ name: "", category: "General", stock: 0, price: 0, imageUrl: "" });
+            setFormData({ name: "", category: "General", stock: 0, price: 0, imageUrl: "", discountPercentage: 0 });
         }
         setIsModalOpen(true);
     };
@@ -117,12 +118,13 @@ export default function Dashboard() {
     };
 
     const handleExportCSV = () => {
-        const headers = ["Nombre", "Categoría", "Stock", "Precio (CRC)"];
+        const headers = ["Nombre", "Categoría", "Stock", "Precio (CRC)", "Descuento (%)"];
         const rows = products.map(p => [
             `"${p.name.replace(/"/g, '""')}"`,
             `"${p.category || 'General'}"`,
             p.stock,
-            p.price
+            p.price,
+            p.discountPercentage || 0
         ]);
         
         const csvContent = [headers.join(","), ...rows.map(r => r.join(","))].join("\n");
@@ -146,10 +148,10 @@ export default function Dashboard() {
             <div className="px-4 sm:px-0 flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-semibold text-gray-900">Panel de Control</h2>
                 <div className="flex gap-3">
-                    <Link to="/admin/audit" className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 shadow-sm flex items-center font-medium"><BarChart3 className="w-4 h-4 mr-2" /> Auditoría</Link>
-                    <Link to="/admin/orders" className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 shadow-sm flex items-center font-medium"><Package className="w-4 h-4 mr-2" /> Ver Órdenes</Link>
-                    <button onClick={handleExportCSV} className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 shadow-sm flex items-center font-medium"><Download className="w-4 h-4 mr-2" /> Exportar CSV</button>
-                    <button onClick={() => handleOpenModal()} className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 shadow-sm font-medium"><Plus className="w-4 h-4 mr-2" /> Nuevo Producto</button>
+                    <Link to="/admin/audit" className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 shadow-sm flex items-center font-medium">📊 Auditoría</Link>
+                    <Link to="/admin/orders" className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 shadow-sm flex items-center font-medium">📦 Ver Órdenes</Link>
+                    <button onClick={handleExportCSV} className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 shadow-sm flex items-center font-medium">Exportar CSV</button>
+                    <button onClick={() => handleOpenModal()} className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 shadow-sm font-medium">+ Nuevo Producto</button>
                 </div>
             </div>
 
@@ -166,6 +168,7 @@ export default function Dashboard() {
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categoría</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Oferta</th>
                             <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
                         </tr>
                     </thead>
@@ -183,6 +186,13 @@ export default function Dashboard() {
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><span className="bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs font-medium">{product.category || 'General'}</span></td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.stock}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">₡{product.price}</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {product.discountPercentage > 0 ? (
+                                        <span className="bg-red-100 text-red-800 px-2 py-1 rounded text-xs font-bold">-{product.discountPercentage}%</span>
+                                    ) : (
+                                        <span className="text-gray-400">-</span>
+                                    )}
+                                </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-3">
                                     <button onClick={() => handleOpenModal(product)} className="text-blue-600 hover:text-blue-900">Editar</button>
                                     <button onClick={() => handleDelete(product.productResourceId)} className="text-red-600 hover:text-red-900">Eliminar</button>
@@ -203,9 +213,15 @@ export default function Dashboard() {
                                     <label className="block text-sm font-medium text-gray-700">Nombre</label>
                                     <input type="text" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-blue-500 focus:border-blue-500" />
                                 </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700">Categoría</label>
-                                    <input type="text" required placeholder="Ej. Electrónica, Ropa, Herramientas..." value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-blue-500 focus:border-blue-500" />
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700">Categoría</label>
+                                        <input type="text" required placeholder="Ej. Electrónica" value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-blue-500 focus:border-blue-500" />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700">Descuento (%)</label>
+                                        <input type="number" min="0" max="100" value={formData.discountPercentage} onChange={e => setFormData({...formData, discountPercentage: e.target.value ? parseFloat(e.target.value) : 0})} className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-blue-500 focus:border-blue-500" />
+                                    </div>
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
@@ -213,7 +229,7 @@ export default function Dashboard() {
                                         <input type="number" required min="0" value={formData.stock} onChange={e => setFormData({...formData, stock: e.target.value ? parseInt(e.target.value) : 0})} className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-blue-500 focus:border-blue-500" />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700">Precio</label>
+                                        <label className="block text-sm font-medium text-gray-700">Precio Base</label>
                                         <input type="number" required min="0" step="0.01" value={formData.price} onChange={e => setFormData({...formData, price: e.target.value ? parseFloat(e.target.value) : 0})} className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-blue-500 focus:border-blue-500" />
                                     </div>
                                 </div>
@@ -235,5 +251,3 @@ export default function Dashboard() {
         </div>
     );
 }
-
-
