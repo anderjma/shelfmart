@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { getDashboardStats, getAuditLogs } from "../services/auditService";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { Link } from "react-router-dom";
@@ -58,7 +58,7 @@ export default function AuditDashboard() {
                             <YAxis axisLine={false} tickLine={false} tick={{ fill: '#6B7280' }} tickFormatter={(value) => `₡${value/1000}k`} />
                             <Tooltip 
                                 cursor={{ fill: '#F3F4F6' }}
-                                formatter={(value: number) => [`₡${value.toLocaleString('es-CR')}`, 'Ingresos']}
+                                formatter={(value: any) => [`₡${value.toLocaleString('es-CR')}`, 'Ingresos']}
                                 contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                             />
                             <Bar dataKey="total" fill="#4F46E5" radius={[4, 4, 0, 0]} barSize={40} />
