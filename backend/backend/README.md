@@ -20,19 +20,19 @@ Este repositorio contiene la API del sistema de control de inventarios. Está de
 
 La solución está estructurada en proyectos individuales que dividen lógicamente las responsabilidades de la aplicación:
 
-*   **`InventoryBackend.Api`**
+*   **`BusinessSystem.Api`**
     *   *Propósito:* Capa de presentación que contiene los controladores REST, los middlewares del sistema y la configuración de dependencias de la aplicación en el archivo `Program.cs`.
-*   **`InventoryBackend.Facade`**
+*   **`BusinessSystem.Facade`**
     *   *Propósito:* Capa de fachada que simplifica el flujo de datos entre la API y la lógica de negocio, sirviendo como interfaz unificada para los controladores.
-*   **`InventoryBackend.DomainService`**
+*   **`BusinessSystem.DomainService`**
     *   *Propósito:* Capa que implementa la lógica de negocio central y las validaciones de dominio del sistema.
-*   **`InventoryBackend.Domain`**
+*   **`BusinessSystem.Domain`**
     *   *Propósito:* Definición de las entidades del dominio de negocio e interfaces de los repositorios.
-*   **`InventoryBackend.Infrastructure`**
+*   **`BusinessSystem.Infrastructure`**
     *   *Propósito:* Capa de persistencia de datos. Contiene la configuración del contexto de la base de datos (`AppDbContext`), las migraciones de Entity Framework Core y la implementación concreta de los repositorios.
-*   **`InventoryBackend.Dto`**
+*   **`BusinessSystem.Dto`**
     *   *Propósito:* Data Transfer Objects para transferir datos de forma segura entre el cliente y el servidor sin exponer directamente las entidades del dominio.
-*   **`InventoryBackend.Exceptions`**
+*   **`BusinessSystem.Exceptions`**
     *   *Propósito:* Excepciones de negocio personalizadas para flujos de error controlados.
 
 ---

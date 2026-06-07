@@ -3,22 +3,22 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /app
 
 # Copiar archivos de proyectos para restaurar dependencias
-COPY src/InventoryBackend.Api/InventoryBackend.Api.csproj src/InventoryBackend.Api/
-COPY src/InventoryBackend.Domain/InventoryBackend.Domain.csproj src/InventoryBackend.Domain/
-COPY src/InventoryBackend.DomainService/InventoryBackend.DomainService.csproj src/InventoryBackend.DomainService/
-COPY src/InventoryBackend.Dto/InventoryBackend.Dto.csproj src/InventoryBackend.Dto/
-COPY src/InventoryBackend.Exceptions/InventoryBackend.Exceptions.csproj src/InventoryBackend.Exceptions/
-COPY src/InventoryBackend.Facade/InventoryBackend.Facade.csproj src/InventoryBackend.Facade/
-COPY src/InventoryBackend.Infrastructure/InventoryBackend.Infrastructure.csproj src/InventoryBackend.Infrastructure/
+COPY src/BusinessSystem.Api/BusinessSystem.Api.csproj src/BusinessSystem.Api/
+COPY src/BusinessSystem.Domain/BusinessSystem.Domain.csproj src/BusinessSystem.Domain/
+COPY src/BusinessSystem.DomainService/BusinessSystem.DomainService.csproj src/BusinessSystem.DomainService/
+COPY src/BusinessSystem.Dto/BusinessSystem.Dto.csproj src/BusinessSystem.Dto/
+COPY src/BusinessSystem.Exceptions/BusinessSystem.Exceptions.csproj src/BusinessSystem.Exceptions/
+COPY src/BusinessSystem.Facade/BusinessSystem.Facade.csproj src/BusinessSystem.Facade/
+COPY src/BusinessSystem.Infrastructure/BusinessSystem.Infrastructure.csproj src/BusinessSystem.Infrastructure/
 
 # Restaurar paquetes de NuGet
-RUN dotnet restore src/InventoryBackend.Api/InventoryBackend.Api.csproj
+RUN dotnet restore src/BusinessSystem.Api/BusinessSystem.Api.csproj
 
 # Copiar el resto de los archivos de código fuente
 COPY src/ src/
 
 # Compilar y publicar en modo Release
-RUN dotnet publish src/InventoryBackend.Api/InventoryBackend.Api.csproj -c Release -o /publish
+RUN dotnet publish src/BusinessSystem.Api/BusinessSystem.Api.csproj -c Release -o /publish
 
 # Etapa 2: Imagen de ejecución (Runtime)
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
@@ -32,4 +32,4 @@ EXPOSE 5000
 ENV ASPNETCORE_URLS=http://+:5000
 ENV ASPNETCORE_ENVIRONMENT=Production
 
-ENTRYPOINT ["dotnet", "InventoryBackend.Api.dll"]
+ENTRYPOINT ["dotnet", "BusinessSystem.Api.dll"]

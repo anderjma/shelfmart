@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/BusinessSystem.Api/BusinessSystem.Api.csproj" />
+    <Project Path="src/BusinessSystem.Domain/BusinessSystem.Domain.csproj" />
+    <Project Path="src/BusinessSystem.DomainService/BusinessSystem.DomainService.csproj" />
+    <Project Path="src/BusinessSystem.Dto/BusinessSystem.Dto.csproj" />
+    <Project Path="src/BusinessSystem.Exceptions/BusinessSystem.Exceptions.csproj" />
+    <Project Path="src/BusinessSystem.Facade/BusinessSystem.Facade.csproj" />
+    <Project Path="src/BusinessSystem.Infrastructure/BusinessSystem.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/BusinessSystem.UnitTests/BusinessSystem.UnitTests.csproj" />
+  </Folder>
+</Solution>
