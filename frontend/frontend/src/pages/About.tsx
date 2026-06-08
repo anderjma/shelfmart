@@ -1,18 +1,18 @@
-﻿import React from "react";
+import React from "react";
 
 export default function About() {
     return (
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
             <div className="text-center space-y-4">
-                <h1 className="text-4xl font-bold text-gray-900">Sobre Nosotros</h1>
-                <p className="text-xl text-gray-500">Conociendo la historia detrás de Inventario Pyme.</p>
+                <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">Sobre Nosotros</h1>
+                <p className="text-lg sm:text-xl text-gray-500">Conociendo la historia detrás de Inventario Pyme.</p>
             </div>
 
             <div className="bg-white shadow-sm rounded-lg border border-gray-200 overflow-hidden">
                 <div className="h-64 bg-gray-200 flex items-center justify-center overflow-hidden">
                     <img src="https://images.unsplash.com/photo-1556761175-4b46a572b786?q=80&w=1600&auto=format&fit=crop" alt="Equipo" className="w-full h-full object-cover" />
                 </div>
-                <div className="p-8 space-y-6">
+                <div className="p-5 sm:p-8 space-y-6">
                     <div>
                         <h2 className="text-2xl font-bold text-gray-900 mb-3">Nuestra Historia</h2>
                         <p className="text-gray-600 leading-relaxed">

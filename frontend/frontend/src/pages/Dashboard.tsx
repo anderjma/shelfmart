@@ -155,13 +155,13 @@ export default function Dashboard() {
 
     return (
         <div className="max-w-7xl mx-auto">
-            <div className="px-4 sm:px-0 flex justify-between items-center mb-6">
+            <div className="px-4 sm:px-0 flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
                 <h2 className="text-2xl font-semibold text-gray-900">Panel de Control</h2>
-                <div className="flex gap-3">
-                    <Link to="/admin/audit" className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 shadow-sm flex items-center font-medium">📊 Auditoría</Link>
-                    <Link to="/admin/orders" className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 shadow-sm flex items-center font-medium">📦 Ver Órdenes</Link>
-                    <button onClick={handleExportCSV} className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 shadow-sm flex items-center font-medium">Exportar CSV</button>
-                    <button onClick={() => handleOpenModal()} className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 shadow-sm font-medium">+ Nuevo Producto</button>
+                <div className="flex flex-wrap gap-2">
+                    <Link to="/admin/audit" className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 shadow-sm flex items-center font-medium text-sm">📊 Auditoría</Link>
+                    <Link to="/admin/orders" className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 shadow-sm flex items-center font-medium text-sm">📦 Ver Órdenes</Link>
+                    <button onClick={handleExportCSV} className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 shadow-sm flex items-center font-medium text-sm">Exportar CSV</button>
+                    <button onClick={() => handleOpenModal()} className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 shadow-sm font-medium text-sm">+ Nuevo Producto</button>
                 </div>
             </div>
 
@@ -169,7 +169,8 @@ export default function Dashboard() {
                 <input type="text" placeholder="Buscar por nombre o categoría..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full sm:max-w-md border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
             </div>
 
-            <div className="bg-white shadow-sm overflow-hidden sm:rounded-md border border-gray-100">
+            {/* Vista de Tabla para Escritorio */}
+            <div className="hidden md:block bg-white shadow-sm overflow-hidden sm:rounded-md border border-gray-100">
                 <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                         <tr>
@@ -213,9 +214,51 @@ export default function Dashboard() {
                 </table>
             </div>
 
+            {/* Vista de Lista de Tarjetas para Móviles */}
+            <div className="block md:hidden space-y-4 px-4 sm:px-0">
+                {filteredProducts.length === 0 ? (
+                    <div className="text-center p-8 bg-white rounded-lg border border-gray-200 text-gray-500">No se encontraron productos.</div>
+                ) : (
+                    filteredProducts.map((product) => (
+                        <div key={product.productResourceId} className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm space-y-3 flex flex-col">
+                            <div className="flex gap-4 items-center">
+                                {product.imageUrl ? (
+                                    <img src={product.imageUrl} alt={product.name} className="h-16 w-16 object-cover rounded border border-gray-200 flex-shrink-0" />
+                                ) : (
+                                    <div className="h-16 w-16 bg-gray-100 rounded border border-gray-200 flex items-center justify-center flex-shrink-0"><span className="text-gray-400 text-xs">N/A</span></div>
+                                )}
+                                <div className="flex-1 min-w-0">
+                                    <h4 className="font-bold text-gray-900 text-sm truncate">{product.name}</h4>
+                                    <div className="flex flex-wrap gap-1.5 mt-1">
+                                        <span className="bg-gray-100 text-gray-800 px-2 py-0.5 rounded text-[10px] font-medium">{product.category || 'General'}</span>
+                                        {product.discountPercentage > 0 && (
+                                            <span className="bg-red-100 text-red-800 px-2 py-0.5 rounded text-[10px] font-bold">-{product.discountPercentage}% OFF</span>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-2 text-xs border-t border-gray-100 pt-3">
+                                <div>
+                                    <span className="text-gray-400 block">Stock Disponible</span>
+                                    <span className="font-semibold text-gray-800">{product.stock} uds.</span>
+                                </div>
+                                <div>
+                                    <span className="text-gray-400 block">Precio Unitario</span>
+                                    <span className="font-semibold text-blue-600">₡{product.price}</span>
+                                </div>
+                            </div>
+                            <div className="flex justify-end gap-3 border-t border-gray-100 pt-3 mt-auto">
+                                <button onClick={() => handleOpenModal(product)} className="text-sm font-semibold text-blue-600 hover:text-blue-800 py-1 px-2 hover:bg-blue-50 rounded">Editar</button>
+                                <button onClick={() => handleDelete(product.productResourceId)} className="text-sm font-semibold text-red-600 hover:text-red-800 py-1 px-2 hover:bg-red-50 rounded">Eliminar</button>
+                            </div>
+                        </div>
+                    ))
+                )}
+            </div>
+
             {isModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-                    <div className="relative w-full max-w-lg rounded-lg bg-white p-6 shadow-xl">
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 overflow-y-auto">
+                    <div className="relative w-full max-w-lg rounded-lg bg-white p-6 shadow-xl overflow-y-auto max-h-[90vh]">
                         <form onSubmit={handleSubmit}>
                             <h3 className="text-lg font-medium text-gray-900 mb-4">{editingId ? "Editar Producto" : "Nuevo Producto"}</h3>
                             <div className="space-y-4">
@@ -223,7 +266,7 @@ export default function Dashboard() {
                                     <label className="block text-sm font-medium text-gray-700">Nombre</label>
                                     <input type="text" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-blue-500 focus:border-blue-500" />
                                 </div>
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700">Categoría</label>
                                         <input type="text" required placeholder="Ej. Electrónica" value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-blue-500 focus:border-blue-500" />
@@ -233,7 +276,7 @@ export default function Dashboard() {
                                         <input type="number" min="0" max="100" value={formData.discountPercentage} onChange={e => setFormData({...formData, discountPercentage: e.target.value ? parseFloat(e.target.value) : 0})} className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-blue-500 focus:border-blue-500" />
                                     </div>
                                 </div>
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700">Stock</label>
                                         <input type="number" required min="0" value={formData.stock} onChange={e => setFormData({...formData, stock: e.target.value ? parseInt(e.target.value) : 0})} className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-blue-500 focus:border-blue-500" />

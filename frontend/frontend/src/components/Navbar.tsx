@@ -31,6 +31,8 @@ export default function Navbar() {
                         
                         <div className="hidden md:flex items-center space-x-4">
                             <Link to="/catalogo" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Catálogo</Link>
+                            <Link to="/nosotros" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Nosotros</Link>
+                            <Link to="/contacto" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Contacto</Link>
                             {isAdmin && (
                                 <Link to="/admin/dashboard" className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors flex items-center gap-1">
                                     <ShieldCheck className="w-4 h-4" /> Panel Admin
@@ -82,6 +84,8 @@ export default function Navbar() {
                 <div className="md:hidden bg-white border-t border-slate-100 shadow-lg absolute w-full z-40">
                     <div className="px-4 py-3 space-y-2">
                         <Link to="/catalogo" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-blue-600 rounded-md">Catálogo</Link>
+                        <Link to="/nosotros" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-blue-600 rounded-md">Nosotros</Link>
+                        <Link to="/contacto" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-blue-600 rounded-md">Contacto</Link>
                         
                         {isAdmin && (
                             <Link to="/admin/dashboard" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-md">Panel Admin</Link>

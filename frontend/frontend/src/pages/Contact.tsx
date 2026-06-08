@@ -1,13 +1,13 @@
-﻿import React from "react";
+import React from "react";
 import { Phone, Mail } from "lucide-react";
 import { SiFacebook, SiInstagram, SiTiktok } from "react-icons/si";
 
 export default function Contact() {
     return (
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
             <h1 className="text-3xl font-bold text-gray-900 mb-8 text-center">Contáctanos</h1>
             
-            <div className="bg-white shadow-sm rounded-lg border border-gray-200 p-8">
+            <div className="bg-white shadow-sm rounded-lg border border-gray-200 p-5 sm:p-8">
                 <p className="text-gray-600 text-center mb-10 text-lg">
                     ¿Tienes alguna duda o consulta? Estamos aquí para ayudarte a través de cualquiera de nuestros canales oficiales.
                 </p>

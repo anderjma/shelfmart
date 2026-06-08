@@ -51,19 +51,20 @@ export default function Users() {
 
     return (
         <div>
-            <div className="px-4 sm:px-0 flex justify-between items-center mb-4">
+            <div className="px-4 sm:px-0 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
                 <div>
                     <h2 className="text-2xl font-semibold text-gray-900">Gestión de Usuarios</h2>
                     {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
                 </div>
                 {!error && (
-                    <button onClick={handleOpenModal} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                    <button onClick={handleOpenModal} className="w-full sm:w-auto bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 font-medium text-sm text-center">
                         + Nuevo Usuario
                     </button>
                 )}
             </div>
 
-            <div className="bg-white shadow overflow-hidden sm:rounded-md">
+            {/* Vista de Tabla para Escritorio */}
+            <div className="hidden sm:block bg-white shadow overflow-hidden sm:rounded-md border border-gray-100">
                 <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                         <tr>
@@ -88,9 +89,35 @@ export default function Users() {
                 </table>
             </div>
 
+            {/* Vista de Tarjetas para Móviles */}
+            <div className="block sm:hidden space-y-4 px-4 sm:px-0">
+                {users.length === 0 && !error ? (
+                    <div className="text-center p-8 bg-white rounded-lg border border-gray-200 text-gray-500">No se encontraron usuarios registrados.</div>
+                ) : (
+                    users.map((u) => (
+                        <div key={u.userResourceId} className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm space-y-2.5">
+                            <div className="border-b border-gray-100 pb-2 flex justify-between items-center">
+                                <span className="font-bold text-gray-900 text-sm">{u.name}</span>
+                                <span className="bg-blue-50 text-blue-700 text-[10px] font-semibold px-2 py-0.5 rounded border border-blue-100">Cliente</span>
+                            </div>
+                            <div className="grid grid-cols-2 gap-2 text-xs">
+                                <div>
+                                    <span className="text-gray-400 block">Usuario</span>
+                                    <span className="font-medium text-gray-800">@{u.username}</span>
+                                </div>
+                                <div>
+                                    <span className="text-gray-400 block">Correo</span>
+                                    <span className="font-medium text-gray-800 truncate block" title={u.email}>{u.email}</span>
+                                </div>
+                            </div>
+                        </div>
+                    ))
+                )}
+            </div>
+
             {isModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 overflow-y-auto">
-                    <div className="relative w-full max-w-lg rounded-lg bg-white p-6 shadow-xl">
+                    <div className="relative w-full max-w-lg rounded-lg bg-white p-6 shadow-xl overflow-y-auto max-h-[90vh]">
                         <form onSubmit={handleSubmit}>
                             <h3 className="text-lg font-medium text-gray-900 mb-4">Nuevo Usuario</h3>
                             <div className="space-y-4">
