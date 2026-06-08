@@ -46,7 +46,7 @@ export default function Cart() {
 
     if (!cart || !cart.items || cart.items.length === 0) {
         return (
-            <div className="text-center py-16 bg-white rounded-lg shadow-sm border border-gray-200">
+            <div className="text-center py-16 mx-4 sm:mx-0 bg-white rounded-lg shadow-sm border border-gray-200">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">Su carrito está vacío</h2>
                 <button onClick={() => navigate("/")} className="text-blue-600 font-medium hover:text-blue-800 underline">
                     Volver al catálogo
@@ -56,13 +56,14 @@ export default function Cart() {
     }
 
     return (
-        <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-900">Mi Carrito de Compras</h2>
+        <div className="max-w-7xl mx-auto space-y-6">
+            <div className="px-4 sm:px-0">
+                <h2 className="text-2xl font-bold text-gray-900">Mi Carrito de Compras</h2>
+            </div>
             
-            {/* Vista Dual: Tarjetas en móvil, Tabla en pantallas sm y superiores */}
-            <div className="bg-white rounded-lg shadow overflow-hidden border border-gray-200">
-                {/* Tabla para Escritorio */}
-                <div className="hidden sm:block overflow-x-auto">
+            {/* Tabla para Escritorio */}
+            <div className="hidden sm:block bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200">
+                <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-50">
                             <tr>
@@ -84,43 +85,43 @@ export default function Cart() {
                         </tbody>
                     </table>
                 </div>
+            </div>
 
-                {/* Tarjetas para Móviles */}
-                <div className="block sm:hidden p-4 space-y-4 bg-gray-50 border-t border-gray-200">
-                    {cart.items.map((item, index) => (
-                        <div key={index} className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 flex flex-col gap-3">
-                            <div className="flex justify-between items-start gap-2">
-                                <h3 className="font-bold text-gray-900 text-base leading-tight">{item.productName}</h3>
-                                <span className="text-base font-bold text-gray-900 whitespace-nowrap">₡{item.subTotal}</span>
-                            </div>
-                            <div className="flex justify-between items-center text-sm">
-                                <span className="text-gray-500">Precio: ₡{item.unitPrice}</span>
-                                <span className="bg-blue-50 text-blue-700 px-2.5 py-1 rounded-md font-semibold text-xs border border-blue-100">
-                                    Cant: {item.quantity}
-                                </span>
-                            </div>
+            {/* Tarjetas para Móviles */}
+            <div className="block sm:hidden space-y-4 px-4 sm:px-0">
+                {cart.items.map((item, index) => (
+                    <div key={index} className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 flex flex-col gap-3">
+                        <div className="flex justify-between items-start gap-2">
+                            <h3 className="font-bold text-gray-900 text-base leading-tight">{item.productName}</h3>
+                            <span className="text-base font-bold text-gray-900 whitespace-nowrap">₡{item.subTotal}</span>
                         </div>
-                    ))}
-                </div>
-
-                {/* Resumen del Carrito responsivo */}
-                <div className="bg-white px-4 sm:px-6 py-5 border-t border-gray-200">
-                    <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-                        <div className="w-full sm:w-auto flex justify-between items-center sm:block">
-                            <span className="text-gray-600 font-medium sm:hidden">Total a pagar:</span>
-                            <span className="text-xl font-bold text-gray-900">
-                                <span className="hidden sm:inline">Total: </span>
-                                ₡{cart.totalAmount}
+                        <div className="flex justify-between items-center text-sm">
+                            <span className="text-gray-500">Precio: ₡{item.unitPrice}</span>
+                            <span className="bg-blue-50 text-blue-700 px-2.5 py-1 rounded-md font-semibold text-xs border border-blue-100">
+                                Cant: {item.quantity}
                             </span>
                         </div>
-                        <button 
-                            onClick={handleCheckout} 
-                            disabled={processing}
-                            className="w-full sm:w-auto bg-green-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-green-700 disabled:bg-green-400 transition-colors text-center shadow-sm"
-                        >
-                            {processing ? "Procesando..." : "Finalizar Compra"}
-                        </button>
                     </div>
+                ))}
+            </div>
+
+            {/* Resumen del Carrito responsivo */}
+            <div className="bg-white px-4 sm:px-6 py-5 sm:rounded-lg sm:shadow-sm sm:border sm:border-gray-200 border-y border-gray-200 sm:border-y-0">
+                <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div className="w-full sm:w-auto flex justify-between items-center sm:block">
+                        <span className="text-gray-600 font-medium sm:hidden">Total a pagar:</span>
+                        <span className="text-xl font-bold text-gray-900">
+                            <span className="hidden sm:inline">Total: </span>
+                            ₡{cart.totalAmount}
+                        </span>
+                    </div>
+                    <button 
+                        onClick={handleCheckout} 
+                        disabled={processing}
+                        className="w-full sm:w-auto bg-green-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-green-700 disabled:bg-green-400 transition-colors text-center shadow-sm"
+                    >
+                        {processing ? "Procesando..." : "Finalizar Compra"}
+                    </button>
                 </div>
             </div>
         </div>
