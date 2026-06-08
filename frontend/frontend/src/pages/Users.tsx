@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getUsers, createUser } from "../services/userService";
 import type { User, UserFormData } from "../types/user";
 
@@ -14,17 +14,19 @@ export default function Users() {
         password: ""
     });
 
-    const loadUsers = async () => {
-        try {
-            const data = await getUsers();
-            setUsers(data);
-        } catch (err: any) {
-            setError(err.response?.data?.message || "Acceso denegado.");
-        }
-    };
-
     useEffect(() => {
-        loadUsers();
+        let active = true;
+        getUsers()
+            .then((data) => {
+                if (active) setUsers(data);
+            })
+            .catch((err) => {
+                const error = err as { response?: { data?: { message?: string } } };
+                if (active) setError(error.response?.data?.message || "Acceso denegado.");
+            });
+        return () => {
+            active = false;
+        };
     }, []);
 
     const handleOpenModal = () => {
@@ -39,9 +41,11 @@ export default function Users() {
         try {
             await createUser(formData);
             handleCloseModal();
-            loadUsers();
-        } catch (err: any) {
-            alert(err.response?.data?.message || "Error al crear el usuario");
+            const data = await getUsers();
+            setUsers(data);
+        } catch (err) {
+            const error = err as { response?: { data?: { message?: string } } };
+            alert(error.response?.data?.message || "Error al crear el usuario");
         }
     };
 

@@ -3,22 +3,46 @@ import { getDashboardStats, getAuditLogs } from "../services/auditService";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { Link } from "react-router-dom";
 
+interface SalesChartData {
+    date: string;
+    total: number;
+}
+
+interface AuditStats {
+    revenue: number;
+    orders: number;
+    lowStock: number;
+    salesChart: SalesChartData[];
+}
+
+interface AuditLog {
+    id: string | number;
+    timestamp: string | Date;
+    user: string;
+    action: string;
+}
+
 export default function AuditDashboard() {
-    const [stats, setStats] = useState<any>(null);
-    const [logs, setLogs] = useState<any[]>([]);
+    const [stats, setStats] = useState<AuditStats | null>(null);
+    const [logs, setLogs] = useState<AuditLog[]>([]);
 
     useEffect(() => {
-        loadData();
-    }, []);
-
-    const loadData = async () => {
-        const [statsData, logsData] = await Promise.all([
+        let active = true;
+        Promise.all([
             getDashboardStats(),
             getAuditLogs()
-        ]);
-        setStats(statsData);
-        setLogs(logsData);
-    };
+        ]).then(([statsData, logsData]) => {
+            if (active) {
+                setStats(statsData);
+                setLogs(logsData);
+            }
+        }).catch(err => {
+            console.error("Error al cargar auditoría:", err);
+        });
+        return () => {
+            active = false;
+        };
+    }, []);
 
     if (!stats) return <div className="p-12 text-center text-gray-500 font-medium">Cargando métricas...</div>;
 
@@ -58,7 +82,8 @@ export default function AuditDashboard() {
                             <YAxis axisLine={false} tickLine={false} tick={{ fill: '#6B7280' }} tickFormatter={(value) => `₡${value/1000}k`} />
                             <Tooltip 
                                 cursor={{ fill: '#F3F4F6' }}
-                                formatter={(value: any) => [`₡${value.toLocaleString('es-CR')}`, 'Ingresos']}
+                                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                formatter={(value: any) => [`₡${Number(value).toLocaleString('es-CR')}`, 'Ingresos']}
                                 contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                             />
                             <Bar dataKey="total" fill="#4F46E5" radius={[4, 4, 0, 0]} barSize={40} />

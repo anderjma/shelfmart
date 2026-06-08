@@ -1,4 +1,4 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { registerCustomer } from "../services/authService";
 import toast from "react-hot-toast";
@@ -18,8 +18,9 @@ export default function Register() {
             await registerCustomer(formData);
             toast.success("¡Cuenta creada exitosamente!");
             navigate("/login");
-        } catch (err: any) {
-            setError(err.response?.data?.message || "Error al registrar la cuenta.");
+        } catch (err) {
+            const error = err as { response?: { data?: { message?: string } } };
+            setError(error.response?.data?.message || "Error al registrar la cuenta.");
         } finally {
             setLoading(false);
         }

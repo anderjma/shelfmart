@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getCart, checkout } from "../services/orderService";
 import toast from "react-hot-toast";
@@ -12,19 +12,18 @@ export default function Cart() {
     const navigate = useNavigate();
 
     useEffect(() => {
+        const fetchCart = async () => {
+            try {
+                const data = await getCart();
+                setCart(data);
+            } catch {
+                setError("Error al cargar el carrito.");
+            } finally {
+                setLoading(false);
+            }
+        };
         fetchCart();
     }, []);
-
-    const fetchCart = async () => {
-        try {
-            const data = await getCart();
-            setCart(data);
-        } catch (err: any) {
-            setError("Error al cargar el carrito.");
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const handleCheckout = async () => {
         if (!window.confirm("¿Desea confirmar su compra?")) return;
@@ -34,8 +33,9 @@ export default function Cart() {
             await checkout();
             toast.success("¡Compra procesada con éxito!");
             navigate("/");
-        } catch (err: any) {
-            toast.error(err.response?.data?.message || "Error al procesar la compra.");
+        } catch (err) {
+            const error = err as { response?: { data?: { message?: string } } };
+            toast.error(error.response?.data?.message || "Error al procesar la compra.");
         } finally {
             setProcessing(false);
         }

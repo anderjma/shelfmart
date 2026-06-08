@@ -15,7 +15,7 @@ describe("orderService tests", () => {
         const dummyCart = { orderId: "123", totalAmount: 100, items: [] };
         
         // Mocking axios.get response
-        (axios.get as any).mockResolvedValue({ data: dummyCart });
+        vi.mocked(axios.get).mockResolvedValue({ data: dummyCart });
 
         const result = await getCart();
 
@@ -31,7 +31,7 @@ describe("orderService tests", () => {
         const payload = { productId: "p-123", quantity: 3 };
         const dummyCart = { orderId: "123", totalAmount: 300, items: [] };
 
-        (axios.post as any).mockResolvedValue({ data: dummyCart });
+        vi.mocked(axios.post).mockResolvedValue({ data: dummyCart });
 
         const result = await addToCart(payload);
 
@@ -47,7 +47,7 @@ describe("orderService tests", () => {
         localStorage.setItem("token", "dummy-token");
         const dummyOrder = { orderId: "123", status: "Completed" };
 
-        (axios.post as any).mockResolvedValue({ data: dummyOrder });
+        vi.mocked(axios.post).mockResolvedValue({ data: dummyOrder });
 
         const result = await checkout();
 

@@ -1,7 +1,7 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { logout, getCurrentUser } from "../services/authService";
-import { User, LogOut, LogIn, UserPlus, ShoppingCart, Store, Menu, X, ShieldCheck } from "lucide-react";
+import { User, LogOut, LogIn, ShoppingCart, Store, Menu, X, ShieldCheck } from "lucide-react";
 
 export default function Navbar() {
     const navigate = useNavigate();

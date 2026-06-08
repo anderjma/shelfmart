@@ -1,25 +1,25 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { getAllOrders } from "../services/orderService";
 import { Link } from "react-router-dom";
+import type { ManagerOrder, ManagerOrderItem } from "../types/order";
 
 export default function OrdersManager() {
-    const [orders, setOrders] = useState<any[]>([]);
+    const [orders, setOrders] = useState<ManagerOrder[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        const fetchOrders = async () => {
+            try {
+                const data = await getAllOrders();
+                setOrders(data);
+            } catch (error) {
+                console.error("Error al cargar órdenes:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
         fetchOrders();
     }, []);
-
-    const fetchOrders = async () => {
-        try {
-            const data = await getAllOrders();
-            setOrders(data);
-        } catch (error) {
-            console.error("Error al cargar órdenes:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     if (loading) return <div className="text-center p-12 text-gray-600 font-medium">Cargando órdenes...</div>;
 
@@ -55,7 +55,7 @@ export default function OrdersManager() {
                             <div className="px-6 py-4">
                                 <h4 className="text-sm font-semibold text-gray-700 mb-3 uppercase tracking-wider">Productos a Despachar:</h4>
                                 <ul className="divide-y divide-gray-100">
-                                    {order.items.map((item: any, i: number) => (
+                                    {order.items.map((item: ManagerOrderItem, i: number) => (
                                         <li key={i} className="py-3 flex justify-between items-center text-sm">
                                             <span className="text-gray-900 font-medium flex items-center">
                                                 <span className="bg-gray-100 text-gray-600 py-1 px-2 rounded mr-3">{item.quantity}x</span> 

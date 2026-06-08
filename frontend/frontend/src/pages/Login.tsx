@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../services/authService";
 
@@ -15,8 +15,9 @@ export default function Login() {
         try {
             await login(username, password);
             navigate("/");
-        } catch (err: any) {
-            setError(err.response?.data?.message || "Error al iniciar sesión. Verifique sus credenciales.");
+        } catch (err) {
+            const error = err as { response?: { data?: { message?: string } } };
+            setError(error.response?.data?.message || "Error al iniciar sesión. Verifique sus credenciales.");
         }
     };
 

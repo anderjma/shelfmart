@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getProducts } from "../services/productService";
 import type { Product } from "../types/product";
@@ -26,53 +26,6 @@ export default function Home() {
         const diffDays = (new Date().getTime() - new Date(p.createdAt).getTime()) / (1000 * 3600 * 24);
         return diffDays <= 7;
     }).slice(0, 4);
-
-    const renderBadges = (product: Product, type: 'offer' | 'new' | 'low') => {
-        if (type === 'low') return <span className="bg-slate-800 text-white text-[10px] uppercase font-semibold px-2 py-0.5 rounded-sm">Pocas uds</span>;
-        if (type === 'offer') return <span className="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-sm">-{product.discountPercentage}%</span>;
-        if (type === 'new') return <span className="bg-slate-100 text-slate-700 text-[10px] font-medium px-2 py-0.5 rounded-sm border border-slate-200">Nuevo</span>;
-        return null;
-    };
-
-    const ProductCard = ({ product, type }: { product: Product, type: 'offer' | 'new' | 'low' }) => {
-        const finalPrice = product.discountPercentage > 0 
-            ? product.price - (product.price * (product.discountPercentage / 100)) 
-            : product.price;
-
-        return (
-            <Link to="/catalogo" className="bg-white border border-slate-200/60 rounded-md shadow-sm hover:shadow-md transition-all duration-200 flex flex-col h-full group">
-                <div className="relative h-40 sm:h-48 bg-slate-50 flex items-center justify-center overflow-hidden rounded-t-md">
-                    <div className="absolute top-2 left-2 right-2 flex justify-between items-start z-10">
-                        <span className="bg-white/90 text-slate-600 text-[9px] uppercase font-medium px-1.5 py-0.5 rounded shadow-sm">
-                            {product.category || 'General'}
-                        </span>
-                        <div className="flex flex-col gap-1 items-end">
-                            {renderBadges(product, type)}
-                        </div>
-                    </div>
-                    {product.imageUrl ? (
-                        <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover group-hover:opacity-90 transition-opacity duration-200" loading="lazy" />
-                    ) : (
-                        <span className="text-slate-300 text-xs font-medium">Sin imagen</span>
-                    )}
-                </div>
-                
-                <div className="p-3 sm:p-4 flex-1 flex flex-col justify-between bg-white rounded-b-md">
-                    <h3 className="font-medium text-slate-800 text-sm sm:text-base line-clamp-2 leading-snug mb-3" title={product.name}>{product.name}</h3>
-                    <div className="flex items-center gap-2 mt-auto flex-wrap">
-                        <p className="text-blue-600 font-semibold text-sm sm:text-base">₡{finalPrice.toFixed(2)}</p>
-                        {product.discountPercentage > 0 && <p className="text-xs text-slate-400 line-through">₡{product.price}</p>}
-                    </div>
-                </div>
-            </Link>
-        );
-    };
-
-    const SectionHeader = ({ title }: { title: string }) => (
-        <div className="flex items-center justify-between border-b border-slate-200 pb-2 mb-6">
-            <h2 className="text-lg sm:text-xl font-semibold text-slate-800">{title}</h2>
-        </div>
-    );
 
     return (
         <div className="space-y-12 sm:space-y-16 pb-12 sm:pb-16 bg-slate-50">
@@ -124,3 +77,50 @@ export default function Home() {
         </div>
     );
 }
+
+const renderBadges = (product: Product, type: 'offer' | 'new' | 'low') => {
+    if (type === 'low') return <span className="bg-slate-800 text-white text-[10px] uppercase font-semibold px-2 py-0.5 rounded-sm">Pocas uds</span>;
+    if (type === 'offer') return <span className="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-sm">-{product.discountPercentage}%</span>;
+    if (type === 'new') return <span className="bg-slate-100 text-slate-700 text-[10px] font-medium px-2 py-0.5 rounded-sm border border-slate-200">Nuevo</span>;
+    return null;
+};
+
+const ProductCard = ({ product, type }: { product: Product, type: 'offer' | 'new' | 'low' }) => {
+    const finalPrice = product.discountPercentage > 0 
+        ? product.price - (product.price * (product.discountPercentage / 100)) 
+        : product.price;
+
+    return (
+        <Link to="/catalogo" className="bg-white border border-slate-200/60 rounded-md shadow-sm hover:shadow-md transition-all duration-200 flex flex-col h-full group">
+            <div className="relative h-40 sm:h-48 bg-slate-50 flex items-center justify-center overflow-hidden rounded-t-md">
+                <div className="absolute top-2 left-2 right-2 flex justify-between items-start z-10">
+                    <span className="bg-white/90 text-slate-600 text-[9px] uppercase font-medium px-1.5 py-0.5 rounded shadow-sm">
+                        {product.category || 'General'}
+                    </span>
+                    <div className="flex flex-col gap-1 items-end">
+                        {renderBadges(product, type)}
+                    </div>
+                </div>
+                {product.imageUrl ? (
+                    <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover group-hover:opacity-90 transition-opacity duration-200" loading="lazy" />
+                ) : (
+                    <span className="text-slate-300 text-xs font-medium">Sin imagen</span>
+                )}
+            </div>
+            
+            <div className="p-3 sm:p-4 flex-1 flex flex-col justify-between bg-white rounded-b-md">
+                <h3 className="font-medium text-slate-800 text-sm sm:text-base line-clamp-2 leading-snug mb-3" title={product.name}>{product.name}</h3>
+                <div className="flex items-center gap-2 mt-auto flex-wrap">
+                    <p className="text-blue-600 font-semibold text-sm sm:text-base">₡{finalPrice.toFixed(2)}</p>
+                    {product.discountPercentage > 0 && <p className="text-xs text-slate-400 line-through">₡{product.price}</p>}
+                </div>
+            </div>
+        </Link>
+    );
+};
+
+const SectionHeader = ({ title }: { title: string }) => (
+    <div className="flex items-center justify-between border-b border-slate-200 pb-2 mb-6">
+        <h2 className="text-lg sm:text-xl font-semibold text-slate-800">{title}</h2>
+    </div>
+);

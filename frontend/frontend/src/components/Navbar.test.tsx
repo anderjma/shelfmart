@@ -26,7 +26,7 @@ describe("Navbar Component", () => {
     });
 
     test("renders correctly for a guest user (unauthenticated)", () => {
-        (getCurrentUser as any).mockReturnValue(null);
+        vi.mocked(getCurrentUser).mockReturnValue(null);
 
         render(
             <MemoryRouter>
@@ -44,7 +44,7 @@ describe("Navbar Component", () => {
     });
 
     test("renders correctly for an Admin user", () => {
-        (getCurrentUser as any).mockReturnValue({
+        vi.mocked(getCurrentUser).mockReturnValue({
             name: "Administrador Pepe",
             role: "Admin",
             username: "adminpepe"
@@ -69,7 +69,7 @@ describe("Navbar Component", () => {
     });
 
     test("renders correctly for a Customer user", () => {
-        (getCurrentUser as any).mockReturnValue({
+        vi.mocked(getCurrentUser).mockReturnValue({
             name: "Cliente Juan",
             role: "Customer",
             username: "juanito"
@@ -90,7 +90,7 @@ describe("Navbar Component", () => {
     });
 
     test("handles logout click correctly", () => {
-        (getCurrentUser as any).mockReturnValue({
+        vi.mocked(getCurrentUser).mockReturnValue({
             name: "Usuario Activo",
             role: "Customer",
             username: "activo"

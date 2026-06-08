@@ -1,28 +1,29 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { getCurrentUser } from "../services/authService";
 import { getMyOrders } from "../services/orderService";
+import type { Cart, CartItem } from "../types/order";
 
 export default function Profile() {
     const user = getCurrentUser();
-    const [orders, setOrders] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [orders, setOrders] = useState<Cart[]>([]);
+    const [loading, setLoading] = useState(!!user);
 
     useEffect(() => {
+        const fetchOrders = async () => {
+            try {
+                const data = await getMyOrders();
+                setOrders(data);
+            } catch (error) {
+                console.error("Error al cargar historial:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
         if (user) {
             fetchOrders();
         }
-    }, []);
-
-    const fetchOrders = async () => {
-        try {
-            const data = await getMyOrders();
-            setOrders(data);
-        } catch (error) {
-            console.error("Error al cargar historial:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    }, [user]);
 
     return (
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
@@ -64,7 +65,7 @@ export default function Profile() {
                                 <div className="space-y-2">
                                     <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Orden ID: #{order.orderId.substring(0, 8).toUpperCase()}</p>
                                     <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
-                                        {order.items.map((item: any, i: number) => (
+                                        {order.items.map((item: CartItem, i: number) => (
                                             <li key={i} className="font-medium">
                                                 {item.quantity}x {item.productName} <span className="text-gray-400 font-normal">(₡{item.unitPrice} c/u)</span>
                                             </li>

@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getProducts } from "../services/productService";
 import { addToCart } from "../services/orderService";
 import type { Product } from "../types/product";
@@ -22,7 +22,7 @@ export default function Store() {
                 setProducts(data);
                 const uniqueCategories = Array.from(new Set(data.map((p: Product) => p.category || "General")));
                 setCategories(["Todas", ...uniqueCategories]);
-            } catch (error) {
+            } catch {
                 toast.error("Error al cargar productos.");
             } finally {
                 setLoading(false);
@@ -35,7 +35,8 @@ export default function Store() {
         try {
             await addToCart({ productId, quantity: 1 });
             toast.success("Producto agregado al carrito");
-        } catch (error: any) {
+        } catch (err) {
+            const error = err as { response?: { data?: { message?: string } } };
             toast.error(error.response?.data?.message || "Debes iniciar sesión para comprar.");
         }
     };

@@ -1,4 +1,4 @@
-﻿export interface CartItem {
+export interface CartItem {
     productId: string;
     productName: string;
     quantity: number;
@@ -15,4 +15,16 @@ export interface Cart {
 export interface AddToCartDto {
     productId: string;
     quantity: number;
+}
+
+export interface ManagerOrderItem {
+    quantity: number;
+    productName: string;
+    unitPrice: number;
+}
+
+export interface ManagerOrder {
+    customerUsername: string;
+    totalAmount: number;
+    items: ManagerOrderItem[];
 }

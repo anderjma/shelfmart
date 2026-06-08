@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getProducts, createProduct, updateProduct, deleteProduct } from "../services/productService";
 import type { Product, ProductFormData } from "../types/product";
 import { supabase } from "../lib/supabase";
@@ -32,7 +32,17 @@ export default function Dashboard() {
     };
 
     useEffect(() => {
-        loadProducts();
+        let active = true;
+        getProducts()
+            .then(data => {
+                if (active) setProducts(data);
+            })
+            .catch(error => {
+                console.error("Error al cargar productos", error);
+            });
+        return () => {
+            active = false;
+        };
     }, []);
 
     const handleOpenModal = (product?: Product) => {
@@ -111,7 +121,7 @@ export default function Dashboard() {
                 await deleteProduct(id);
                 loadProducts();
                 toast.success("Producto eliminado");
-            } catch (error) {
+            } catch {
                 toast.error("Error al eliminar");
             }
         }

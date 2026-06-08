@@ -1,5 +1,16 @@
-﻿import axiosClient from "../api/axiosClient";
+import axiosClient from "../api/axiosClient";
 import { jwtDecode } from "jwt-decode";
+import type { UserFormData } from "../types/user";
+
+interface DecodedToken {
+    role?: string;
+    "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"?: string;
+    name?: string;
+    "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"?: string;
+    unique_name?: string;
+    username?: string;
+    sub?: string;
+}
 
 export const login = async (username: string, password: string) => {
     const response = await axiosClient.post("/Auth/login", { username, password });
@@ -18,7 +29,7 @@ export const getCurrentUser = () => {
     if (!token) return null;
     
     try {
-        const decoded: any = jwtDecode(token);
+        const decoded = jwtDecode<DecodedToken>(token);
         const role = decoded.role || decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
         const name = decoded.name || decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"] || "Usuario";
         
@@ -31,7 +42,7 @@ export const getCurrentUser = () => {
     }
 };
 
-export const registerCustomer = async (data: any) => {
+export const registerCustomer = async (data: UserFormData) => {
     const response = await axiosClient.post('/Customers/register', data);
     return response.data;
 };
