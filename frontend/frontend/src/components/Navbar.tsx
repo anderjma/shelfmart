@@ -35,7 +35,7 @@ export default function Navbar() {
                             <Link to="/contacto" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Contacto</Link>
                             {isAdmin && (
                                 <Link to="/admin/dashboard" className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors flex items-center gap-1">
-                                    <ShieldCheck className="w-4 h-4" /> Panel Admin
+                                    <ShieldCheck className="w-4 h-4" aria-hidden="true" /> Panel Admin
                                 </Link>
                             )}
                         </div>
@@ -45,25 +45,25 @@ export default function Navbar() {
                     <div className="hidden md:flex items-center space-x-5">
                         {isCustomer && (
                             <Link to="/cart" className="text-slate-500 hover:text-blue-600 transition-colors relative" aria-label="Ver carrito">
-                                <ShoppingCart className="w-5 h-5" />
+                                <ShoppingCart className="w-5 h-5" aria-hidden="true" />
                             </Link>
                         )}
 
                         {user ? (
                             <div className="flex items-center space-x-3 border-l border-slate-200 pl-5">
                                 <Link to="/perfil" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors flex items-center gap-1.5">
-                                    <User className="w-4 h-4" /> {user.name}
+                                    <User className="w-4 h-4" aria-hidden="true" /> {user.name}
                                 </Link>
-                                <button onClick={handleLogout} className="text-slate-400 hover:text-red-600 transition-colors p-1" title="Cerrar sesión">
-                                    <LogOut className="w-4 h-4" />
+                                <button onClick={handleLogout} className="text-slate-400 hover:text-red-600 transition-colors p-1 focus:outline-none focus:ring-2 focus:ring-red-500 rounded" title="Cerrar sesión" aria-label="Cerrar sesión">
+                                    <LogOut className="w-4 h-4" aria-hidden="true" />
                                 </button>
                             </div>
                         ) : (
                             <div className="flex items-center space-x-3 border-l border-slate-200 pl-5">
-                                <Link to="/login" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors flex items-center gap-1">
-                                    <LogIn className="w-4 h-4" /> Entrar
+                                <Link to="/login" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded px-2 py-1">
+                                    <LogIn className="w-4 h-4" aria-hidden="true" /> Entrar
                                 </Link>
-                                <Link to="/register" className="text-xs font-medium bg-blue-600 text-white px-3 py-1.5 rounded-md hover:bg-blue-700 transition-colors">
+                                <Link to="/register" className="text-xs font-medium bg-blue-600 text-white px-3 py-1.5 rounded-md hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1">
                                     Crear Cuenta
                                 </Link>
                             </div>
@@ -72,8 +72,8 @@ export default function Navbar() {
 
                     {/* Menú Móvil (Hamburguesa) */}
                     <div className="md:hidden flex items-center">
-                        <button onClick={toggleMenu} className="text-slate-500 hover:text-slate-900 p-2 focus:outline-none">
-                            {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                        <button onClick={toggleMenu} className="text-slate-500 hover:text-slate-900 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded" aria-expanded={isMenuOpen} aria-controls="mobile-menu" aria-label={isMenuOpen ? "Cerrar menú principal" : "Abrir menú principal"}>
+                            {isMenuOpen ? <X className="w-5 h-5" aria-hidden="true" /> : <Menu className="w-5 h-5" aria-hidden="true" />}
                         </button>
                     </div>
                 </div>
@@ -81,7 +81,7 @@ export default function Navbar() {
 
             {/* Desplegable Móvil */}
             {isMenuOpen && (
-                <div className="md:hidden bg-white border-t border-slate-100 shadow-lg absolute w-full z-40">
+                <div className="md:hidden bg-white border-t border-slate-100 shadow-lg absolute w-full z-40" id="mobile-menu">
                     <div className="px-4 py-3 space-y-2">
                         <Link to="/catalogo" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-blue-600 rounded-md">Catálogo</Link>
                         <Link to="/nosotros" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-blue-600 rounded-md">Nosotros</Link>
