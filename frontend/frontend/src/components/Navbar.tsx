@@ -26,7 +26,7 @@ export default function Navbar() {
                     <div className="flex items-center space-x-6">
                         <Link to="/" className="flex items-center gap-2 text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded p-1">
                             <Store className="w-5 h-5" aria-hidden="true" />
-                            <span className="font-bold text-lg tracking-tight">Portal Comercial</span>
+                            <span className="font-bold text-lg tracking-tight">Sistema Empresarial</span>
                         </Link>
                         
                         <div className="hidden md:flex items-center space-x-4">
@@ -35,7 +35,7 @@ export default function Navbar() {
                             <Link to="/contacto" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Contacto</Link>
                             {isAdmin && (
                                 <Link to="/admin/dashboard" className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors flex items-center gap-1">
-                                    <ShieldCheck className="w-4 h-4" aria-hidden="true" /> Panel Admin
+                                    <ShieldCheck className="w-4 h-4" aria-hidden="true" /> Panel de Administración
                                 </Link>
                             )}
                         </div>

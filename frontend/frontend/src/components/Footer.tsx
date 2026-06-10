@@ -13,7 +13,7 @@ export default function Footer() {
                 <div className="flex flex-col items-center space-y-2 max-w-md">
                     <span className="text-xl font-bold text-blue-600 flex items-center gap-2">
                         <Store className="w-6 h-6" aria-hidden="true" />
-                        Portal Comercial
+                        Sistema Empresarial
                     </span>
                 </div>
 
@@ -40,7 +40,7 @@ export default function Footer() {
                 {/* Separador Interno y Derechos */}
                 <div className="border-t border-gray-100 pt-6 w-full flex flex-col sm:flex-row justify-between items-center text-xs text-gray-400 gap-2">
                     <p>
-                        &copy; {new Date().getFullYear()} Portal Comercial. Todos los derechos reservados.
+                        &copy; {new Date().getFullYear()} Sistema Empresarial. Todos los derechos reservados.
                     </p>
                     <p className="font-semibold tracking-wide uppercase bg-gray-50 px-2 py-1 rounded border border-gray-200/50 text-[10px]">
                         Anderson Jesús Monge Alvarado
