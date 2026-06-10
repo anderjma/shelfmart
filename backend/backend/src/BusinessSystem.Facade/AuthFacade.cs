@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+// Este archivo actúa como fachada para centralizar el flujo de seguridad, inicio de sesión y emisión de tokens.
 using BusinessSystem.Domain.Entities;
 using BusinessSystem.DomainService.Interfaces;
 using BusinessSystem.Dto;
@@ -10,6 +11,7 @@ using BusinessSystem.Facade.Interfaces;
 
 namespace BusinessSystem.Facade;
 
+// Esta clase simplifica la interacción de los controladores con los módulos de cifrado y validación de credenciales.
 public class AuthFacade : IAuthFacade
 {
     private readonly IUserService _userService;
@@ -21,6 +23,7 @@ public class AuthFacade : IAuthFacade
         _configuration = configuration;
     }
 
+    // Este método enmascara el flujo de registro creando un usuario a partir del formulario e invocando su persistencia.
     public async Task<UserDto> RegisterAsync(LoginRequestDto request)
     {
         var user = new User
@@ -33,6 +36,7 @@ public class AuthFacade : IAuthFacade
         return await _userService.CreateUserAsync(user, request.Password);
     }
 
+    // Este método verifica la identidad del usuario y emite un JWT firmado válido para la sesión actual.
     public async Task<LoginResponseDto> LoginAsync(LoginRequestDto request)
     {
         var user = await _userService.ValidateUserCredentialsAsync(request.Username, request.Password);

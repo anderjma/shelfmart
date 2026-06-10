@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 
 namespace BusinessSystem.DomainService.Interfaces;
 
+// Este archivo abstrae el mecanismo de acceso a datos para las tablas de bitácoras del negocio.
 public interface IAuditRepository
 {
     Task<decimal> GetTotalRevenueAsync();

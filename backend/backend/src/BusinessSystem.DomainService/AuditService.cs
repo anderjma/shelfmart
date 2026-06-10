@@ -1,3 +1,4 @@
+// Este archivo contiene la lógica para la gestión y recolección de los registros de auditoría del sistema.
 using BusinessSystem.Domain.Entities;
 using BusinessSystem.DomainService.Interfaces;
 using System;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace BusinessSystem.DomainService;
 
+// Esta clase expone las métricas principales y los historiales de acceso para el panel de administración.
 public class AuditService : IAuditService
 {
     private readonly IAuditRepository _auditRepository;
@@ -16,6 +18,7 @@ public class AuditService : IAuditService
         _auditRepository = auditRepository;
     }
 
+    // Este método consolida las métricas globales del negocio para su visualización en el dashboard principal.
     public async Task<object> GetDashboardStatsAsync()
     {
         var totalRevenue = await _auditRepository.GetTotalRevenueAsync();
@@ -27,17 +30,17 @@ public class AuditService : IAuditService
         var chart = new List<object>();
         var culture = new System.Globalization.CultureInfo("es-CR");
 
-        // Construimos el gráfico día por día (de hace 4 días hasta hoy)
+        // Este bloque construye el gráfico de ventas día por día, desde hace cuatro días hasta hoy.
         for (int i = 4; i >= 0; i--)
         {
             var targetDate = DateTime.UtcNow.AddDays(-i).Date;
             
-            // Sumamos exactamente lo que se vendió en esa fecha
+            // Este cálculo suma exactamente lo vendido en la fecha iterada.
             var dailyTotal = recentOrders
                 .Where(o => o.CreatedAt.Date == targetDate)
                 .Sum(o => o.TotalAmount);
             
-            // Obtenemos el nombre del día en español (ej. "Lun", "Mar")
+            // Esta instrucción obtiene el nombre abreviado del día en español.
             var dayName = culture.DateTimeFormat.GetAbbreviatedDayName(targetDate.DayOfWeek);
             dayName = char.ToUpper(dayName[0]) + dayName.Substring(1).Replace(".", "");
 
@@ -52,6 +55,7 @@ public class AuditService : IAuditService
         };
     }
 
+    // Este método obtiene el historial completo de auditorías ordenado de forma descendente por fecha.
     public async Task<IEnumerable<object>> GetAuditLogsAsync()
     {
         var logs = await _auditRepository.GetRecentAuditLogsAsync(50);
@@ -63,6 +67,7 @@ public class AuditService : IAuditService
         });
     }
 
+    // Este método registra de manera persistente las acciones ejecutadas por los usuarios.
     public async Task LogActionAsync(string username, string action)
     {
         var log = new AuditLog { Username = username, Action = action, Timestamp = DateTime.UtcNow };

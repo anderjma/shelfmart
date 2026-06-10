@@ -1,3 +1,4 @@
+// Este archivo establece las especificaciones base para la administración de elementos dentro del catálogo.
 using BusinessSystem.Dto;
 
 namespace BusinessSystem.DomainService.Interfaces;

@@ -1,3 +1,4 @@
+// Este archivo expone el contrato de acceso a los perfiles de cuenta sin atarlos a un ORM específico.
 using BusinessSystem.Domain.Entities;
 
 namespace BusinessSystem.DomainService.Interfaces;

@@ -1,8 +1,10 @@
+// Este archivo aloja el esquema estructural de los artículos disponibles en el catálogo de ventas.
 using System;
 using System.Collections.Generic;
 
 namespace BusinessSystem.Domain.Entities;
 
+// Esta clase define las especificaciones, cantidades y detalles financieros asociados a un producto físico o digital en el inventario.
 public class Product
 {
     public Guid ProductResourceId { get; set; }

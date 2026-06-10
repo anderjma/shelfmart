@@ -1,3 +1,4 @@
+// Este archivo coordina el manejo de la información de los usuarios y su validación lógica.
 using BusinessSystem.Domain.Entities;
 using BusinessSystem.DomainService.Interfaces;
 using BusinessSystem.Dto;
@@ -5,6 +6,7 @@ using BusinessSystem.Exceptions;
 
 namespace BusinessSystem.DomainService;
 
+// Esta clase encapsula la lógica de negocio subyacente para los perfiles, registro y autenticación.
 public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
@@ -14,6 +16,7 @@ public class UserService : IUserService
         _userRepository = userRepository;
     }
 
+    // Este método administra la creación de usuarios base, realizando validaciones preventivas sobre las credenciales a utilizar.
     public async Task<UserDto> CreateUserAsync(User user, string plainPassword)
     {
         if (await _userRepository.ExistsAsync(user.Username))
@@ -78,6 +81,7 @@ public class UserService : IUserService
         return user;
     }
 
+    // Este método lista los datos transferibles de los perfiles de todos los usuarios del sistema.
     public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
     {
         var users = await _userRepository.GetAllAsync();

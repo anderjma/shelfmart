@@ -1,3 +1,4 @@
+// Este archivo provee los servicios de dominio necesarios para administrar el inventario de productos.
 using BusinessSystem.Domain.Entities;
 using BusinessSystem.DomainService.Interfaces;
 using BusinessSystem.Dto;
@@ -9,6 +10,7 @@ using System.Collections.Generic;
 
 namespace BusinessSystem.DomainService;
 
+// Esta clase contiene la lógica de negocio para la gestión, creación y modificación de productos.
 public class ProductService : IProductService
 {
     private readonly IProductRepository _productRepository;
@@ -18,6 +20,7 @@ public class ProductService : IProductService
         _productRepository = productRepository;
     }
 
+    // Este método extrae el catálogo completo de productos y lo mapea hacia objetos de transferencia.
     public async Task<IEnumerable<ProductDto>> GetAllProductsAsync()
     {
         var products = await _productRepository.GetAllAsync();
@@ -34,6 +37,7 @@ public class ProductService : IProductService
         });
     }
 
+    // Este método busca un producto específico mediante su identificador único y verifica su existencia.
     public async Task<ProductDto> GetProductByIdAsync(Guid id)
     {
         var product = await _productRepository.GetByIdAsync(id);
@@ -52,6 +56,7 @@ public class ProductService : IProductService
         };
     }
 
+    // Este método inicializa y persiste un nuevo producto en el inventario aplicando valores por defecto si es necesario.
     public async Task<ProductDto> CreateProductAsync(CreateProductDto dto)
     {
         var product = new Product
@@ -63,7 +68,7 @@ public class ProductService : IProductService
             Price = dto.Price,
             ImageUrl = dto.ImageUrl,
             DiscountPercentage = dto.DiscountPercentage,
-            CreatedAt = DateTime.UtcNow // Grabamos la fecha exacta del servidor
+            CreatedAt = DateTime.UtcNow // Este valor registra la fecha y hora exacta del servidor.
         };
 
         var createdProduct = await _productRepository.AddAsync(product);
@@ -81,6 +86,7 @@ public class ProductService : IProductService
         };
     }
 
+    // Este método actualiza las propiedades modificables de un producto existente asegurando la integridad de los datos.
     public async Task<ProductDto> UpdateProductAsync(Guid id, UpdateProductDto dto)
     {
         var product = await _productRepository.GetByIdAsync(id);
@@ -116,6 +122,7 @@ public class ProductService : IProductService
         };
     }
 
+    // Este método elimina de manera permanente un producto del sistema tras confirmar su existencia.
     public async Task DeleteProductAsync(Guid id)
     {
         var product = await _productRepository.GetByIdAsync(id);

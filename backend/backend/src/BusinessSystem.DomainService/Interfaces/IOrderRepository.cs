@@ -1,5 +1,6 @@
 using BusinessSystem.Domain.Entities;
 using System;
+// Este archivo dicta las reglas que rigen la persistencia de los pedidos finalizados y en progreso.
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

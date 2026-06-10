@@ -1,14 +1,17 @@
+// Este archivo agrupa múltiples modelos de transferencia diseñados para operar sobre carritos y pedidos.
 using System;
 using System.Collections.Generic;
 
 namespace BusinessSystem.Dto;
 
+// Esta clase transporta el identificador y cantidad del producto a añadir en una orden.
 public class AddToCartDto
 {
     public Guid ProductId { get; set; }
     public int Quantity { get; set; }
 }
 
+// Esta clase desglosa de manera individual un renglón de compra dentro del detalle del carrito.
 public class CartItemDto
 {
     public Guid ProductId { get; set; }
@@ -18,6 +21,7 @@ public class CartItemDto
     public decimal SubTotal => Quantity * UnitPrice;
 }
 
+// Esta clase resume el estado financiero actual y los componentes de una orden en progreso.
 public class CartDto
 {
     public Guid OrderId { get; set; }

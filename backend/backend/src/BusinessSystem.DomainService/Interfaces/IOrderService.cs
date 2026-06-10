@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+// Este archivo declara el contrato requerido para procesar transacciones comerciales y carritos.
 namespace BusinessSystem.DomainService.Interfaces;
 
 public interface IOrderService

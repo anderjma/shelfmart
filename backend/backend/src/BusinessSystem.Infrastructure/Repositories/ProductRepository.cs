@@ -1,3 +1,4 @@
+// Este archivo traduce las operaciones del catálogo de productos en comandos que entiende la base de datos subyacente.
 using BusinessSystem.Domain.Entities;
 using BusinessSystem.DomainService.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace BusinessSystem.Infrastructure.Repositories;
 
+// Esta clase proporciona acceso a la tabla de productos, facilitando la creación y remoción de existencias.
 public class ProductRepository : IProductRepository
 {
     private readonly AppDbContext _context;
@@ -16,11 +18,13 @@ public class ProductRepository : IProductRepository
         _context = context;
     }
 
+    // Este método extrae todo el catálogo disponible en la base de datos sin aplicar filtros adicionales.
     public async Task<IEnumerable<Product>> GetAllAsync()
     {
         return await _context.Products.ToListAsync();
     }
 
+    // Este método rastrea y devuelve un producto individual empleando su identificador global.
     public async Task<Product?> GetByIdAsync(Guid id)
     {
         var product = await _context.Products.FindAsync(id);
@@ -31,6 +35,7 @@ public class ProductRepository : IProductRepository
         return product;
     }
 
+    // Este método persiste un nuevo elemento en el inventario, confirmando los cambios en la capa de datos.
     public async Task<Product> AddAsync(Product product)
     {
         _context.Products.Add(product);
@@ -38,12 +43,14 @@ public class ProductRepository : IProductRepository
         return product;
     }
 
+    // Este método actualiza las propiedades de un artículo existente marcando la entidad como modificada.
     public async Task UpdateAsync(Product product)
     {
-        // Misma estrategia: guardar los cambios rastreados en memoria
+        // Este método guarda los cambios rastreados en la base de datos.
         await _context.SaveChangesAsync();
     }
 
+    // Este método borra un producto definitivamente tras asegurar su existencia previa.
     public async Task DeleteAsync(Product product)
     {
         _context.Products.Remove(product);

@@ -5,6 +5,7 @@ using BusinessSystem.DomainService;
 using BusinessSystem.Infrastructure.Repositories;
 using BusinessSystem.Facade.Interfaces;
 using BusinessSystem.Facade;
+// Este archivo inicializa el host de la aplicación, configurando la inyección de dependencias, la base de datos y la tubería HTTP.
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
@@ -15,7 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-// Configuración estable de Swagger
+// Este bloque configura Swagger de manera estable.
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -52,7 +53,7 @@ builder.Services.AddCors(options =>
         });
 });
 
-// Registro de componentes
+// Este bloque registra los componentes para la inyección de dependencias.
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserFacade, UserFacade>();
@@ -80,12 +81,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 var app = builder.Build();
 
-// Exponer siempre Swagger para portafolio y demo en la nube
+// Este bloque expone Swagger siempre, permitiendo visualización en portafolio y demos.
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sistema Empresarial API v1");
-    c.RoutePrefix = string.Empty; // Hace que Swagger sea la raíz del sitio (/)
+    c.RoutePrefix = string.Empty; // Esta configuración establece Swagger como la raíz del sitio.
 });
 
 using (var scope = app.Services.CreateScope())

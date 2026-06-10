@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using BusinessSystem.Dto;
+// Este archivo expone los endpoints administrativos para la administración de cuentas.
 using BusinessSystem.Facade.Interfaces;
 
 namespace BusinessSystem.Api.Controllers;
@@ -8,6 +9,7 @@ namespace BusinessSystem.Api.Controllers;
 [Authorize(Roles = "Admin")]
 [ApiController]
 [Route("api/[controller]")]
+// Este controlador requiere permisos de administrador para interactuar con la información confidencial de los usuarios.
 public class UsersController : ControllerBase
 {
     private readonly IUserFacade _userFacade;

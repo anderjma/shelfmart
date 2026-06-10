@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+// Este archivo expone el endpoint necesario para intercambiar credenciales por tokens de sesión.
 using BusinessSystem.Dto;
 using BusinessSystem.Facade.Interfaces;
 
@@ -6,6 +7,7 @@ namespace BusinessSystem.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+// Este controlador valida la identidad de los usuarios y rechaza las solicitudes no autorizadas.
 public class AuthController : ControllerBase
 {
     private readonly IAuthFacade _authFacade;

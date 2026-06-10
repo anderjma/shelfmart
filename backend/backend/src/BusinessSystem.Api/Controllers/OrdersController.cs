@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using BusinessSystem.Dto;
+// Este archivo establece las rutas REST para la gestión integral de pedidos y carritos de compras.
 using BusinessSystem.DomainService.Interfaces;
 using System.Security.Claims;
 using System;
@@ -12,6 +13,7 @@ namespace BusinessSystem.Api.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
+// Este controlador enruta las solicitudes transaccionales dependiendo de los roles del usuario autenticado.
 public class OrdersController : ControllerBase
 {
     private readonly IOrderService _orderService;

@@ -1,6 +1,8 @@
+// Este archivo expone las propiedades visibles de los productos en el catálogo de cara al cliente.
 using System;
 namespace BusinessSystem.Dto;
 
+// Esta clase sirve como contenedor seguro para enviar los detalles de un artículo sin exponer sus relaciones internas.
 public class ProductDto
 {
     public Guid ProductResourceId { get; set; }

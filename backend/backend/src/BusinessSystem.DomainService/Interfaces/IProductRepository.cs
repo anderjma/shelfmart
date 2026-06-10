@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace BusinessSystem.DomainService.Interfaces;
 
+// Este archivo constituye la capa de aislamiento para las consultas relativas al registro general de productos.
 public interface IProductRepository
 {
     Task<IEnumerable<Product>> GetAllAsync();

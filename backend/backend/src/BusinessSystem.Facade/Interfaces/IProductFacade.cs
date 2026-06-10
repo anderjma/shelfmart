@@ -1,7 +1,9 @@
+// Este archivo define el patrón de diseño fachada aplicado a la manipulación de inventario.
 using BusinessSystem.Dto;
 
 namespace BusinessSystem.Facade.Interfaces;
 
+// Esta interfaz coordina a múltiples subsistemas detrás de escena cuando ocurre una modificación del catálogo.
 public interface IProductFacade
 {
     Task<IEnumerable<ProductDto>> GetAllProductsAsync();

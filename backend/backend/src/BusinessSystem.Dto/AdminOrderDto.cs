@@ -1,8 +1,10 @@
+// Este archivo presenta un desglose de pedidos diseñado específicamente para la interfaz administrativa.
 using System;
 using System.Collections.Generic;
 
 namespace BusinessSystem.Dto;
 
+// Esta clase incluye información sensible adicional de la orden, como el nombre de usuario del comprador.
 public class AdminOrderDto
 {
     public Guid OrderId { get; set; }

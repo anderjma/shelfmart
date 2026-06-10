@@ -1,3 +1,4 @@
+// Este archivo centraliza las reglas de negocio para el procesamiento y manejo de carritos de compras y pedidos.
 using BusinessSystem.Domain.Entities;
 using BusinessSystem.DomainService.Interfaces;
 using BusinessSystem.Dto;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace BusinessSystem.DomainService;
 
+// Esta clase orquesta el flujo completo de los pedidos, desde la adición al carrito hasta el checkout final.
 public class OrderService : IOrderService
 {
     private readonly IOrderRepository _orderRepository;
@@ -20,6 +22,7 @@ public class OrderService : IOrderService
         _productRepository = productRepository;
     }
 
+    // Este método localiza el carrito activo del usuario actual o devuelve uno vacío en caso de no existir.
     public async Task<CartDto> GetCartAsync(Guid userId)
     {
         var cart = await _orderRepository.GetActiveCartByUserIdAsync(userId);
@@ -28,6 +31,7 @@ public class OrderService : IOrderService
         return MapToCartDto(cart);
     }
 
+    // Este método recopila todos los pedidos finalizados para presentarlos en los reportes administrativos.
     public async Task<IEnumerable<AdminOrderDto>> GetAllCompletedOrdersAsync()
     {
         var orders = await _orderRepository.GetAllCompletedOrdersAsync();
@@ -47,6 +51,7 @@ public class OrderService : IOrderService
         });
     }
 
+    // Este método obtiene el historial de compras previas realizadas por un cliente en específico.
     public async Task<IEnumerable<AdminOrderDto>> GetCustomerOrdersAsync(Guid userId)
     {
         var orders = await _orderRepository.GetOrdersByUserIdAsync(userId);
@@ -66,6 +71,7 @@ public class OrderService : IOrderService
         });
     }
 
+    // Este método procesa la adición de un producto al carrito, creando la orden si es necesario y consolidando cantidades.
     public async Task<CartDto> AddItemToCartAsync(Guid userId, AddToCartDto dto)
     {
         var product = await _productRepository.GetByIdAsync(dto.ProductId);
@@ -104,6 +110,7 @@ public class OrderService : IOrderService
         return MapToCartDto(cart);
     }
 
+    // Este método valida el inventario disponible, efectúa el rebajo del stock y finaliza la transacción de la orden.
     public async Task<CartDto> CheckoutAsync(Guid userId)
     {
         var cart = await _orderRepository.GetActiveCartByUserIdAsync(userId);
@@ -125,6 +132,7 @@ public class OrderService : IOrderService
         return MapToCartDto(cart);
     }
 
+    // Este método convierte la entidad de base de datos a un formato seguro y estandarizado para la transmisión al cliente.
     private CartDto MapToCartDto(Order order)
     {
         return new CartDto

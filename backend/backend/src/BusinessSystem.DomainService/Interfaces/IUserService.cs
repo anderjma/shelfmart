@@ -1,3 +1,4 @@
+// Este archivo formaliza el contrato del servicio responsable de las cuentas de usuario.
 using BusinessSystem.Domain.Entities;
 using BusinessSystem.Dto;
 

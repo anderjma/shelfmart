@@ -1,5 +1,7 @@
+// Este archivo especifica los parámetros obligatorios para registrar un nuevo artículo en inventario.
 namespace BusinessSystem.Dto;
 
+// Esta clase valida los datos del formulario de creación antes de integrarlos al servicio de dominio.
 public class CreateProductDto
 {
     public required string Name { get; set; }

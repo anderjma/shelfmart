@@ -1,8 +1,10 @@
+// Este archivo configura la capa de acceso a datos y la representación del esquema de la base de datos relacional.
 using Microsoft.EntityFrameworkCore;
 using BusinessSystem.Domain.Entities;
 
 namespace BusinessSystem.Infrastructure;
 
+// Esta clase maneja el mapeo objeto-relacional (ORM) vinculando las entidades del dominio con las tablas físicas de la base de datos.
 public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
@@ -14,7 +16,7 @@ public class AppDbContext : DbContext
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
     
-    // NUEVA TABLA DE AUDITORÍA
+    // Esta propiedad define la tabla de registros de auditoría.
     public DbSet<AuditLog> AuditLogs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
