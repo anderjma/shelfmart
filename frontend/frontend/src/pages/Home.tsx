@@ -1,8 +1,10 @@
+// Este archivo define la página de inicio principal visible para cualquier visitante del sitio web.
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getProducts } from "../services/productService";
 import type { Product } from "../types/product";
 
+// Este componente presenta la propuesta de valor y las llamadas a la acción principales de la tienda.
 export default function Home() {
     const [products, setProducts] = useState<Product[]>([]);
 
@@ -29,7 +31,7 @@ export default function Home() {
 
     return (
         <div className="space-y-12 sm:space-y-16 pb-12 sm:pb-16 bg-slate-50">
-            {/* Hero Compacto y Limpio */}
+            {/* Sección hero */}
             <div className="bg-slate-900 mx-4 sm:mx-6 lg:mx-8 mt-4 sm:mt-6 rounded-lg overflow-hidden shadow-sm relative">
                 <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center"></div>
                 <div className="relative z-10 px-6 py-12 sm:py-16 md:py-20 text-center max-w-3xl mx-auto">
@@ -45,7 +47,7 @@ export default function Home() {
                 </div>
             </div>
 
-            {/* Listados de Productos */}
+            {/* Listado de productos */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
                 {offers.length > 0 && (
                     <section>

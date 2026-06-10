@@ -1,8 +1,10 @@
+// Este archivo gestiona la vista del panel de administración para visualizar y monitorear todos los pedidos.
 import React, { useState, useEffect } from "react";
 import { getAllOrders } from "../services/orderService";
 import { Link } from "react-router-dom";
 import type { ManagerOrder, ManagerOrderItem } from "../types/order";
 
+// Este componente renderiza una tabla con el historial completo de órdenes para los administradores.
 export default function OrdersManager() {
     const [orders, setOrders] = useState<ManagerOrder[]>([]);
     const [loading, setLoading] = useState(true);

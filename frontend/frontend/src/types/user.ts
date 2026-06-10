@@ -1,3 +1,4 @@
+// Este archivo proporciona los contratos TypeScript para un manejo seguro de los perfiles de usuario.
 export interface User {
     userResourceId: string;
     name: string;
@@ -5,6 +6,7 @@ export interface User {
     email: string;
 }
 
+// Esta interfaz agrupa los campos solicitados durante la integración de un nuevo cliente a la plataforma.
 export interface UserFormData {
     name: string;
     username: string;

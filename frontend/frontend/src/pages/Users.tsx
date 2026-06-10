@@ -1,7 +1,9 @@
+// Este archivo provee la interfaz gráfica para que los administradores puedan crear y monitorear cuentas de usuario.
 import React, { useEffect, useState } from "react";
 import { getUsers, createUser } from "../services/userService";
 import type { User, UserFormData } from "../types/user";
 
+// Este componente despliega una tabla dinámica con los datos de contacto y permite registrar nuevos perfiles.
 export default function Users() {
     const [users, setUsers] = useState<User[]>([]);
     const [error, setError] = useState<string>("");
@@ -63,7 +65,7 @@ export default function Users() {
                 )}
             </div>
 
-            {/* Vista de Tabla para Escritorio */}
+            {/* Tabla para escritorio */}
             <div className="hidden sm:block bg-white shadow overflow-hidden sm:rounded-md border border-gray-100">
                 <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
@@ -89,7 +91,7 @@ export default function Users() {
                 </table>
             </div>
 
-            {/* Vista de Tarjetas para Móviles */}
+            {/* Tarjetas para móviles */}
             <div className="block sm:hidden space-y-4 px-4 sm:px-0">
                 {users.length === 0 && !error ? (
                     <div className="text-center p-8 bg-white rounded-lg border border-gray-200 text-gray-500">No se encontraron usuarios registrados.</div>

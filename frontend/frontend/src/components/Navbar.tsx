@@ -1,6 +1,8 @@
+// Este archivo define la barra de navegación principal que se mantiene constante en toda la aplicación.
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { logout, getCurrentUser } from "../services/authService";
+// Este componente proporciona los enlaces de navegación dinámicos dependiendo del rol del usuario.
 import { User, LogOut, LogIn, ShoppingCart, Store, Menu, X, ShieldCheck } from "lucide-react";
 
 export default function Navbar() {
@@ -22,7 +24,7 @@ export default function Navbar() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-14 items-center">
                     
-                    {/* Lado Izquierdo: Marca y Catálogo */}
+                    {/* Marca y catálogo */}
                     <div className="flex items-center space-x-6">
                         <Link to="/" className="flex items-center gap-2 text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded p-1">
                             <Store className="w-5 h-5" aria-hidden="true" />
@@ -41,7 +43,7 @@ export default function Navbar() {
                         </div>
                     </div>
 
-                    {/* Lado Derecho: Acciones de Usuario */}
+                    {/* Acciones de usuario */}
                     <div className="hidden md:flex items-center space-x-5">
                         {isCustomer && (
                             <Link to="/cart" className="text-slate-500 hover:text-blue-600 transition-colors relative" aria-label="Ver carrito">
@@ -70,7 +72,7 @@ export default function Navbar() {
                         )}
                     </div>
 
-                    {/* Menú Móvil (Hamburguesa) */}
+                    {/* Menú móvil hamburguesa */}
                     <div className="md:hidden flex items-center">
                         <button onClick={toggleMenu} className="text-slate-500 hover:text-slate-900 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded" aria-expanded={isMenuOpen} aria-controls="mobile-menu" aria-label={isMenuOpen ? "Cerrar menú principal" : "Abrir menú principal"}>
                             {isMenuOpen ? <X className="w-5 h-5" aria-hidden="true" /> : <Menu className="w-5 h-5" aria-hidden="true" />}
@@ -79,7 +81,7 @@ export default function Navbar() {
                 </div>
             </div>
 
-            {/* Desplegable Móvil */}
+            {/* Desplegable móvil */}
             {isMenuOpen && (
                 <div className="md:hidden bg-white border-t border-slate-100 shadow-lg absolute w-full z-40" id="mobile-menu">
                     <div className="px-4 py-3 space-y-2">

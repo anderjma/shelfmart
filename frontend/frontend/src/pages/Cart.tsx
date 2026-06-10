@@ -1,9 +1,11 @@
+// Este archivo maneja la vista del carrito de compras y el flujo de confirmación de pedidos.
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getCart, checkout } from "../services/orderService";
 import toast from "react-hot-toast";
 import type { Cart as CartType } from "../types/order";
 
+// Este componente lista los artículos seleccionados, calcula totales e inicia el proceso de checkout.
 export default function Cart() {
     const [cart, setCart] = useState<CartType | null>(null);
     const [loading, setLoading] = useState(true);
@@ -61,7 +63,7 @@ export default function Cart() {
                 <h2 className="text-2xl font-bold text-gray-900">Mi Carrito de Compras</h2>
             </div>
             
-            {/* Tabla para Escritorio */}
+            {/* Tabla para escritorio */}
             <div className="hidden sm:block bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200">
                 <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-200">
@@ -87,7 +89,7 @@ export default function Cart() {
                 </div>
             </div>
 
-            {/* Tarjetas para Móviles */}
+            {/* Tarjetas para móviles */}
             <div className="block sm:hidden space-y-4 px-4 sm:px-0">
                 {cart.items.map((item, index) => (
                     <div key={index} className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 flex flex-col gap-3">
@@ -105,7 +107,7 @@ export default function Cart() {
                 ))}
             </div>
 
-            {/* Resumen del Carrito responsivo */}
+            {/* Resumen del carrito */}
             <div className="bg-white px-4 sm:px-6 py-5 sm:rounded-lg sm:shadow-sm sm:border sm:border-gray-200 border-y border-gray-200 sm:border-y-0">
                 <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
                     <div className="w-full sm:w-auto flex justify-between items-center sm:block">

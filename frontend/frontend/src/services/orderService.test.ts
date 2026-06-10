@@ -14,7 +14,7 @@ describe("orderService tests", () => {
         localStorage.setItem("token", "dummy-token");
         const dummyCart = { orderId: "123", totalAmount: 100, items: [] };
         
-        // Mocking axios.get response
+        // Esta instrucción simula la respuesta de la petición GET de axios.
         vi.mocked(axios.get).mockResolvedValue({ data: dummyCart });
 
         const result = await getCart();

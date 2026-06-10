@@ -1,7 +1,9 @@
+// Este archivo presenta la información de contacto y enlaces a redes sociales del negocio.
 import React from "react";
 import { Phone, Mail } from "lucide-react";
 import { SiFacebook, SiInstagram, SiTiktok } from "react-icons/si";
 
+// Este componente renderiza una interfaz estática con los canales de soporte disponibles para los clientes.
 export default function Contact() {
     return (
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">

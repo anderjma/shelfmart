@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+// Este archivo contiene la pantalla donde los clientes pueden consultar su historial y datos personales.
 import { getCurrentUser } from "../services/authService";
 import { getMyOrders } from "../services/orderService";
 import type { Cart, CartItem } from "../types/order";
@@ -27,7 +28,7 @@ export default function Profile() {
 
     return (
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-            {/* Tarjeta de Información Personal */}
+            {/* Tarjeta de información personal */}
             <div className="bg-white p-6 rounded-lg shadow-sm rounded-xl border border-gray-200">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">Mi Perfil</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm text-gray-600">
@@ -48,7 +49,7 @@ export default function Profile() {
                 </div>
             </div>
 
-            {/* Listado de Historial Transaccional */}
+            {/* Historial transaccional */}
             <div className="space-y-4">
                 <h3 className="text-xl font-bold text-gray-900">Historial de Compras</h3>
                 

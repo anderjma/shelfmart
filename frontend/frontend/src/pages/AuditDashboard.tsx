@@ -1,3 +1,4 @@
+// Este archivo expone los registros de actividad del sistema para la supervisión de administradores.
 import React, { useState, useEffect } from "react";
 import { getDashboardStats, getAuditLogs } from "../services/auditService";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
@@ -22,6 +23,7 @@ interface AuditLog {
     action: string;
 }
 
+// Este componente renderiza el panel de trazabilidad, permitiendo auditar acciones de los usuarios.
 export default function AuditDashboard() {
     const [stats, setStats] = useState<AuditStats | null>(null);
     const [logs, setLogs] = useState<AuditLog[]>([]);
@@ -55,7 +57,7 @@ export default function AuditDashboard() {
                 </Link>
             </div>
 
-            {/* Tarjetas Superiores */}
+            {/* Tarjetas superiores */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 border-l-4 border-l-green-500">
                     <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">Ingresos Totales</p>
@@ -71,7 +73,7 @@ export default function AuditDashboard() {
                 </div>
             </div>
 
-            {/* Gráfico de Tendencias */}
+            {/* Gráfico de tendencias */}
             <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                 <h3 className="text-lg font-bold text-gray-900 mb-6">Tendencia de Ventas (Últimos 5 días)</h3>
                 <div className="h-72">
@@ -92,7 +94,7 @@ export default function AuditDashboard() {
                 </div>
             </div>
 
-            {/* Bitácora de Acciones */}
+            {/* Bitácora de acciones */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                 <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
                     <h3 className="text-lg font-bold text-gray-900">Bitácora de Movimientos</h3>

@@ -1,3 +1,4 @@
+// Este archivo renderiza el escaparate virtual donde los clientes pueden explorar el catálogo de artículos.
 import React, { useEffect, useState } from "react";
 import { getProducts } from "../services/productService";
 import { addToCart } from "../services/orderService";
@@ -5,6 +6,7 @@ import type { Product } from "../types/product";
 import toast from "react-hot-toast";
 import { ShoppingCart } from "lucide-react";
 
+// Este componente exhibe los productos en un grid filtrable por categoría e incluye la acción de agregar al carrito.
 export default function Store() {
     const [products, setProducts] = useState<Product[]>([]);
     const [categories, setCategories] = useState<string[]>([]);
@@ -14,8 +16,7 @@ export default function Store() {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                // Simulamos un pequeño retraso artificial de 800ms solo para que 
-                // los reclutadores puedan apreciar el efecto Skeleton al evaluar el portafolio
+                // Este bloque introduce un retraso de 800ms para permitir la visualización del efecto de carga.
                 await new Promise(resolve => setTimeout(resolve, 800)); 
                 
                 const data = await getProducts();
@@ -55,7 +56,7 @@ export default function Store() {
         return null;
     };
 
-    // Componente interno para el esqueleto de carga
+    // Este componente representa el esqueleto visual durante la carga de datos.
     const ProductSkeleton = () => (
         <div className="bg-white border border-gray-100 rounded-lg shadow-sm overflow-hidden flex flex-col animate-pulse">
             <div className="h-48 bg-gray-200"></div>
@@ -74,7 +75,7 @@ export default function Store() {
                 <p className="text-gray-500">Explora nuestra selección y encuentra lo que necesitas.</p>
             </div>
 
-            {/* Ocultamos los filtros mientras carga para mayor limpieza visual */}
+            {/* Filtros ocultos durante la carga */}
             {!loading && (
                 <div className="flex flex-wrap justify-center gap-2 mb-8">
                     {categories.map((cat, index) => (

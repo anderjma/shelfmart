@@ -1,8 +1,10 @@
+// Este archivo proporciona el formulario de registro para nuevos clientes en la plataforma.
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { registerCustomer } from "../services/authService";
 import toast from "react-hot-toast";
 
+// Este componente valida los campos de registro y envía las credenciales iniciales hacia el servidor.
 export default function Register() {
     const [formData, setFormData] = useState({ name: "", username: "", email: "", password: "" });
     const [error, setError] = useState("");

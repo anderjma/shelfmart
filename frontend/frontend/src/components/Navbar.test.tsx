@@ -4,13 +4,13 @@ import { MemoryRouter } from "react-router-dom";
 import Navbar from "./Navbar";
 import { getCurrentUser, logout } from "../services/authService";
 
-// Mocking the authService functions
+// Esta instrucción simula las funciones del servicio de autenticación.
 vi.mock("../services/authService", () => ({
     getCurrentUser: vi.fn(),
     logout: vi.fn(),
 }));
 
-// Mocking react-router-dom's useNavigate
+// Esta instrucción simula la función useNavigate de react-router-dom.
 const mockNavigate = vi.fn();
 vi.mock("react-router-dom", async () => {
     const actual = await vi.importActual<typeof import("react-router-dom")>("react-router-dom");
@@ -34,11 +34,11 @@ describe("Navbar Component", () => {
             </MemoryRouter>
         );
 
-        // Debería ver "Entrar" y "Crear Cuenta"
+        // Esta validación comprueba la visualización de enlaces públicos.
         expect(screen.getByText("Entrar")).toBeInTheDocument();
         expect(screen.getByText("Crear Cuenta")).toBeInTheDocument();
         
-        // No debería ver enlaces restringidos
+        // Esta validación comprueba la ocultación de enlaces restringidos.
         expect(screen.queryByText("Panel Admin")).not.toBeInTheDocument();
         expect(screen.queryByLabelText("Ver carrito")).not.toBeInTheDocument();
     });
@@ -56,15 +56,15 @@ describe("Navbar Component", () => {
             </MemoryRouter>
         );
 
-        // Debería ver el nombre y "Panel Admin"
+        // Esta validación comprueba la visualización de la interfaz de administrador.
         expect(screen.getByText("Administrador Pepe")).toBeInTheDocument();
         expect(screen.getByText("Panel Admin")).toBeInTheDocument();
 
-        // No debería ver "Entrar" o "Crear Cuenta"
+        // Esta validación comprueba la ocultación de enlaces públicos al autenticarse.
         expect(screen.queryByText("Entrar")).not.toBeInTheDocument();
         expect(screen.queryByText("Crear Cuenta")).not.toBeInTheDocument();
         
-        // No debería ver el carrito
+        // Esta validación comprueba la ocultación del carrito para administradores.
         expect(screen.queryByLabelText("Ver carrito")).not.toBeInTheDocument();
     });
 
@@ -81,11 +81,11 @@ describe("Navbar Component", () => {
             </MemoryRouter>
         );
 
-        // Debería ver el nombre y el ícono/enlace del carrito
+        // Esta validación comprueba la visualización de elementos del cliente.
         expect(screen.getByText("Cliente Juan")).toBeInTheDocument();
         expect(screen.getByLabelText("Ver carrito")).toBeInTheDocument();
 
-        // No debería ver "Panel Admin"
+        // Esta validación comprueba la ocultación del panel de administración para clientes.
         expect(screen.queryByText("Panel Admin")).not.toBeInTheDocument();
     });
 
@@ -102,11 +102,11 @@ describe("Navbar Component", () => {
             </MemoryRouter>
         );
 
-        // Hacer click en el botón de logout (el que tiene el title "Cerrar sesión")
+        // Esta acción simula el click en el botón de cierre de sesión.
         const logoutBtn = screen.getByTitle("Cerrar sesión");
         fireEvent.click(logoutBtn);
 
-        // Verificar que llame a logout y redirija
+        // Esta validación comprueba que el sistema cierre la sesión y redirija al usuario.
         expect(logout).toHaveBeenCalledTimes(1);
         expect(mockNavigate).toHaveBeenCalledWith("/login");
     });

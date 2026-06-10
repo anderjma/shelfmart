@@ -1,3 +1,4 @@
+// Este archivo configura la instancia principal de Axios para interceptar y adjuntar tokens de autorización.
 import axios from "axios";
 
 const axiosClient = axios.create({

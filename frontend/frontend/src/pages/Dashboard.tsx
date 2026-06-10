@@ -1,3 +1,4 @@
+// Este archivo conforma el panel de control administrativo y resumen global de la tienda.
 import React, { useEffect, useState } from "react";
 import { getProducts, createProduct, updateProduct, deleteProduct } from "../services/productService";
 import type { Product, ProductFormData } from "../types/product";
@@ -5,6 +6,7 @@ import { supabase } from "../lib/supabase";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 
+// Este componente centraliza las métricas y los accesos rápidos a las herramientas de gestión interna.
 export default function Dashboard() {
     const [products, setProducts] = useState<Product[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
@@ -169,7 +171,7 @@ export default function Dashboard() {
                 <input type="text" placeholder="Buscar por nombre o categoría..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full sm:max-w-md border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
             </div>
 
-            {/* Vista de Tabla para Escritorio */}
+            {/* Tabla para escritorio */}
             <div className="hidden md:block bg-white shadow-sm overflow-hidden sm:rounded-md border border-gray-100">
                 <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
@@ -214,7 +216,7 @@ export default function Dashboard() {
                 </table>
             </div>
 
-            {/* Vista de Lista de Tarjetas para Móviles */}
+            {/* Tarjetas para móviles */}
             <div className="block md:hidden space-y-4 px-4 sm:px-0">
                 {filteredProducts.length === 0 ? (
                     <div className="text-center p-8 bg-white rounded-lg border border-gray-200 text-gray-500">No se encontraron productos.</div>

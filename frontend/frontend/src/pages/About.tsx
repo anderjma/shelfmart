@@ -1,5 +1,7 @@
+// Este archivo expone la historia y propuesta de valor de la compañía.
 import React from "react";
 
+// Este componente sirve como página institucional para mostrar la misión, visión y detalles corporativos.
 export default function About() {
     return (
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">

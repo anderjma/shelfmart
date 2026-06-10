@@ -1,4 +1,5 @@
-﻿/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+// Este archivo actúa como el orquestador principal del enrutamiento del lado del cliente.
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -30,6 +31,7 @@ const AdminRoute = ({ children }: { children: JSX.Element }) => {
     return user?.role === "Admin" ? children : <Navigate to="/" />;
 };
 
+// Este componente enlaza las distintas páginas y restringe el acceso mediante roles específicos.
 function App() {
     return (
         <BrowserRouter>
