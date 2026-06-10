@@ -39,7 +39,7 @@ describe("Navbar Component", () => {
         expect(screen.getByText("Crear Cuenta")).toBeInTheDocument();
         
         // Esta validación comprueba la ocultación de enlaces restringidos.
-        expect(screen.queryByText("Panel Admin")).not.toBeInTheDocument();
+        expect(screen.queryByText(/Panel de Administración/)).not.toBeInTheDocument();
         expect(screen.queryByLabelText("Ver carrito")).not.toBeInTheDocument();
     });
 
@@ -58,7 +58,7 @@ describe("Navbar Component", () => {
 
         // Esta validación comprueba la visualización de la interfaz de administrador.
         expect(screen.getByText("Administrador Pepe")).toBeInTheDocument();
-        expect(screen.getByText("Panel Admin")).toBeInTheDocument();
+        expect(screen.getByText(/Panel de Administración/)).toBeInTheDocument();
 
         // Esta validación comprueba la ocultación de enlaces públicos al autenticarse.
         expect(screen.queryByText("Entrar")).not.toBeInTheDocument();
@@ -86,7 +86,7 @@ describe("Navbar Component", () => {
         expect(screen.getByLabelText("Ver carrito")).toBeInTheDocument();
 
         // Esta validación comprueba la ocultación del panel de administración para clientes.
-        expect(screen.queryByText("Panel Admin")).not.toBeInTheDocument();
+        expect(screen.queryByText(/Panel de Administración/)).not.toBeInTheDocument();
     });
 
     test("handles logout click correctly", () => {
