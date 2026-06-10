@@ -19,7 +19,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Portal Comercial API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Sistema Empresarial API", Version = "v1" });
 
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -84,7 +84,7 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Portal Comercial API v1");
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sistema Empresarial API v1");
     c.RoutePrefix = string.Empty; // Hace que Swagger sea la raíz del sitio (/)
 });
 
