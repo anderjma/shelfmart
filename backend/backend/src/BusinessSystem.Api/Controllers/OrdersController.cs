@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using BusinessSystem.Dto;
+using Microsoft.AspNetCore.RateLimiting;
 // Este archivo establece las rutas REST para la gestión integral de pedidos y carritos de compras.
 using BusinessSystem.DomainService.Interfaces;
 using System.Security.Claims;
@@ -99,6 +100,7 @@ public class OrdersController : ControllerBase
     }
 
     [HttpPost("checkout")]
+    [EnableRateLimiting("CheckoutPolicy")]
     public async Task<IActionResult> Checkout()
     {
         try 
