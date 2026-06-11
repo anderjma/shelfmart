@@ -14,6 +14,7 @@ export default function Dashboard() {
     const [editingId, setEditingId] = useState<string | null>(null);
     const [uploading, setUploading] = useState(false);
     const [file, setFile] = useState<File | null>(null);
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     
     const [formData, setFormData] = useState<ProductFormData>({
         name: "",
@@ -49,6 +50,7 @@ export default function Dashboard() {
 
     const handleOpenModal = (product?: Product) => {
         setFile(null);
+        setPreviewUrl(null);
         if (product) {
             setEditingId(product.productResourceId);
             setFormData({ 
@@ -70,6 +72,7 @@ export default function Dashboard() {
         setIsModalOpen(false);
         setEditingId(null);
         setFile(null);
+        setPreviewUrl(null);
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -303,7 +306,36 @@ export default function Dashboard() {
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700">Imagen</label>
-                                    <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files ? e.target.files[0] : null)} className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
+                                    <input 
+                                        type="file" 
+                                        accept="image/*" 
+                                        onChange={(e) => {
+                                            const selectedFile = e.target.files ? e.target.files[0] : null;
+                                            setFile(selectedFile);
+                                            if (selectedFile) {
+                                                setPreviewUrl(URL.createObjectURL(selectedFile));
+                                            } else {
+                                                setPreviewUrl(null);
+                                            }
+                                        }} 
+                                        className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" 
+                                    />
+                                    
+                                    {(previewUrl || formData.imageUrl) && (
+                                        <div className="mt-3 flex items-center gap-4 p-3 bg-gray-50 rounded-lg border border-gray-100">
+                                            <img 
+                                                src={previewUrl || formData.imageUrl} 
+                                                alt="Previsualización" 
+                                                className="w-16 h-16 object-cover rounded-md border border-gray-200 shadow-sm"
+                                            />
+                                            <div>
+                                                <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider block">Vista Previa</span>
+                                                <span className="text-xs text-gray-400 block truncate max-w-[200px]">
+                                                    {file ? file.name : "Imagen actual del producto"}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                             <div className="mt-6 flex justify-end space-x-3">

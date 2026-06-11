@@ -1,9 +1,10 @@
 // Este archivo maneja la vista del carrito de compras y el flujo de confirmación de pedidos.
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getCart, checkout } from "../services/orderService";
+import { getCart, checkout, updateCartItemQuantity, removeFromCart } from "../services/orderService";
 import toast from "react-hot-toast";
 import type { Cart as CartType } from "../types/order";
+import { Trash2, Plus, Minus } from "lucide-react";
 
 // Este componente lista los artículos seleccionados, calcula totales e inicia el proceso de checkout.
 export default function Cart() {
@@ -26,6 +27,35 @@ export default function Cart() {
         };
         fetchCart();
     }, []);
+
+    const handleUpdateQuantity = async (productId: string, currentQty: number, change: number) => {
+        const newQty = currentQty + change;
+        if (newQty < 1) {
+            handleRemoveItem(productId);
+            return;
+        }
+
+        try {
+            const updatedCart = await updateCartItemQuantity(productId, newQty);
+            setCart(updatedCart);
+        } catch (err) {
+            const error = err as { response?: { data?: { message?: string } } };
+            toast.error(error.response?.data?.message || "Error al actualizar la cantidad.");
+        }
+    };
+
+    const handleRemoveItem = async (productId: string) => {
+        if (!window.confirm("¿Desea eliminar este producto del carrito?")) return;
+
+        try {
+            const updatedCart = await removeFromCart(productId);
+            setCart(updatedCart);
+            toast.success("Producto eliminado del carrito");
+        } catch (err) {
+            const error = err as { response?: { data?: { message?: string } } };
+            toast.error(error.response?.data?.message || "Error al eliminar el producto.");
+        }
+    };
 
     const handleCheckout = async () => {
         if (!window.confirm("¿Desea confirmar su compra?")) return;
@@ -73,6 +103,7 @@ export default function Cart() {
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio Unitario</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cantidad</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subtotal</th>
+                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
@@ -80,8 +111,35 @@ export default function Cart() {
                                 <tr key={index}>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.productName}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">₡{item.unitPrice}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.quantity}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <div className="flex items-center gap-2">
+                                            <button 
+                                                onClick={() => handleUpdateQuantity(item.productId, item.quantity, -1)}
+                                                className="p-1 rounded bg-gray-100 hover:bg-gray-200 text-gray-600 transition-colors"
+                                                title="Reducir cantidad"
+                                            >
+                                                <Minus className="w-3.5 h-3.5" />
+                                            </button>
+                                            <span className="font-semibold text-gray-800 w-8 text-center">{item.quantity}</span>
+                                            <button 
+                                                onClick={() => handleUpdateQuantity(item.productId, item.quantity, 1)}
+                                                className="p-1 rounded bg-gray-100 hover:bg-gray-200 text-gray-600 transition-colors"
+                                                title="Aumentar cantidad"
+                                            >
+                                                <Plus className="w-3.5 h-3.5" />
+                                            </button>
+                                        </div>
+                                    </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">₡{item.subTotal}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button 
+                                            onClick={() => handleRemoveItem(item.productId)}
+                                            className="text-red-600 hover:text-red-950 p-1.5 rounded-full hover:bg-red-50 transition-colors"
+                                            title="Eliminar producto"
+                                        >
+                                            <Trash2 className="w-4 h-4" />
+                                        </button>
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>
@@ -99,9 +157,30 @@ export default function Cart() {
                         </div>
                         <div className="flex justify-between items-center text-sm">
                             <span className="text-gray-500">Precio: ₡{item.unitPrice}</span>
-                            <span className="bg-blue-50 text-blue-700 px-2.5 py-1 rounded-md font-semibold text-xs border border-blue-100">
-                                Cant: {item.quantity}
-                            </span>
+                            <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-1.5 bg-gray-50 border border-gray-200 rounded px-1.5 py-0.5">
+                                    <button 
+                                        onClick={() => handleUpdateQuantity(item.productId, item.quantity, -1)}
+                                        className="p-0.5 text-gray-500 hover:text-gray-700"
+                                    >
+                                        <Minus className="w-3.5 h-3.5" />
+                                    </button>
+                                    <span className="font-semibold text-gray-800 text-xs w-6 text-center">{item.quantity}</span>
+                                    <button 
+                                        onClick={() => handleUpdateQuantity(item.productId, item.quantity, 1)}
+                                        className="p-0.5 text-gray-500 hover:text-gray-700"
+                                    >
+                                        <Plus className="w-3.5 h-3.5" />
+                                    </button>
+                                </div>
+                                <button 
+                                    onClick={() => handleRemoveItem(item.productId)}
+                                    className="text-red-600 hover:text-red-950 p-1 rounded hover:bg-red-50"
+                                    title="Eliminar"
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                </button>
+                            </div>
                         </div>
                     </div>
                 ))}

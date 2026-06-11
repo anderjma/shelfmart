@@ -4,13 +4,14 @@ import { getProducts } from "../services/productService";
 import { addToCart } from "../services/orderService";
 import type { Product } from "../types/product";
 import toast from "react-hot-toast";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Search } from "lucide-react";
 
 // Este componente exhibe los productos en un grid filtrable por categoría e incluye la acción de agregar al carrito.
 export default function Store() {
     const [products, setProducts] = useState<Product[]>([]);
     const [categories, setCategories] = useState<string[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<string>("Todas");
+    const [searchTerm, setSearchTerm] = useState("");
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -42,9 +43,12 @@ export default function Store() {
         }
     };
 
-    const filteredProducts = selectedCategory === "Todas" 
-        ? products 
-        : products.filter(p => (p.category || "General") === selectedCategory);
+    const filteredProducts = products.filter(p => {
+        const matchesCategory = selectedCategory === "Todas" || (p.category || "General") === selectedCategory;
+        const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                             (p.category && p.category.toLowerCase().includes(searchTerm.toLowerCase()));
+        return matchesCategory && matchesSearch;
+    });
 
     const renderBadges = (product: Product) => {
         const isNew = product.createdAt && (new Date().getTime() - new Date(product.createdAt).getTime()) / (1000 * 3600 * 24) <= 7;
@@ -77,19 +81,32 @@ export default function Store() {
 
             {/* Filtros ocultos durante la carga */}
             {!loading && (
-                <div className="flex flex-wrap justify-center gap-2 mb-8">
-                    {categories.map((cat, index) => (
-                        <button
-                            key={index}
-                            onClick={() => setSelectedCategory(cat)}
-                            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                                selectedCategory === cat ? "bg-blue-600 text-white shadow-sm" : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
-                            }`}
-                            aria-pressed={selectedCategory === cat}
-                        >
-                            {cat}
-                        </button>
-                    ))}
+                <div className="space-y-6">
+                    <div className="max-w-md mx-auto relative">
+                        <input
+                            type="text"
+                            placeholder="Buscar productos por nombre o categoría..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm transition-all"
+                        />
+                        <Search className="w-5 h-5 text-gray-400 absolute left-3 top-3" />
+                    </div>
+
+                    <div className="flex flex-wrap justify-center gap-2 mb-8">
+                        {categories.map((cat, index) => (
+                            <button
+                                key={index}
+                                onClick={() => setSelectedCategory(cat)}
+                                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                                    selectedCategory === cat ? "bg-blue-600 text-white shadow-sm" : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
+                                }`}
+                                aria-pressed={selectedCategory === cat}
+                            >
+                                {cat}
+                            </button>
+                        ))}
+                    </div>
                 </div>
             )}
 

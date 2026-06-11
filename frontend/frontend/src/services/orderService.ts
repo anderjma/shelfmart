@@ -13,6 +13,18 @@ export const addToCart = async (data: { productId: string; quantity: number }) =
     return response.data;
 };
 
+// Esta función actualiza la cantidad de un artículo existente en el carrito.
+export const updateCartItemQuantity = async (productId: string, quantity: number) => {
+    const response = await axiosClient.put(`/Orders/cart/items/${productId}`, { quantity });
+    return response.data;
+};
+
+// Esta función elimina por completo un artículo del carrito.
+export const removeFromCart = async (productId: string) => {
+    const response = await axiosClient.delete(`/Orders/cart/items/${productId}`);
+    return response.data;
+};
+
 // Esta función finaliza la compra del carrito actual, confirmando el pedido en el servidor.
 export const checkout = async () => {
     const response = await axiosClient.post("/Orders/checkout", {});
