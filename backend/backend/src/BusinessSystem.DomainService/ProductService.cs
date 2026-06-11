@@ -37,6 +37,32 @@ public class ProductService : IProductService
         });
     }
 
+    // Este método extrae el catálogo de productos de forma paginada y filtrada, mapeándolo a DTOs.
+    public async Task<PaginatedResultDto<ProductDto>> GetPaginatedProductsAsync(int page, int pageSize, string? search, string? category)
+    {
+        var (items, totalCount) = await _productRepository.GetPaginatedAsync(page, pageSize, search, category);
+        
+        var dtos = items.Select(p => new ProductDto
+        {
+            ProductResourceId = p.ProductResourceId,
+            Name = p.Name,
+            Category = p.Category,
+            Stock = p.Stock,
+            Price = p.Price,
+            ImageUrl = p.ImageUrl,
+            DiscountPercentage = p.DiscountPercentage,
+            CreatedAt = p.CreatedAt
+        }).ToList();
+
+        return new PaginatedResultDto<ProductDto>
+        {
+            Items = dtos,
+            TotalCount = totalCount,
+            Page = page,
+            PageSize = pageSize
+        };
+    }
+
     // Este método busca un producto específico mediante su identificador único y verifica su existencia.
     public async Task<ProductDto> GetProductByIdAsync(Guid id)
     {

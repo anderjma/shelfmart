@@ -24,6 +24,33 @@ public class ProductRepository : IProductRepository
         return await _context.Products.ToListAsync();
     }
 
+    // Este método extrae el catálogo disponible filtrado y paginado a nivel de base de datos.
+    public async Task<(IEnumerable<Product> Items, int TotalCount)> GetPaginatedAsync(int page, int pageSize, string? search, string? category)
+    {
+        var query = _context.Products.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var searchLower = search.ToLower();
+            query = query.Where(p => p.Name.ToLower().Contains(searchLower) || 
+                                     (p.Category != null && p.Category.ToLower().Contains(searchLower)));
+        }
+
+        if (!string.IsNullOrWhiteSpace(category) && category != "Todas")
+        {
+            query = query.Where(p => p.Category == category);
+        }
+
+        int totalCount = await query.CountAsync();
+        
+        var items = await query.OrderBy(p => p.Name)
+                              .Skip((page - 1) * pageSize)
+                              .Take(pageSize)
+                              .ToListAsync();
+
+        return (items, totalCount);
+    }
+
     // Este método rastrea y devuelve un producto individual empleando su identificador global.
     public async Task<Product?> GetByIdAsync(Guid id)
     {

@@ -17,8 +17,15 @@ public class CatalogController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] int? page, [FromQuery] int? pageSize, [FromQuery] string? search, [FromQuery] string? category)
     {
+        if (page.HasValue && page.Value > 0)
+        {
+            var size = pageSize ?? 10;
+            var result = await _productFacade.GetPaginatedProductsAsync(page.Value, size, search, category);
+            return Ok(result);
+        }
+
         var products = await _productFacade.GetAllProductsAsync();
         return Ok(products);
     }

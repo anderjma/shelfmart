@@ -21,6 +21,12 @@ public class ProductFacade : IProductFacade
         return await _productService.GetAllProductsAsync();
     }
 
+    // Este método actúa de intermediario para la obtención paginada y filtrada de productos.
+    public async Task<PaginatedResultDto<ProductDto>> GetPaginatedProductsAsync(int page, int pageSize, string? search, string? category)
+    {
+        return await _productService.GetPaginatedProductsAsync(page, pageSize, search, category);
+    }
+
     // Este método actúa de intermediario para la consulta individual de un producto hacia la capa de dominio.
     public async Task<ProductDto> GetProductByIdAsync(Guid id)
     {

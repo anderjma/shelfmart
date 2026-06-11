@@ -9,6 +9,7 @@ namespace BusinessSystem.DomainService.Interfaces;
 public interface IProductRepository
 {
     Task<IEnumerable<Product>> GetAllAsync();
+    Task<(IEnumerable<Product> Items, int TotalCount)> GetPaginatedAsync(int page, int pageSize, string? search, string? category);
     Task<Product?> GetByIdAsync(Guid id);
     Task<Product> AddAsync(Product product);
     Task UpdateAsync(Product product);

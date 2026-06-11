@@ -24,9 +24,16 @@ public class ProductsController : ControllerBase
     // Este atributo permite que cualquier usuario visualice el catálogo de productos sin autenticación.
     [AllowAnonymous] 
     [HttpGet]
-    // Este método retorna el inventario completo, habilitando a los administradores su lectura para el panel de gestión.
-    public async Task<IActionResult> GetAll()
+    // Este método retorna el inventario completo o paginado, habilitando su lectura para la tienda y el panel de gestión.
+    public async Task<IActionResult> GetAll([FromQuery] int? page, [FromQuery] int? pageSize, [FromQuery] string? search, [FromQuery] string? category)
     {
+        if (page.HasValue && page.Value > 0)
+        {
+            var size = pageSize ?? 10;
+            var result = await _productFacade.GetPaginatedProductsAsync(page.Value, size, search, category);
+            return Ok(result);
+        }
+
         var products = await _productFacade.GetAllProductsAsync();
         return Ok(products);
     }
