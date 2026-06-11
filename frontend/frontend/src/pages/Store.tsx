@@ -66,9 +66,16 @@ export default function Store() {
                     setTotalPages(data.totalPages);
                     setTotalCount(data.totalCount);
                 } else if (Array.isArray(data)) {
-                    setProducts(data);
+                    // Fallback para backends antiguos o no actualizados: filtrar en cliente
+                    const filtered = data.filter(p => {
+                        const matchesCategory = selectedCategory === "Todas" || (p.category || "General") === selectedCategory;
+                        const matchesSearch = p.name.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) || 
+                                             (p.category && p.category.toLowerCase().includes(debouncedSearchTerm.toLowerCase()));
+                        return matchesCategory && matchesSearch;
+                    });
+                    setProducts(filtered);
                     setTotalPages(1);
-                    setTotalCount(data.length);
+                    setTotalCount(filtered.length);
                 }
             } catch {
                 toast.error("Error al cargar productos.");
