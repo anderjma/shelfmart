@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getProducts } from "../services/productService";
 import type { Product } from "../types/product";
+import SEO from "../components/SEO";
 
 // Este componente presenta la propuesta de valor y las llamadas a la acción principales de la tienda.
 export default function Home() {
@@ -31,6 +32,7 @@ export default function Home() {
 
     return (
         <div className="space-y-12 sm:space-y-16 pb-12 sm:pb-16 bg-slate-50">
+            <SEO title="Inicio" description="Bienvenido a la plataforma comercial avanzada para la gestión de inventario y ventas en tiempo real." />
             {/* Sección hero */}
             <div className="bg-slate-900 mx-4 sm:mx-6 lg:mx-8 mt-4 sm:mt-6 rounded-lg overflow-hidden shadow-sm relative">
                 <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center"></div>

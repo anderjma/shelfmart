@@ -2,11 +2,13 @@
 import React from "react";
 import { Phone, Mail } from "lucide-react";
 import { SiFacebook, SiInstagram, SiTiktok } from "react-icons/si";
+import SEO from "../components/SEO";
 
 // Este componente renderiza una interfaz estática con los canales de soporte disponibles para los clientes.
 export default function Contact() {
     return (
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+            <SEO title="Contacto" description="Contáctenos a través de nuestros canales oficiales. Estamos listos para atenderle." />
             <h1 className="text-3xl font-bold text-gray-900 mb-8 text-center">Contáctanos</h1>
             
             <div className="bg-white shadow-sm rounded-lg border border-gray-200 p-5 sm:p-8">

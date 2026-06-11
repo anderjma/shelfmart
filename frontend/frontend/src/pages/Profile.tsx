@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { getMyOrders } from "../services/orderService";
 import type { Cart, CartItem } from "../types/order";
+import SEO from "../components/SEO";
 
 export default function Profile() {
     const { user } = useAuth();
@@ -28,6 +29,7 @@ export default function Profile() {
 
     return (
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+            <SEO title="Mi Perfil" description="Gestione su cuenta de usuario y consulte su historial de compras." />
             {/* Tarjeta de información personal */}
             <div className="bg-white p-6 rounded-lg shadow-sm rounded-xl border border-gray-200">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">Mi Perfil</h2>

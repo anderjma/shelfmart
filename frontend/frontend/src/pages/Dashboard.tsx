@@ -5,6 +5,7 @@ import { useProducts } from "../hooks/useProducts";
 import ProductTable from "../components/ProductTable";
 import ProductCard from "../components/ProductCard";
 import ProductFormModal from "../components/ProductFormModal";
+import SEO from "../components/SEO";
 
 // Este componente centraliza las métricas y los accesos rápidos a las herramientas de gestión interna.
 export default function Dashboard() {
@@ -30,6 +31,7 @@ export default function Dashboard() {
 
     return (
         <div className="max-w-7xl mx-auto">
+            <SEO title="Panel de Control" description="Panel de control administrativo para la gestión de productos, inventario y catálogo." />
             <div className="px-4 sm:px-0 flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
                 <h2 className="text-2xl font-semibold text-gray-900">Panel de Control</h2>
                 <div className="flex flex-wrap gap-2">

@@ -5,6 +5,7 @@ import { addToCart } from "../services/orderService";
 import type { Product } from "../types/product";
 import toast from "react-hot-toast";
 import { ShoppingCart, Search } from "lucide-react";
+import SEO from "../components/SEO";
 
 // Este componente exhibe los productos en un grid filtrable por categoría e incluye la acción de agregar al carrito.
 export default function Store() {
@@ -74,6 +75,7 @@ export default function Store() {
 
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+            <SEO title="Catálogo de Productos" description="Explore nuestro catálogo completo de productos con control de stock y ofertas especiales en tiempo real." />
             <div className="text-center space-y-4 mb-8">
                 <h1 className="text-3xl font-bold text-gray-900">Catálogo de Productos</h1>
                 <p className="text-gray-500">Explora nuestra selección y encuentra lo que necesitas.</p>

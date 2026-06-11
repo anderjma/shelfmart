@@ -1,10 +1,12 @@
 // Este archivo expone la historia y propuesta de valor de la compañía.
 import React from "react";
+import SEO from "../components/SEO";
 
 // Este componente sirve como página institucional para mostrar la misión, visión y detalles corporativos.
 export default function About() {
     return (
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
+            <SEO title="Nosotros" description="Conozca la historia, misión y visión detrás del Sistema Empresarial de gestión comercial." />
             <div className="text-center space-y-4">
                 <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">Sobre Nosotros</h1>
                 <p className="text-lg sm:text-xl text-gray-500">Conociendo la historia detrás de Inventario Pyme.</p>

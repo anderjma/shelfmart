@@ -5,6 +5,7 @@ import { getCart, checkout, updateCartItemQuantity, removeFromCart } from "../se
 import toast from "react-hot-toast";
 import type { Cart as CartType } from "../types/order";
 import { Trash2, Plus, Minus } from "lucide-react";
+import SEO from "../components/SEO";
 
 // Este componente lista los artículos seleccionados, calcula totales e inicia el proceso de checkout.
 export default function Cart() {
@@ -79,6 +80,7 @@ export default function Cart() {
     if (!cart || !cart.items || cart.items.length === 0) {
         return (
             <div className="text-center py-16 mx-4 sm:mx-0 bg-white rounded-lg shadow-sm border border-gray-200">
+                <SEO title="Mi Carrito" description="Su carrito de compras está vacío." />
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">Su carrito está vacío</h2>
                 <button onClick={() => navigate("/")} className="text-blue-600 font-medium hover:text-blue-800 underline">
                     Volver al catálogo
@@ -89,6 +91,7 @@ export default function Cart() {
 
     return (
         <div className="max-w-7xl mx-auto space-y-6">
+            <SEO title="Mi Carrito" description="Consulte sus productos seleccionados y complete su compra de forma segura." />
             <div className="px-4 sm:px-0">
                 <h2 className="text-2xl font-bold text-gray-900">Mi Carrito de Compras</h2>
             </div>
