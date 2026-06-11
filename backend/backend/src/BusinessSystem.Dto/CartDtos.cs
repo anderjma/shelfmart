@@ -28,3 +28,10 @@ public class CartDto
     public decimal TotalAmount { get; set; }
     public List<CartItemDto> Items { get; set; } = new();
 }
+
+// Esta clase transporta la cantidad actualizada para un ítem del carrito.
+public class UpdateCartItemDto
+{
+    public int Quantity { get; set; }
+}
+

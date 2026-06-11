@@ -10,6 +10,8 @@ public interface IOrderService
 {
     Task<CartDto> GetCartAsync(Guid userId);
     Task<CartDto> AddItemToCartAsync(Guid userId, AddToCartDto dto);
+    Task<CartDto> UpdateItemQuantityAsync(Guid userId, Guid productId, int quantity);
+    Task<CartDto> RemoveItemFromCartAsync(Guid userId, Guid productId);
     Task<CartDto> CheckoutAsync(Guid userId);
     Task<IEnumerable<AdminOrderDto>> GetAllCompletedOrdersAsync();
     Task<IEnumerable<AdminOrderDto>> GetCustomerOrdersAsync(Guid userId);

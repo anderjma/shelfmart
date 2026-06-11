@@ -110,6 +110,51 @@ public class OrderService : IOrderService
         return MapToCartDto(cart);
     }
 
+    // Este método actualiza la cantidad de un producto específico en el carrito.
+    public async Task<CartDto> UpdateItemQuantityAsync(Guid userId, Guid productId, int quantity)
+    {
+        var cart = await _orderRepository.GetActiveCartByUserIdAsync(userId);
+        if (cart == null) throw new NotFoundResponseException("El carrito no existe.");
+
+        var item = cart.OrderItems.FirstOrDefault(i => i.ProductResourceId == productId);
+        if (item == null) throw new NotFoundResponseException("El producto no está en el carrito.");
+
+        if (quantity <= 0)
+        {
+            cart.OrderItems.Remove(item);
+        }
+        else
+        {
+            var product = await _productRepository.GetByIdAsync(productId);
+            if (product == null) throw new NotFoundResponseException("Producto no encontrado.");
+            if (product.Stock < quantity) throw new BadRequestResponseException($"Stock insuficiente. Stock disponible: {product.Stock}");
+
+            item.Quantity = quantity;
+        }
+
+        cart.TotalAmount = cart.OrderItems.Sum(i => i.Quantity * i.UnitPrice);
+        await _orderRepository.UpdateOrderAsync(cart);
+
+        return MapToCartDto(cart);
+    }
+
+    // Este método elimina un producto del carrito.
+    public async Task<CartDto> RemoveItemFromCartAsync(Guid userId, Guid productId)
+    {
+        var cart = await _orderRepository.GetActiveCartByUserIdAsync(userId);
+        if (cart == null) throw new NotFoundResponseException("El carrito no existe.");
+
+        var item = cart.OrderItems.FirstOrDefault(i => i.ProductResourceId == productId);
+        if (item != null)
+        {
+            cart.OrderItems.Remove(item);
+            cart.TotalAmount = cart.OrderItems.Sum(i => i.Quantity * i.UnitPrice);
+            await _orderRepository.UpdateOrderAsync(cart);
+        }
+
+        return MapToCartDto(cart);
+    }
+
     // Este método valida el inventario disponible, efectúa el rebajo del stock y finaliza la transacción de la orden.
     public async Task<CartDto> CheckoutAsync(Guid userId)
     {

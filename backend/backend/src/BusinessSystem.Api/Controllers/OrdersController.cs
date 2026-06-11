@@ -72,6 +72,32 @@ public class OrdersController : ControllerBase
         catch (Exception ex) { return BadRequest(new { message = ex.Message }); }
     }
 
+    [HttpPut("cart/items/{productId}")]
+    public async Task<IActionResult> UpdateItemQuantity(Guid productId, [FromBody] UpdateCartItemDto dto)
+    {
+        if (!ModelState.IsValid) return BadRequest(new { message = "Datos inválidos." });
+
+        try
+        {
+            var userId = await GetUserIdAsync();
+            var cart = await _orderService.UpdateItemQuantityAsync(userId, productId, dto.Quantity);
+            return Ok(cart);
+        }
+        catch (Exception ex) { return BadRequest(new { message = ex.Message }); }
+    }
+
+    [HttpDelete("cart/items/{productId}")]
+    public async Task<IActionResult> RemoveItem(Guid productId)
+    {
+        try
+        {
+            var userId = await GetUserIdAsync();
+            var cart = await _orderService.RemoveItemFromCartAsync(userId, productId);
+            return Ok(cart);
+        }
+        catch (Exception ex) { return BadRequest(new { message = ex.Message }); }
+    }
+
     [HttpPost("checkout")]
     public async Task<IActionResult> Checkout()
     {
