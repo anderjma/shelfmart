@@ -1,6 +1,7 @@
 // Este archivo renderiza el escaparate virtual donde los clientes pueden explorar el catálogo de artículos.
 import React, { useEffect, useState } from "react";
 import { getProducts } from "../services/productService";
+import type { PaginatedProducts } from "../services/productService";
 import { addToCart } from "../services/orderService";
 import type { Product } from "../types/product";
 import toast from "react-hot-toast";
@@ -29,11 +30,6 @@ export default function Store() {
         return () => clearTimeout(handler);
     }, [searchTerm]);
 
-    // Al cambiar la categoría o la búsqueda, se reinicia a la página 1
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [selectedCategory, debouncedSearchTerm]);
-
     // Cargar categorías una sola vez al montar el componente
     useEffect(() => {
         const fetchCategories = async () => {
@@ -58,12 +54,12 @@ export default function Store() {
                 // Pequeño retraso para dar suavidad visual al esqueleto
                 await new Promise(resolve => setTimeout(resolve, 400));
                 
-                const data: any = await getProducts({
+                const data = (await getProducts({
                     page: currentPage,
                     pageSize: pageSize,
                     search: debouncedSearchTerm,
                     category: selectedCategory === "Todas" ? undefined : selectedCategory
-                });
+                })) as unknown as PaginatedProducts | Product[];
 
                 if (data && typeof data === "object" && "items" in data) {
                     setProducts(data.items);
@@ -132,7 +128,7 @@ export default function Store() {
                             type="text"
                             placeholder="Buscar productos por nombre o categoría..."
                             value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
+                            onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
                             className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm transition-all"
                         />
                         <Search className="w-5 h-5 text-gray-400 absolute left-3 top-3" />
@@ -142,7 +138,7 @@ export default function Store() {
                         {categories.map((cat, index) => (
                             <button
                                 key={index}
-                                onClick={() => setSelectedCategory(cat)}
+                                onClick={() => { setSelectedCategory(cat); setCurrentPage(1); }}
                                 className={`px-4 py-2 rounded-full text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                                     selectedCategory === cat ? "bg-blue-600 text-white shadow-sm" : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
                                 }`}

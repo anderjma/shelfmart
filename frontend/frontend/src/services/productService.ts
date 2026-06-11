@@ -14,7 +14,12 @@ export interface PaginatedProducts {
 // Esta función extrae el catálogo disponible desde el backend de forma paginada o completa.
 export function getProducts(params: { page: number; pageSize?: number; search?: string; category?: string }): Promise<PaginatedProducts>;
 export function getProducts(params?: { page?: undefined; pageSize?: number; search?: string; category?: string }): Promise<Product[]>;
-export async function getProducts(params?: any): Promise<any> {
+export async function getProducts(params?: {
+    page?: number;
+    pageSize?: number;
+    search?: string;
+    category?: string;
+}): Promise<PaginatedProducts | Product[]> {
     const response = await axiosClient.get("/Products", { params });
     
     // Si la respuesta viene estructurada con paginación

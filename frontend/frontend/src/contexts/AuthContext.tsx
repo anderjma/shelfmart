@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState } from "react";
 import type { ReactNode } from "react";
 import { getCurrentUser, login as loginService, logout as logoutService } from "../services/authService";
 
@@ -14,7 +14,7 @@ interface AuthContextType {
     isAdmin: boolean;
     isCustomer: boolean;
     loading: boolean;
-    login: (username: string, password: string) => Promise<any>;
+    login: (username: string, password: string) => Promise<unknown>;
     logout: () => void;
     refreshUser: () => void;
 }
@@ -22,18 +22,13 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-    const [user, setUser] = useState<User | null>(null);
-    const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState<User | null>(() => getCurrentUser());
+    const [loading] = useState(false);
 
     const refreshUser = () => {
         const currentUser = getCurrentUser();
         setUser(currentUser);
     };
-
-    useEffect(() => {
-        refreshUser();
-        setLoading(false);
-    }, []);
 
     const login = async (username: string, password: string) => {
         const data = await loginService(username, password);
@@ -68,6 +63,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
     const context = useContext(AuthContext);
     if (context === undefined) {
