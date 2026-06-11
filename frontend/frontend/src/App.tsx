@@ -3,7 +3,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import Layout from "./components/Layout";
-import { getCurrentUser } from "./services/authService";
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import type { JSX } from "react";
 import { Toaster } from "react-hot-toast";
 
@@ -33,21 +33,24 @@ const PageLoader = () => (
 );
 
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
-    const token = localStorage.getItem("token");
-    return token ? children : <Navigate to="/login" />;
+    const { isAuthenticated, loading } = useAuth();
+    if (loading) return <PageLoader />;
+    return isAuthenticated ? children : <Navigate to="/login" />;
 };
 
 const AdminRoute = ({ children }: { children: JSX.Element }) => {
-    const user = getCurrentUser();
+    const { user, loading } = useAuth();
+    if (loading) return <PageLoader />;
     return user?.role === "Admin" ? children : <Navigate to="/" />;
 };
 
 // Este componente enlaza las distintas páginas y restringe el acceso mediante roles específicos.
 function App() {
     return (
-        <BrowserRouter>
-            <Toaster position="bottom-right" />
-            <Suspense fallback={<PageLoader />}>
+        <AuthProvider>
+            <BrowserRouter>
+                <Toaster position="bottom-right" />
+                <Suspense fallback={<PageLoader />}>
                 <Routes>
                     {/* Rutas sin Layout */}
                     <Route path="/login" element={<Login />} />
@@ -93,6 +96,7 @@ function App() {
                 </Routes>
             </Suspense>
         </BrowserRouter>
+    </AuthProvider>
     );
 }
 

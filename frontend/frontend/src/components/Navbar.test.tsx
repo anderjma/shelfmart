@@ -2,12 +2,12 @@ import { describe, test, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import Navbar from "./Navbar";
-import { getCurrentUser, logout } from "../services/authService";
+import { useAuth } from "../contexts/AuthContext";
 
-// Esta instrucción simula las funciones del servicio de autenticación.
-vi.mock("../services/authService", () => ({
-    getCurrentUser: vi.fn(),
-    logout: vi.fn(),
+const mockLogout = vi.fn();
+// Esta instrucción simula el hook de autenticación.
+vi.mock("../contexts/AuthContext", () => ({
+    useAuth: vi.fn(),
 }));
 
 // Esta instrucción simula la función useNavigate de react-router-dom.
@@ -26,7 +26,16 @@ describe("Navbar Component", () => {
     });
 
     test("renders correctly for a guest user (unauthenticated)", () => {
-        vi.mocked(getCurrentUser).mockReturnValue(null);
+        vi.mocked(useAuth).mockReturnValue({
+            user: null,
+            isAuthenticated: false,
+            isAdmin: false,
+            isCustomer: false,
+            loading: false,
+            login: vi.fn(),
+            logout: mockLogout,
+            refreshUser: vi.fn(),
+        });
 
         render(
             <MemoryRouter>
@@ -44,10 +53,19 @@ describe("Navbar Component", () => {
     });
 
     test("renders correctly for an Admin user", () => {
-        vi.mocked(getCurrentUser).mockReturnValue({
-            name: "Administrador Pepe",
-            role: "Admin",
-            username: "adminpepe"
+        vi.mocked(useAuth).mockReturnValue({
+            user: {
+                name: "Administrador Pepe",
+                role: "Admin",
+                username: "adminpepe"
+            },
+            isAuthenticated: true,
+            isAdmin: true,
+            isCustomer: false,
+            loading: false,
+            login: vi.fn(),
+            logout: mockLogout,
+            refreshUser: vi.fn(),
         });
 
         render(
@@ -69,10 +87,19 @@ describe("Navbar Component", () => {
     });
 
     test("renders correctly for a Customer user", () => {
-        vi.mocked(getCurrentUser).mockReturnValue({
-            name: "Cliente Juan",
-            role: "Customer",
-            username: "juanito"
+        vi.mocked(useAuth).mockReturnValue({
+            user: {
+                name: "Cliente Juan",
+                role: "Customer",
+                username: "juanito"
+            },
+            isAuthenticated: true,
+            isAdmin: false,
+            isCustomer: true,
+            loading: false,
+            login: vi.fn(),
+            logout: mockLogout,
+            refreshUser: vi.fn(),
         });
 
         render(
@@ -90,10 +117,19 @@ describe("Navbar Component", () => {
     });
 
     test("handles logout click correctly", () => {
-        vi.mocked(getCurrentUser).mockReturnValue({
-            name: "Usuario Activo",
-            role: "Customer",
-            username: "activo"
+        vi.mocked(useAuth).mockReturnValue({
+            user: {
+                name: "Usuario Activo",
+                role: "Customer",
+                username: "activo"
+            },
+            isAuthenticated: true,
+            isAdmin: false,
+            isCustomer: true,
+            loading: false,
+            login: vi.fn(),
+            logout: mockLogout,
+            refreshUser: vi.fn(),
         });
 
         render(
@@ -107,7 +143,7 @@ describe("Navbar Component", () => {
         fireEvent.click(logoutBtn);
 
         // Esta validación comprueba que el sistema cierre la sesión y redirija al usuario.
-        expect(logout).toHaveBeenCalledTimes(1);
+        expect(mockLogout).toHaveBeenCalledTimes(1);
         expect(mockNavigate).toHaveBeenCalledWith("/login");
     });
 });

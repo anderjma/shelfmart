@@ -1,15 +1,13 @@
 // Este archivo define la barra de navegación principal que se mantiene constante en toda la aplicación.
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { logout, getCurrentUser } from "../services/authService";
+import { useAuth } from "../contexts/AuthContext";
 // Este componente proporciona los enlaces de navegación dinámicos dependiendo del rol del usuario.
 import { User, LogOut, LogIn, ShoppingCart, Store, Menu, X, ShieldCheck } from "lucide-react";
 
 export default function Navbar() {
     const navigate = useNavigate();
-    const user = getCurrentUser();
-    const isAdmin = user?.role === "Admin";
-    const isCustomer = user?.role === "Customer";
+    const { user, logout, isAdmin, isCustomer } = useAuth();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const handleLogout = () => {

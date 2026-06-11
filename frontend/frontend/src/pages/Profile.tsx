@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 // Este archivo contiene la pantalla donde los clientes pueden consultar su historial y datos personales.
-import { getCurrentUser } from "../services/authService";
+import { useAuth } from "../contexts/AuthContext";
 import { getMyOrders } from "../services/orderService";
 import type { Cart, CartItem } from "../types/order";
 
 export default function Profile() {
-    const user = getCurrentUser();
+    const { user } = useAuth();
     const [orders, setOrders] = useState<Cart[]>([]);
-    const [loading, setLoading] = useState(!!user);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchOrders = async () => {
