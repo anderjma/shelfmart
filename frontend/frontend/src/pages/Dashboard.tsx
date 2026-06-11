@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { getProducts, createProduct, updateProduct, deleteProduct } from "../services/productService";
 import type { Product, ProductFormData } from "../types/product";
-import { supabase } from "../lib/supabase";
+import { sanitizeImageUrl } from "../lib/sanitizeImageUrl";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 
@@ -82,19 +82,32 @@ export default function Dashboard() {
             if (file) {
                 const fileExt = file.name.split('.').pop();
                 const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-                
-                const { error: uploadError } = await supabase.storage
-                    .from('product-images')
-                    .upload(fileName, file);
+                const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+                const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-                if (uploadError) {
-                    toast.error("Error al subir imagen: " + uploadError.message);
+                // Upload directo a la API REST de Supabase Storage (evita bug de hostname del SDK)
+                const uploadRes = await fetch(
+                    sanitizeImageUrl(`${supabaseUrl}/storage/v1/object/product-images/${fileName}`),
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${supabaseKey}`,
+                            'apikey': supabaseKey,
+                            'x-upsert': 'false',
+                        },
+                        body: file,
+                    }
+                );
+
+                if (!uploadRes.ok) {
+                    const err = await uploadRes.json().catch(() => ({ message: uploadRes.statusText }));
+                    toast.error("Error al subir imagen: " + (err.message ?? uploadRes.statusText));
                     setUploading(false);
                     return;
                 }
 
-                const { data } = supabase.storage.from('product-images').getPublicUrl(fileName);
-                currentImageUrl = data.publicUrl;
+                // URL pública construida manualmente
+                currentImageUrl = sanitizeImageUrl(`${supabaseUrl}/storage/v1/object/public/product-images/${fileName}`);
             }
 
             const dataToSave = { ...formData, imageUrl: currentImageUrl };
