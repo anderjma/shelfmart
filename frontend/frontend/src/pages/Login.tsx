@@ -1,7 +1,7 @@
 // Este archivo gestiona la pantalla de autenticación, controlando el acceso de usuarios al sistema.
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { login } from "../services/authService";
+import { useAuth } from "../contexts/AuthContext";
 
 // Este componente captura y valida las credenciales introducidas para emitir el token de sesión seguro.
 export default function Login() {
@@ -9,6 +9,7 @@ export default function Login() {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
