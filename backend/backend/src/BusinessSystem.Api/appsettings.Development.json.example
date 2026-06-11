@@ -1,0 +1,16 @@
+{
+    "Logging":  {
+                    "LogLevel":  {
+                                     "Default":  "Information",
+                                     "Microsoft.AspNetCore":  "Warning"
+                                 }
+                },
+    "ConnectionStrings":  {
+                              "DefaultConnection":  "Host=db.XXXXX.supabase.co;Port=5432;Database=postgres;Username=postgres;Password=TU_CONTRASEÑA;SSL Mode=Require;Trust Server Certificate=true;"
+                          },
+    "Jwt":  {
+                "Audience":  "InventoryUsers",
+                "Key":  "TU_CLAVE_SECRETA_JWT_DE_AL_MENOS_32_CARACTERES",
+                "Issuer":  "BusinessSystem"
+            }
+}
