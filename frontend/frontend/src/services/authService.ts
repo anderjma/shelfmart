@@ -11,6 +11,7 @@ interface DecodedToken {
     unique_name?: string;
     username?: string;
     sub?: string;
+    exp?: number;
 }
 
 // Esta función envía las credenciales al backend y almacena localmente el token de acceso si resultan válidas.
@@ -34,6 +35,13 @@ export const getCurrentUser = () => {
     
     try {
         const decoded = jwtDecode<DecodedToken>(token);
+
+        // Verificar si el token ha expirado
+        if (decoded.exp && decoded.exp * 1000 < Date.now()) {
+            localStorage.removeItem("token");
+            return null;
+        }
+
         const role = decoded.role || decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
         const name = decoded.name || decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"] || "Usuario";
         

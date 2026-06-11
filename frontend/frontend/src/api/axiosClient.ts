@@ -17,4 +17,19 @@ axiosClient.interceptors.request.use(config => {
     return config;
 });
 
+// Interceptor para manejar sesiones expiradas (401 Unauthorized)
+axiosClient.interceptors.response.use(
+    response => response,
+    error => {
+        if (error.response?.status === 401) {
+            localStorage.removeItem("token");
+            // Redirigir al login solo si no estamos ya en /login
+            if (window.location.pathname !== "/login") {
+                window.location.href = "/login";
+            }
+        }
+        return Promise.reject(error);
+    }
+);
+
 export default axiosClient;
