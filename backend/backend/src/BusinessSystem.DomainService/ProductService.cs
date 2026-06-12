@@ -7,6 +7,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace BusinessSystem.DomainService;
 
@@ -14,27 +15,40 @@ namespace BusinessSystem.DomainService;
 public class ProductService : IProductService
 {
     private readonly IProductRepository _productRepository;
+    private readonly IMemoryCache _cache;
+    private const string AllProductsCacheKey = "AllProductsCache";
 
-    public ProductService(IProductRepository productRepository)
+    public ProductService(IProductRepository productRepository, IMemoryCache cache)
     {
         _productRepository = productRepository;
+        _cache = cache;
     }
 
-    // Este método extrae el catálogo completo de productos y lo mapea hacia objetos de transferencia.
+    // Este método extrae el catálogo completo de productos y lo mapea hacia objetos de transferencia usando caché.
     public async Task<IEnumerable<ProductDto>> GetAllProductsAsync()
     {
-        var products = await _productRepository.GetAllAsync();
-        return products.Select(p => new ProductDto
+        if (!_cache.TryGetValue(AllProductsCacheKey, out IEnumerable<ProductDto>? cachedProducts))
         {
-            ProductResourceId = p.ProductResourceId,
-            Name = p.Name,
-            Category = p.Category,
-            Stock = p.Stock,
-            Price = p.Price,
-            ImageUrl = p.ImageUrl,
-            DiscountPercentage = p.DiscountPercentage,
-            CreatedAt = p.CreatedAt
-        });
+            var products = await _productRepository.GetAllAsync();
+            cachedProducts = products.Select(p => new ProductDto
+            {
+                ProductResourceId = p.ProductResourceId,
+                Name = p.Name,
+                Category = p.Category,
+                Stock = p.Stock,
+                Price = p.Price,
+                ImageUrl = p.ImageUrl,
+                DiscountPercentage = p.DiscountPercentage,
+                CreatedAt = p.CreatedAt
+            }).ToList();
+
+            var cacheEntryOptions = new MemoryCacheEntryOptions()
+                .SetAbsoluteExpiration(TimeSpan.FromMinutes(15));
+
+            _cache.Set(AllProductsCacheKey, cachedProducts, cacheEntryOptions);
+        }
+
+        return cachedProducts!;
     }
 
     // Este método extrae el catálogo de productos de forma paginada y filtrada, mapeándolo a DTOs.
@@ -98,6 +112,7 @@ public class ProductService : IProductService
         };
 
         var createdProduct = await _productRepository.AddAsync(product);
+        _cache.Remove(AllProductsCacheKey);
 
         return new ProductDto
         {
@@ -134,6 +149,7 @@ public class ProductService : IProductService
         }
 
         await _productRepository.UpdateAsync(product);
+        _cache.Remove(AllProductsCacheKey);
 
         return new ProductDto
         {
@@ -155,5 +171,6 @@ public class ProductService : IProductService
         if (product == null) throw new ResourceNotFoundException("Producto no encontrado.");
 
         await _productRepository.DeleteAsync(product);
+        _cache.Remove(AllProductsCacheKey);
     }
 }

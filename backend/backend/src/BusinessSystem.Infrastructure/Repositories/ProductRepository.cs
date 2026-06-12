@@ -21,7 +21,7 @@ public class ProductRepository : IProductRepository
     // Este método extrae todo el catálogo disponible en la base de datos sin aplicar filtros adicionales.
     public async Task<IEnumerable<Product>> GetAllAsync()
     {
-        return await _context.Products.ToListAsync();
+        return await _context.Products.AsNoTracking().ToListAsync();
     }
 
     // Este método extrae el catálogo disponible filtrado y paginado a nivel de base de datos.
