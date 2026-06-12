@@ -1,7 +1,6 @@
 // Este archivo renderiza el escaparate virtual donde los clientes pueden explorar el catálogo de artículos.
 import React, { useEffect, useState } from "react";
 import { getProducts } from "../services/productService";
-import type { PaginatedProducts } from "../services/productService";
 import { addToCart } from "../services/orderService";
 import type { Product } from "../types/product";
 import toast from "react-hot-toast";
@@ -10,72 +9,25 @@ import SEO from "../components/SEO";
 
 // Este componente exhibe los productos en un grid filtrable por categoría e incluye la acción de agregar al carrito.
 export default function Store() {
-    const [products, setProducts] = useState<Product[]>([]);
+    const [allProducts, setAllProducts] = useState<Product[]>([]);
     const [categories, setCategories] = useState<string[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<string>("Todas");
     const [searchTerm, setSearchTerm] = useState("");
-    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
-    const [totalCount, setTotalCount] = useState(0);
     const [loading, setLoading] = useState(true);
 
     const pageSize = 8;
 
-    // Debounce del término de búsqueda para evitar solicitudes excesivas
+    // Cargar todos los productos una sola vez al montar el componente y extraer categorías
     useEffect(() => {
-        const handler = setTimeout(() => {
-            setDebouncedSearchTerm(searchTerm);
-        }, 400);
-        return () => clearTimeout(handler);
-    }, [searchTerm]);
-
-    // Cargar categorías una sola vez al montar el componente
-    useEffect(() => {
-        const fetchCategories = async () => {
+        const fetchInitialData = async () => {
+            setLoading(true);
             try {
                 const data = await getProducts();
                 if (Array.isArray(data)) {
+                    setAllProducts(data);
                     const uniqueCategories = Array.from(new Set(data.map((p: Product) => p.category || "General")));
                     setCategories(["Todas", ...uniqueCategories]);
-                }
-            } catch {
-                toast.error("Error al cargar categorías.");
-            }
-        };
-        fetchCategories();
-    }, []);
-
-    // Cargar productos de forma paginada y filtrada
-    useEffect(() => {
-        const fetchProducts = async () => {
-            setLoading(true);
-            try {
-                // Pequeño retraso para dar suavidad visual al esqueleto
-                await new Promise(resolve => setTimeout(resolve, 400));
-                
-                const data = (await getProducts({
-                    page: currentPage,
-                    pageSize: pageSize,
-                    search: debouncedSearchTerm,
-                    category: selectedCategory === "Todas" ? undefined : selectedCategory
-                })) as unknown as PaginatedProducts | Product[];
-
-                if (data && typeof data === "object" && "items" in data) {
-                    setProducts(data.items);
-                    setTotalPages(data.totalPages);
-                    setTotalCount(data.totalCount);
-                } else if (Array.isArray(data)) {
-                    // Fallback para backends antiguos o no actualizados: filtrar en cliente
-                    const filtered = data.filter(p => {
-                        const matchesCategory = selectedCategory === "Todas" || (p.category || "General") === selectedCategory;
-                        const matchesSearch = p.name.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) || 
-                                             (p.category && p.category.toLowerCase().includes(debouncedSearchTerm.toLowerCase()));
-                        return matchesCategory && matchesSearch;
-                    });
-                    setProducts(filtered);
-                    setTotalPages(1);
-                    setTotalCount(filtered.length);
                 }
             } catch {
                 toast.error("Error al cargar productos.");
@@ -83,9 +35,30 @@ export default function Store() {
                 setLoading(false);
             }
         };
+        fetchInitialData();
+    }, []);
 
-        fetchProducts();
-    }, [currentPage, selectedCategory, debouncedSearchTerm]);
+    // Filtrado de productos en memoria
+    const filteredProducts = React.useMemo(() => {
+        return allProducts.filter(p => {
+            const matchesCategory = selectedCategory === "Todas" || (p.category || "General") === selectedCategory;
+            const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                                 (p.category && p.category.toLowerCase().includes(searchTerm.toLowerCase()));
+            return matchesCategory && matchesSearch;
+        });
+    }, [allProducts, selectedCategory, searchTerm]);
+
+    const totalCount = filteredProducts.length;
+    const totalPages = Math.ceil(totalCount / pageSize) || 1;
+
+    // Si por alguna razón la página actual queda fuera del rango válido, usar la primera página
+    const safeCurrentPage = currentPage > totalPages ? 1 : currentPage;
+
+    // Paginación en memoria
+    const products = React.useMemo(() => {
+        const startIndex = (safeCurrentPage - 1) * pageSize;
+        return filteredProducts.slice(startIndex, startIndex + pageSize);
+    }, [filteredProducts, safeCurrentPage]);
 
     const handleAddToCart = async (productId: string) => {
         try {
@@ -229,14 +202,14 @@ export default function Store() {
                             <div className="flex flex-1 justify-between sm:hidden">
                                 <button
                                     onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                                    disabled={currentPage === 1}
+                                    disabled={safeCurrentPage === 1}
                                     className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                 >
                                     Anterior
                                 </button>
                                 <button
                                     onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                                    disabled={currentPage === totalPages}
+                                    disabled={safeCurrentPage === totalPages}
                                     className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                 >
                                     Siguiente
@@ -245,9 +218,9 @@ export default function Store() {
                             <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
                                 <div>
                                     <p className="text-sm text-gray-700">
-                                        Mostrando del <span className="font-semibold">{((currentPage - 1) * pageSize) + 1}</span> al{" "}
+                                        Mostrando del <span className="font-semibold">{((safeCurrentPage - 1) * pageSize) + 1}</span> al{" "}
                                         <span className="font-semibold">
-                                            {Math.min(currentPage * pageSize, totalCount)}
+                                            {Math.min(safeCurrentPage * pageSize, totalCount)}
                                         </span>{" "}
                                         de <span className="font-semibold">{totalCount}</span> resultados
                                     </p>
@@ -256,7 +229,7 @@ export default function Store() {
                                     <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
                                         <button
                                             onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                                            disabled={currentPage === 1}
+                                            disabled={safeCurrentPage === 1}
                                             className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                                         >
                                             <span className="sr-only">Anterior</span>
@@ -266,9 +239,9 @@ export default function Store() {
                                             <button
                                                 key={pNum}
                                                 onClick={() => setCurrentPage(pNum)}
-                                                aria-current={pNum === currentPage ? "page" : undefined}
+                                                aria-current={pNum === safeCurrentPage ? "page" : undefined}
                                                 className={`relative inline-flex items-center px-4 py-2 text-sm font-semibold focus:z-20 ${
-                                                    pNum === currentPage
+                                                    pNum === safeCurrentPage
                                                         ? "z-10 bg-blue-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
                                                         : "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0"
                                                 } transition-colors`}
@@ -278,7 +251,7 @@ export default function Store() {
                                         ))}
                                         <button
                                             onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                                            disabled={currentPage === totalPages}
+                                            disabled={safeCurrentPage === totalPages}
                                             className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                                         >
                                             <span className="sr-only">Siguiente</span>
