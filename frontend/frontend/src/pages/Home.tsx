@@ -8,6 +8,7 @@ import SEO from "../components/SEO";
 // Este componente presenta la propuesta de valor y las llamadas a la acción principales de la tienda.
 export default function Home() {
     const [products, setProducts] = useState<Product[]>([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -16,10 +17,23 @@ export default function Home() {
                 setProducts(data);
             } catch (error) {
                 console.error("Error cargando productos", error);
+            } finally {
+                setLoading(false);
             }
         };
         fetchProducts();
     }, []);
+
+    const ProductSkeleton = () => (
+        <div className="bg-white border border-slate-200/60 rounded-md shadow-sm overflow-hidden flex flex-col h-full animate-pulse">
+            <div className="h-40 sm:h-48 bg-slate-200 rounded-t-md"></div>
+            <div className="p-3 sm:p-4 flex-1 flex flex-col justify-between bg-white rounded-b-md">
+                <div className="h-4 sm:h-5 bg-slate-200 rounded w-3/4 mb-3"></div>
+                <div className="h-4 sm:h-5 bg-slate-200 rounded w-1/2 mb-3"></div>
+                <div className="mt-auto h-5 sm:h-6 bg-slate-200 rounded w-1/3"></div>
+            </div>
+        </div>
+    );
 
     const offers = products.filter(p => p.discountPercentage > 0).slice(0, 4); 
     const lowStock = products.filter(p => p.stock > 0 && p.stock <= 5).slice(0, 4);
@@ -51,31 +65,50 @@ export default function Home() {
 
             {/* Listado de productos */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-                {offers.length > 0 && (
-                    <section>
-                        <SectionHeader title="Ofertas Destacadas" />
-                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
-                            {offers.map(product => <ProductCard key={`offer-${product.productResourceId}`} product={product} type="offer" />)}
-                        </div>
-                    </section>
-                )}
+                {loading ? (
+                    <>
+                        <section>
+                            <SectionHeader title="Ofertas Destacadas" />
+                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
+                                {[...Array(4)].map((_, i) => <ProductSkeleton key={`skel-offer-${i}`} />)}
+                            </div>
+                        </section>
+                        <section>
+                            <SectionHeader title="Nuevos Ingresos" />
+                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
+                                {[...Array(4)].map((_, i) => <ProductSkeleton key={`skel-new-${i}`} />)}
+                            </div>
+                        </section>
+                    </>
+                ) : (
+                    <>
+                        {offers.length > 0 && (
+                            <section>
+                                <SectionHeader title="Ofertas Destacadas" />
+                                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
+                                    {offers.map(product => <ProductCard key={`offer-${product.productResourceId}`} product={product} type="offer" />)}
+                                </div>
+                            </section>
+                        )}
 
-                {newArrivals.length > 0 && (
-                    <section>
-                        <SectionHeader title="Nuevos Ingresos" />
-                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
-                            {newArrivals.map(product => <ProductCard key={`new-${product.productResourceId}`} product={product} type="new" />)}
-                        </div>
-                    </section>
-                )}
+                        {newArrivals.length > 0 && (
+                            <section>
+                                <SectionHeader title="Nuevos Ingresos" />
+                                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
+                                    {newArrivals.map(product => <ProductCard key={`new-${product.productResourceId}`} product={product} type="new" />)}
+                                </div>
+                            </section>
+                        )}
 
-                {lowStock.length > 0 && (
-                    <section>
-                        <SectionHeader title="Inventario Limitado" />
-                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
-                            {lowStock.map(product => <ProductCard key={`low-${product.productResourceId}`} product={product} type="low" />)}
-                        </div>
-                    </section>
+                        {lowStock.length > 0 && (
+                            <section>
+                                <SectionHeader title="Inventario Limitado" />
+                                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
+                                    {lowStock.map(product => <ProductCard key={`low-${product.productResourceId}`} product={product} type="low" />)}
+                                </div>
+                            </section>
+                        )}
+                    </>
                 )}
             </div>
         </div>
