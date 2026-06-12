@@ -13,6 +13,7 @@ using System.Text;
 using System;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
+using System.Linq;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -50,8 +51,13 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowReactFrontend",
         policy =>
         {
-            var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() 
-                                 ?? new[] { "http://localhost:5173" };
+            var originsStr = builder.Configuration["Cors:AllowedOrigins"];
+            var allowedOrigins = string.IsNullOrWhiteSpace(originsStr)
+                ? new[] { "http://localhost:5173" }
+                : originsStr.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                            .Select(o => o.TrimEnd('/'))
+                            .ToArray();
+                            
             policy.WithOrigins(allowedOrigins)
                   .AllowAnyHeader()
                   .AllowAnyMethod();
