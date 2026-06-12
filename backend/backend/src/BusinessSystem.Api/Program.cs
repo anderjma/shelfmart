@@ -51,7 +51,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowReactFrontend",
         policy =>
         {
-            var originsStr = builder.Configuration["Cors:AllowedOrigins"];
+            var originsStr = builder.Configuration["Cors:AllowedOrigins"] ?? builder.Configuration["Cors:AllowedOrigins:0"];
             var allowedOrigins = string.IsNullOrWhiteSpace(originsStr)
                 ? new[] { "http://localhost:5173" }
                 : originsStr.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
