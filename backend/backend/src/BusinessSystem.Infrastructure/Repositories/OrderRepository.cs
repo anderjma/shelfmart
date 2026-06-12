@@ -51,15 +51,8 @@ public class OrderRepository : IOrderRepository
     // Este método actualiza el estado de la compra y propaga los cambios a las entidades subordinadas.
     public async Task UpdateOrderAsync(Order order)
     {
-        _context.Entry(order).State = EntityState.Modified;
-
-        foreach (var item in order.OrderItems)
-        {
-            if (_context.Entry(item).State == EntityState.Detached)
-            {
-                _context.Entry(item).State = EntityState.Added;
-            }
-        }
+        // EF Core automáticamente rastrea los cambios (nuevos OrderItems, cantidades modificadas, etc.)
+        // porque la entidad Order fue cargada en el mismo contexto (Scoped).
         await _context.SaveChangesAsync();
     }
 

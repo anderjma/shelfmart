@@ -24,7 +24,7 @@ public class UserService : IUserService
             throw new BadRequestResponseException("El nombre de usuario ya existe.");
         }
 
-        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(plainPassword);
+        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(plainPassword, 8);
         user.UserId = Guid.NewGuid();
 
         var createdUser = await _userRepository.AddAsync(user);
@@ -45,7 +45,7 @@ public class UserService : IUserService
             throw new BadRequestResponseException("El nombre de usuario ya existe.");
         }
 
-        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(plainPassword);
+        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(plainPassword, 8);
         user.UserId = Guid.NewGuid();
 
         var customerRole = await _userRepository.GetRoleByNameAsync("Customer");

@@ -21,7 +21,7 @@ public static class AppDbSeeder
                 Name = "Administrador",
                 Username = "admin",
                 Email = "admin@pyme.com",
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123!")
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123!", 8)
             };
             context.Users.Add(adminUser);
             context.SaveChanges();
