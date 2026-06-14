@@ -1,7 +1,13 @@
 // Este archivo integra las operaciones de inicio de sesión, manejo de sesión y decodificación de tokens en el frontend.
 import axiosClient from "../api/axiosClient";
 import { jwtDecode } from "jwt-decode";
-import type { UserFormData } from "../types/user";
+
+interface UserFormData {
+    name: string;
+    username: string;
+    email: string;
+    password?: string;
+}
 
 interface DecodedToken {
     role?: string;
