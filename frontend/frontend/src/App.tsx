@@ -15,10 +15,6 @@ const Contact = lazy(() => import("./pages/Contact"));
 const About = lazy(() => import("./pages/About"));
 const Profile = lazy(() => import("./pages/Profile"));
 const Cart = lazy(() => import("./pages/Cart"));
-const Dashboard = lazy(() => import("./pages/Dashboard"));
-const Users = lazy(() => import("./pages/Users"));
-const AuditDashboard = lazy(() => import("./pages/AuditDashboard"));
-const OrdersManager = lazy(() => import("./pages/OrdersManager"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 // Spinner de carga global mientras se resuelven los chunks
@@ -35,12 +31,6 @@ const PrivateRoute = ({ children }: { children: JSX.Element }) => {
     const { isAuthenticated, loading } = useAuth();
     if (loading) return <PageLoader />;
     return isAuthenticated ? children : <Navigate to="/login" />;
-};
-
-const AdminRoute = ({ children }: { children: JSX.Element }) => {
-    const { user, loading } = useAuth();
-    if (loading) return <PageLoader />;
-    return user?.role === "Admin" ? children : <Navigate to="/" />;
 };
 
 // Este componente enlaza las distintas páginas y restringe el acceso mediante roles específicos.
@@ -69,24 +59,6 @@ function App() {
                             <PrivateRoute>
                                 <Cart />
                             </PrivateRoute>
-                        } />
-
-                        {/* Privadas: Administradores */}
-                        <Route path="/admin/dashboard" element={
-                            <AdminRoute>
-                                <Dashboard />
-                            </AdminRoute>
-                        } />
-                        <Route path="/admin/users" element={
-                            <AdminRoute>
-                                <Users />
-                            </AdminRoute>
-                        } />
-                        <Route path="/admin/audit" element={<AdminRoute><AuditDashboard /></AdminRoute>} />
-                        <Route path="/admin/orders" element={
-                            <AdminRoute>
-                                <OrdersManager />
-                            </AdminRoute>
                         } />
 
                         {/* 404 — Ruta catch-all */}

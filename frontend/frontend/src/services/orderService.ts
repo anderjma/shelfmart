@@ -31,12 +31,6 @@ export const checkout = async () => {
     return response.data;
 };
 
-// Esta función recupera una lista administrativa de todas las órdenes procesadas por el negocio.
-export const getAllOrders = async () => {
-    const response = await axiosClient.get("/Orders/all");
-    return response.data;
-};
-
 // Esta función busca de manera exclusiva el historial de compras del cliente que actualmente ha iniciado sesión.
 export const getMyOrders = async () => {
     const response = await axiosClient.get("/Orders/my-orders");

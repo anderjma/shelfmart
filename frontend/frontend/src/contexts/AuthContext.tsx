@@ -11,7 +11,6 @@ export interface User {
 interface AuthContextType {
     user: User | null;
     isAuthenticated: boolean;
-    isAdmin: boolean;
     isCustomer: boolean;
     loading: boolean;
     login: (username: string, password: string) => Promise<unknown>;
@@ -42,7 +41,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     const isAuthenticated = !!user;
-    const isAdmin = user?.role === "Admin";
     const isCustomer = user?.role === "Customer";
 
     return (
@@ -50,7 +48,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             value={{
                 user,
                 isAuthenticated,
-                isAdmin,
                 isCustomer,
                 loading,
                 login,

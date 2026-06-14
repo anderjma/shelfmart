@@ -3,11 +3,11 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 // Este componente proporciona los enlaces de navegación dinámicos dependiendo del rol del usuario.
-import { User, LogOut, LogIn, ShoppingCart, Store, Menu, X, ShieldCheck } from "lucide-react";
+import { User, LogOut, LogIn, ShoppingCart, Store, Menu, X } from "lucide-react";
 
 export default function Navbar() {
     const navigate = useNavigate();
-    const { user, logout, isAdmin, isCustomer } = useAuth();
+    const { user, logout, isCustomer } = useAuth();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const handleLogout = () => {
@@ -33,11 +33,6 @@ export default function Navbar() {
                             <Link to="/catalogo" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Catálogo</Link>
                             <Link to="/nosotros" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Nosotros</Link>
                             <Link to="/contacto" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Contacto</Link>
-                            {isAdmin && (
-                                <Link to="/admin/dashboard" className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors flex items-center gap-1">
-                                    <ShieldCheck className="w-4 h-4" aria-hidden="true" /> Panel de Administración
-                                </Link>
-                            )}
                         </div>
                     </div>
 
@@ -86,11 +81,7 @@ export default function Navbar() {
                         <Link to="/catalogo" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-blue-600 rounded-md">Catálogo</Link>
                         <Link to="/nosotros" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-blue-600 rounded-md">Nosotros</Link>
                         <Link to="/contacto" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-blue-600 rounded-md">Contacto</Link>
-                        
-                        {isAdmin && (
-                            <Link to="/admin/dashboard" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-md">Panel Admin</Link>
-                        )}
-                        
+
                         <div className="border-t border-slate-100 my-2"></div>
                         
                         {user ? (

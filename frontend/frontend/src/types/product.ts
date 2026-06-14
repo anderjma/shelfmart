@@ -9,13 +9,3 @@ export interface Product {
     discountPercentage: number;
     createdAt: string;
 }
-
-// Esta interfaz establece los datos de entrada mínimos requeridos para crear o modificar un producto.
-export interface ProductFormData {
-    name: string;
-    category: string;
-    stock: number;
-    price: number;
-    imageUrl: string;
-    discountPercentage: number;
-}
