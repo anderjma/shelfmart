@@ -29,7 +29,6 @@ describe("Navbar Component", () => {
         vi.mocked(useAuth).mockReturnValue({
             user: null,
             isAuthenticated: false,
-            isAdmin: false,
             isCustomer: false,
             loading: false,
             login: vi.fn(),
@@ -60,7 +59,6 @@ describe("Navbar Component", () => {
                 username: "adminpepe"
             },
             isAuthenticated: true,
-            isAdmin: true,
             isCustomer: false,
             loading: false,
             login: vi.fn(),
@@ -74,14 +72,14 @@ describe("Navbar Component", () => {
             </MemoryRouter>
         );
 
-        // Esta validación comprueba la visualización de la interfaz de administrador.
+        // El panel de administración fue removido del frontend web; la gestión es via app MAUI.
         expect(screen.getByText("Administrador Pepe")).toBeInTheDocument();
-        expect(screen.getByText(/Panel de Administración/)).toBeInTheDocument();
+        expect(screen.queryByText(/Panel de Administración/)).not.toBeInTheDocument();
 
         // Esta validación comprueba la ocultación de enlaces públicos al autenticarse.
         expect(screen.queryByText("Entrar")).not.toBeInTheDocument();
         expect(screen.queryByText("Crear Cuenta")).not.toBeInTheDocument();
-        
+
         // Esta validación comprueba la ocultación del carrito para administradores.
         expect(screen.queryByLabelText("Ver carrito")).not.toBeInTheDocument();
     });
@@ -94,7 +92,6 @@ describe("Navbar Component", () => {
                 username: "juanito"
             },
             isAuthenticated: true,
-            isAdmin: false,
             isCustomer: true,
             loading: false,
             login: vi.fn(),
@@ -124,7 +121,6 @@ describe("Navbar Component", () => {
                 username: "activo"
             },
             isAuthenticated: true,
-            isAdmin: false,
             isCustomer: true,
             loading: false,
             login: vi.fn(),
