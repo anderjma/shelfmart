@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BusinessSystem.Api.Controllers;
 
-[Authorize]
+[Authorize(Roles = "Admin")]
 [ApiController]
 [Route("api/[controller]")]
 // Este controlador requiere privilegios administrativos para realizar cambios en los precios o la información de productos.

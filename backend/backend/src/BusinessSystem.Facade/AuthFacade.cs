@@ -33,7 +33,7 @@ public class AuthFacade : IAuthFacade
             Email = $"{request.Username}@empresa.com"
         };
 
-        return await _userService.CreateUserAsync(user, request.Password);
+        return await _userService.RegisterCustomerAsync(user, request.Password);
     }
 
     // Este método verifica la identidad del usuario y emite un JWT firmado válido para la sesión actual.

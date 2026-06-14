@@ -24,7 +24,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Sistema Empresarial API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Sistema de Inventario API", Version = "v1" });
 
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -102,8 +102,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.TokenValidationParameters = new TokenValidationParameters {
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)),
-            ValidateIssuer = false,
-            ValidateAudience = false
+            ValidateIssuer = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidateAudience = true,
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            ValidateLifetime = true
         };
     });
 
@@ -113,7 +116,7 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sistema Empresarial API v1");
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sistema de Inventario API v1");
     c.RoutePrefix = string.Empty; // Esta configuración establece Swagger como la raíz del sitio.
 });
 

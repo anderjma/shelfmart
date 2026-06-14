@@ -14,7 +14,7 @@ namespace BusinessSystem.Api.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
-// Este controlador enruta las solicitudes transaccionales dependiendo de los roles del usuario autenticado.
+// Este controlador enruta las solicitudes transaccionales de cualquier usuario autenticado.
 public class OrdersController : ControllerBase
 {
     private readonly IOrderService _orderService;
