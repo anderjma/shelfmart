@@ -1,0 +1,11 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        # Pasa VITE_API_URL durante el build para que Vite lo inyecte en los archivos estáticos
+        - VITE_API_URL=${VITE_API_URL:-http://localhost:5000/api}
+    ports:
+      - "${FRONTEND_PORT:-5173}:80"
+    restart: unless-stopped
