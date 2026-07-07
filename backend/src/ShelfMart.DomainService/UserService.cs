@@ -10,6 +10,7 @@ namespace ShelfMart.DomainService;
 public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
+    private static readonly string[] AssignableRoles = { "Admin", "Customer" };
 
     public UserService(IUserRepository userRepository)
     {
@@ -29,13 +30,7 @@ public class UserService : IUserService
 
         var createdUser = await _userRepository.AddAsync(user);
 
-        return new UserDto
-        {
-            UserResourceId = createdUser.UserId,
-            Name = createdUser.Name,
-            Username = createdUser.Username,
-            Email = createdUser.Email
-        };
+        return ToDto(createdUser);
     }
 
     public async Task<UserDto> RegisterCustomerAsync(User user, string plainPassword)
@@ -62,13 +57,7 @@ public class UserService : IUserService
 
         var createdUser = await _userRepository.AddAsync(user);
 
-        return new UserDto
-        {
-            UserResourceId = createdUser.UserId,
-            Name = createdUser.Name,
-            Username = createdUser.Username,
-            Email = createdUser.Email
-        };
+        return ToDto(createdUser);
     }
 
     public async Task<User?> ValidateUserCredentialsAsync(string username, string plainPassword)
@@ -85,12 +74,39 @@ public class UserService : IUserService
     public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
     {
         var users = await _userRepository.GetAllAsync();
-        return users.Select(u => new UserDto
+        return users.Select(ToDto);
+    }
+
+    // This method changes a user's role, restricted to the roles the admin panel is allowed to assign.
+    public async Task<UserDto> UpdateUserRoleAsync(Guid userId, string newRole)
+    {
+        if (!AssignableRoles.Contains(newRole))
         {
-            UserResourceId = u.UserId,
-            Name = u.Name,
-            Username = u.Username,
-            Email = u.Email
-        });
+            throw new BadRequestResponseException($"'{newRole}' is not a valid role. Allowed roles: {string.Join(", ", AssignableRoles)}.");
+        }
+
+        var user = await _userRepository.GetByIdAsync(userId);
+        if (user == null) throw new ResourceNotFoundException("User not found.");
+
+        var role = await _userRepository.GetRoleByNameAsync(newRole);
+        if (role == null) throw new ResourceNotFoundException($"Role '{newRole}' does not exist.");
+
+        await _userRepository.SetUserRoleAsync(user, role);
+
+        var updatedUser = await _userRepository.GetByIdAsync(userId);
+        return ToDto(updatedUser!);
+    }
+
+    // This method converts a user entity into its transfer object representation, including its current role.
+    private static UserDto ToDto(User user)
+    {
+        return new UserDto
+        {
+            UserResourceId = user.UserId,
+            Name = user.Name,
+            Username = user.Username,
+            Email = user.Email,
+            Role = user.UserRoles.Select(ur => ur.Role.Name).FirstOrDefault() ?? string.Empty
+        };
     }
 }

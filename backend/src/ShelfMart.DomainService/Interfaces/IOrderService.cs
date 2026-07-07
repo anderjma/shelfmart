@@ -1,3 +1,4 @@
+using ShelfMart.Domain.Enums;
 using ShelfMart.Dto;
 using System;
 using System.Collections.Generic;
@@ -15,4 +16,5 @@ public interface IOrderService
     Task<CartDto> CheckoutAsync(Guid userId);
     Task<IEnumerable<AdminOrderDto>> GetAllCompletedOrdersAsync();
     Task<IEnumerable<AdminOrderDto>> GetCustomerOrdersAsync(Guid userId);
+    Task<AdminOrderDto> UpdateOrderStatusAsync(Guid orderId, OrderStatus newStatus);
 }

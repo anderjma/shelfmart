@@ -33,4 +33,10 @@ public class UserFacade : IUserFacade
         };
         return await _userService.CreateUserAsync(user, dto.Password);
     }
+
+    // This method forwards a role change request to the domain service.
+    public async Task<UserDto> UpdateUserRoleAsync(Guid userId, string newRole)
+    {
+        return await _userService.UpdateUserRoleAsync(userId, newRole);
+    }
 }

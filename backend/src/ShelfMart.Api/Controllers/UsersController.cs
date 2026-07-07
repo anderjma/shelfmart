@@ -29,9 +29,23 @@ public class UsersController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateUserDto dto)
     {
-        try 
+        try
         {
             var result = await _userFacade.CreateUserAsync(dto);
+            return Ok(result);
+        }
+        catch (System.Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    [HttpPut("{id:guid}/role")]
+    public async Task<IActionResult> UpdateRole(System.Guid id, [FromBody] UpdateUserRoleDto dto)
+    {
+        try
+        {
+            var result = await _userFacade.UpdateUserRoleAsync(id, dto.Role);
             return Ok(result);
         }
         catch (System.Exception ex)

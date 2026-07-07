@@ -122,13 +122,28 @@ public class OrdersController : ControllerBase
         }
     }
 
+    // Restricted to administrators: this endpoint exposes every customer's completed orders.
+    [Authorize(Roles = "Admin")]
     [HttpGet("all")]
     public async Task<IActionResult> GetAllOrders()
     {
-        try 
+        try
         {
             var orders = await _orderService.GetAllCompletedOrdersAsync();
             return Ok(orders);
+        }
+        catch (Exception ex) { return BadRequest(new { message = ex.Message }); }
+    }
+
+    // Allows an administrator to move an order to a new status (e.g. Confirmed, Shipped, Delivered, Cancelled).
+    [Authorize(Roles = "Admin")]
+    [HttpPut("{orderId:guid}/status")]
+    public async Task<IActionResult> UpdateOrderStatus(Guid orderId, [FromBody] UpdateOrderStatusDto dto)
+    {
+        try
+        {
+            var order = await _orderService.UpdateOrderStatusAsync(orderId, dto.Status);
+            return Ok(order);
         }
         catch (Exception ex) { return BadRequest(new { message = ex.Message }); }
     }

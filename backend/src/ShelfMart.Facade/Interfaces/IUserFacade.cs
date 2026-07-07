@@ -8,4 +8,5 @@ public interface IUserFacade
 {
     Task<IEnumerable<UserDto>> GetAllUsersAsync();
     Task<UserDto> CreateUserAsync(CreateUserDto dto);
+    Task<UserDto> UpdateUserRoleAsync(Guid userId, string newRole);
 }

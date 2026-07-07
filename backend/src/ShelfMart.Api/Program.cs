@@ -18,7 +18,13 @@ using System.Linq;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+// Enums are serialized as their string names (e.g. "Confirmed") rather than numeric values,
+// so API consumers do not need to hardcode the underlying enum ordinals.
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+    });
 
 // This block configures Swagger in a stable manner.
 builder.Services.AddEndpointsApiExplorer();
@@ -89,6 +95,10 @@ builder.Services.AddScoped<IUserFacade, UserFacade>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductFacade, ProductFacade>();
+
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<ICategoryFacade, CategoryFacade>();
 
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>();
