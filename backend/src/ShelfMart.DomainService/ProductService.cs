@@ -30,17 +30,7 @@ public class ProductService : IProductService
         if (!_cache.TryGetValue(AllProductsCacheKey, out IEnumerable<ProductDto>? cachedProducts))
         {
             var products = await _productRepository.GetAllAsync();
-            cachedProducts = products.Select(p => new ProductDto
-            {
-                ProductResourceId = p.ProductResourceId,
-                Name = p.Name,
-                Category = p.Category,
-                Stock = p.Stock,
-                Price = p.Price,
-                ImageUrl = p.ImageUrl,
-                DiscountPercentage = p.DiscountPercentage,
-                CreatedAt = p.CreatedAt
-            }).ToList();
+            cachedProducts = products.Select(ToDto).ToList();
 
             var cacheEntryOptions = new MemoryCacheEntryOptions()
                 .SetAbsoluteExpiration(TimeSpan.FromMinutes(15));
@@ -55,22 +45,10 @@ public class ProductService : IProductService
     public async Task<PaginatedResultDto<ProductDto>> GetPaginatedProductsAsync(int page, int pageSize, string? search, string? category)
     {
         var (items, totalCount) = await _productRepository.GetPaginatedAsync(page, pageSize, search, category);
-        
-        var dtos = items.Select(p => new ProductDto
-        {
-            ProductResourceId = p.ProductResourceId,
-            Name = p.Name,
-            Category = p.Category,
-            Stock = p.Stock,
-            Price = p.Price,
-            ImageUrl = p.ImageUrl,
-            DiscountPercentage = p.DiscountPercentage,
-            CreatedAt = p.CreatedAt
-        }).ToList();
 
         return new PaginatedResultDto<ProductDto>
         {
-            Items = dtos,
+            Items = items.Select(ToDto).ToList(),
             TotalCount = totalCount,
             Page = page,
             PageSize = pageSize
@@ -83,17 +61,7 @@ public class ProductService : IProductService
         var product = await _productRepository.GetByIdAsync(id);
         if (product == null) throw new ResourceNotFoundException("Product not found.");
 
-        return new ProductDto
-        {
-            ProductResourceId = product.ProductResourceId,
-            Name = product.Name,
-            Category = product.Category,
-            Stock = product.Stock,
-            Price = product.Price,
-            ImageUrl = product.ImageUrl,
-            DiscountPercentage = product.DiscountPercentage,
-            CreatedAt = product.CreatedAt
-        };
+        return ToDto(product);
     }
 
     // This method initializes and persists a new product in the inventory, applying default values if necessary.
@@ -114,17 +82,7 @@ public class ProductService : IProductService
         var createdProduct = await _productRepository.AddAsync(product);
         _cache.Remove(AllProductsCacheKey);
 
-        return new ProductDto
-        {
-            ProductResourceId = createdProduct.ProductResourceId,
-            Name = createdProduct.Name,
-            Category = createdProduct.Category,
-            Stock = createdProduct.Stock,
-            Price = createdProduct.Price,
-            ImageUrl = createdProduct.ImageUrl,
-            DiscountPercentage = createdProduct.DiscountPercentage,
-            CreatedAt = createdProduct.CreatedAt
-        };
+        return ToDto(createdProduct);
     }
 
     // This method updates the modifiable properties of an existing product while ensuring data integrity.
@@ -137,13 +95,13 @@ public class ProductService : IProductService
         product.Stock = dto.Stock;
         product.Price = dto.Price;
         product.DiscountPercentage = dto.DiscountPercentage;
-        
+
         if (!string.IsNullOrWhiteSpace(dto.Category))
         {
             product.Category = dto.Category;
         }
-        
-        if (!string.IsNullOrEmpty(dto.ImageUrl)) 
+
+        if (!string.IsNullOrEmpty(dto.ImageUrl))
         {
             product.ImageUrl = dto.ImageUrl;
         }
@@ -151,6 +109,24 @@ public class ProductService : IProductService
         await _productRepository.UpdateAsync(product);
         _cache.Remove(AllProductsCacheKey);
 
+        return ToDto(product);
+    }
+
+    // This method deactivates a product instead of permanently deleting it, preserving its history
+    // (e.g. past order items) while excluding it from default catalog queries.
+    public async Task DeleteProductAsync(Guid id)
+    {
+        var product = await _productRepository.GetByIdAsync(id);
+        if (product == null) throw new ResourceNotFoundException("Product not found.");
+
+        product.IsActive = false;
+        await _productRepository.UpdateAsync(product);
+        _cache.Remove(AllProductsCacheKey);
+    }
+
+    // This method converts a product entity into its transfer object representation.
+    private static ProductDto ToDto(Product product)
+    {
         return new ProductDto
         {
             ProductResourceId = product.ProductResourceId,
@@ -162,15 +138,5 @@ public class ProductService : IProductService
             DiscountPercentage = product.DiscountPercentage,
             CreatedAt = product.CreatedAt
         };
-    }
-
-    // This method permanently deletes a product from the system after confirming its existence.
-    public async Task DeleteProductAsync(Guid id)
-    {
-        var product = await _productRepository.GetByIdAsync(id);
-        if (product == null) throw new ResourceNotFoundException("Product not found.");
-
-        await _productRepository.DeleteAsync(product);
-        _cache.Remove(AllProductsCacheKey);
     }
 }

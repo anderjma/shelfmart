@@ -10,7 +10,8 @@ public interface IAuditRepository
     Task<decimal> GetTotalRevenueAsync();
     Task<int> GetTotalCompletedOrdersAsync();
     Task<int> GetLowStockProductsCountAsync();
-    Task<IEnumerable<AuditLog>> GetRecentAuditLogsAsync(int count);
+    Task<int> GetTotalCustomersCountAsync();
+    Task<(IEnumerable<AuditLog> Items, int TotalCount)> GetPaginatedAuditLogsAsync(int page, int pageSize);
     Task LogActionAsync(AuditLog log);
     Task<IEnumerable<Order>> GetOrdersFromLastDaysAsync(int days);
 }

@@ -28,9 +28,9 @@ public class AuditController : ControllerBase
     }
 
     [HttpGet("logs")]
-    public async Task<IActionResult> GetLogs()
+    public async Task<IActionResult> GetLogs([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
     {
-        var logs = await _auditService.GetAuditLogsAsync();
+        var logs = await _auditService.GetAuditLogsAsync(page, pageSize);
         return Ok(logs);
     }
 }

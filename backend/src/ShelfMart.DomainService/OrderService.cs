@@ -1,5 +1,6 @@
 // This file centralizes the business rules for processing and managing shopping carts and orders.
 using ShelfMart.Domain.Entities;
+using ShelfMart.Domain.Enums;
 using ShelfMart.DomainService.Interfaces;
 using ShelfMart.Dto;
 using ShelfMart.Exceptions;
@@ -35,40 +36,14 @@ public class OrderService : IOrderService
     public async Task<IEnumerable<AdminOrderDto>> GetAllCompletedOrdersAsync()
     {
         var orders = await _orderRepository.GetAllCompletedOrdersAsync();
-        return orders.Select(o => new AdminOrderDto
-        {
-            OrderId = o.OrderId,
-            CustomerUsername = o.User?.Username ?? "Unknown Customer",
-            TotalAmount = o.TotalAmount,
-            Status = o.Status,
-            Items = o.OrderItems.Select(i => new CartItemDto
-            {
-                ProductId = i.ProductResourceId,
-                ProductName = i.Product?.Name ?? "Unknown",
-                Quantity = i.Quantity,
-                UnitPrice = i.UnitPrice
-            }).ToList()
-        });
+        return orders.Select(MapToAdminOrderDto);
     }
 
     // This method retrieves the previous purchase history made by a specific customer.
     public async Task<IEnumerable<AdminOrderDto>> GetCustomerOrdersAsync(Guid userId)
     {
         var orders = await _orderRepository.GetOrdersByUserIdAsync(userId);
-        return orders.Select(o => new AdminOrderDto
-        {
-            OrderId = o.OrderId,
-            CustomerUsername = o.User?.Username ?? "Customer",
-            TotalAmount = o.TotalAmount,
-            Status = o.Status,
-            Items = o.OrderItems.Select(i => new CartItemDto
-            {
-                ProductId = i.ProductResourceId,
-                ProductName = i.Product?.Name ?? "Unknown",
-                Quantity = i.Quantity,
-                UnitPrice = i.UnitPrice
-            }).ToList()
-        });
+        return orders.Select(MapToAdminOrderDto);
     }
 
     // This method processes adding a product to the cart, creating the order if necessary and consolidating quantities.
@@ -82,7 +57,7 @@ public class OrderService : IOrderService
         
         if (cart == null)
         {
-            cart = new Order { UserResourceId = userId };
+            cart = Order.CreateCart(userId);
             isNewCart = true;
         }
 
@@ -127,7 +102,7 @@ public class OrderService : IOrderService
         {
             var product = await _productRepository.GetByIdAsync(productId);
             if (product == null) throw new NotFoundResponseException("Product not found.");
-            if (product.Stock < quantity) throw new BadRequestResponseException($"Insufficient stock. Available stock: {product.Stock}");
+            if (product.Stock < quantity) throw new InsufficientStockException($"Insufficient stock. Available stock: {product.Stock}");
 
             item.Quantity = quantity;
         }
@@ -156,34 +131,89 @@ public class OrderService : IOrderService
     }
 
     // This method validates available inventory, deducts stock, and finalizes the order transaction.
+    // Wrapped in an explicit transaction so two concurrent checkouts cannot both pass stock validation for the same product.
     public async Task<CartDto> CheckoutAsync(Guid userId)
     {
-        var cart = await _orderRepository.GetActiveCartByUserIdAsync(userId);
-        if (cart == null || !cart.OrderItems.Any()) throw new BadRequestResponseException("The cart is empty.");
-
-        foreach (var item in cart.OrderItems)
+        return await _orderRepository.ExecuteInTransactionAsync(async () =>
         {
-            var product = await _productRepository.GetByIdAsync(item.ProductResourceId);
-            if (product == null) throw new NotFoundResponseException($"Product does not exist.");
-            if (product.Stock < item.Quantity) throw new BadRequestResponseException($"Insufficient stock.");
+            var cart = await _orderRepository.GetActiveCartByUserIdAsync(userId);
+            if (cart == null || !cart.OrderItems.Any()) throw new BadRequestResponseException("The cart is empty.");
 
-            product.Stock -= item.Quantity;
+            foreach (var item in cart.OrderItems)
+            {
+                var product = await _productRepository.GetByIdAsync(item.ProductResourceId);
+                if (product == null) throw new NotFoundResponseException($"Product does not exist.");
+                if (product.Stock < item.Quantity) throw new InsufficientStockException("Insufficient stock.");
+
+                product.Stock -= item.Quantity;
+            }
+
+            cart.MarkAsPending();
+            await _orderRepository.UpdateOrderAsync(cart);
+
+            return MapToCartDto(cart);
+        });
+    }
+
+    // This method transitions an order to a new status. Cancellation goes through the entity's own
+    // invariant check; other transitions are plain assignments since no workflow engine is enforced yet.
+    public async Task<AdminOrderDto> UpdateOrderStatusAsync(Guid orderId, OrderStatus newStatus)
+    {
+        var order = await _orderRepository.GetByIdAsync(orderId);
+        if (order == null) throw new NotFoundResponseException("Order not found.");
+
+        if (newStatus == OrderStatus.Cart)
+        {
+            throw new BadRequestResponseException("An order cannot be moved back to the Cart status.");
         }
 
-        cart.Status = "Completed";
-        cart.CreatedAt = DateTime.UtcNow;
-        await _orderRepository.UpdateOrderAsync(cart);
+        try
+        {
+            if (newStatus == OrderStatus.Cancelled)
+            {
+                order.Cancel();
+            }
+            else
+            {
+                order.Status = newStatus;
+            }
+        }
+        catch (InvalidOperationException ex)
+        {
+            throw new BadRequestResponseException(ex.Message);
+        }
 
-        return MapToCartDto(cart);
+        await _orderRepository.UpdateOrderAsync(order);
+
+        return MapToAdminOrderDto(order);
     }
 
     // This method converts the database entity into a safe, standardized format for transmission to the client.
-    private CartDto MapToCartDto(Order order)
+    private static CartDto MapToCartDto(Order order)
     {
         return new CartDto
         {
             OrderId = order.OrderId,
             TotalAmount = order.TotalAmount,
+            Items = order.OrderItems.Select(i => new CartItemDto
+            {
+                ProductId = i.ProductResourceId,
+                ProductName = i.Product?.Name ?? "Unknown",
+                Quantity = i.Quantity,
+                UnitPrice = i.UnitPrice
+            }).ToList()
+        };
+    }
+
+    // This method converts an order entity into the administrative representation used for reporting.
+    private static AdminOrderDto MapToAdminOrderDto(Order order)
+    {
+        return new AdminOrderDto
+        {
+            OrderId = order.OrderId,
+            CustomerUsername = order.User?.Username ?? "Unknown Customer",
+            TotalAmount = order.TotalAmount,
+            Status = order.Status.ToString(),
             Items = order.OrderItems.Select(i => new CartItemDto
             {
                 ProductId = i.ProductResourceId,

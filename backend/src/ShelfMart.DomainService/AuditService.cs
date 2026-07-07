@@ -1,6 +1,7 @@
 // This file contains the logic for managing and collecting the system's audit records.
 using ShelfMart.Domain.Entities;
 using ShelfMart.DomainService.Interfaces;
+using ShelfMart.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,15 +20,16 @@ public class AuditService : IAuditService
     }
 
     // This method consolidates the global business metrics for display on the main dashboard.
-    public async Task<object> GetDashboardStatsAsync()
+    public async Task<DashboardStatsDto> GetDashboardStatsAsync()
     {
         var totalRevenue = await _auditRepository.GetTotalRevenueAsync();
         var totalOrders = await _auditRepository.GetTotalCompletedOrdersAsync();
         var lowStock = await _auditRepository.GetLowStockProductsCountAsync();
+        var totalCustomers = await _auditRepository.GetTotalCustomersCountAsync();
 
         var recentOrders = await _auditRepository.GetOrdersFromLastDaysAsync(5);
 
-        var chart = new List<object>();
+        var chart = new List<SalesChartPointDto>();
         var culture = System.Globalization.CultureInfo.InvariantCulture;
 
         // This block builds the sales chart day by day, from four days ago through today.
@@ -44,27 +46,37 @@ public class AuditService : IAuditService
             var dayName = culture.DateTimeFormat.GetAbbreviatedDayName(targetDate.DayOfWeek);
             dayName = char.ToUpper(dayName[0]) + dayName.Substring(1).Replace(".", "");
 
-            chart.Add(new { date = dayName, total = dailyTotal });
+            chart.Add(new SalesChartPointDto { Date = dayName, Total = dailyTotal });
         }
 
-        return new {
-            revenue = totalRevenue,
-            orders = totalOrders,
-            lowStock = lowStock,
-            salesChart = chart
+        return new DashboardStatsDto
+        {
+            Revenue = totalRevenue,
+            Orders = totalOrders,
+            LowStock = lowStock,
+            TotalCustomers = totalCustomers,
+            SalesChart = chart
         };
     }
 
-    // This method retrieves the complete audit history ordered descending by date.
-    public async Task<IEnumerable<object>> GetAuditLogsAsync()
+    // This method retrieves a page of the audit history, most recent first.
+    public async Task<PaginatedResultDto<AuditLogDto>> GetAuditLogsAsync(int page, int pageSize)
     {
-        var logs = await _auditRepository.GetRecentAuditLogsAsync(50);
-        return logs.Select(a => new {
-            id = a.AuditLogId,
-            user = a.Username,
-            action = a.Action,
-            timestamp = a.Timestamp
-        });
+        var (logs, totalCount) = await _auditRepository.GetPaginatedAuditLogsAsync(page, pageSize);
+
+        return new PaginatedResultDto<AuditLogDto>
+        {
+            Items = logs.Select(a => new AuditLogDto
+            {
+                AuditLogId = a.AuditLogId,
+                User = a.Username,
+                Action = a.Action,
+                Timestamp = a.Timestamp
+            }).ToList(),
+            TotalCount = totalCount,
+            Page = page,
+            PageSize = pageSize
+        };
     }
 
     // This method persistently logs the actions performed by users.

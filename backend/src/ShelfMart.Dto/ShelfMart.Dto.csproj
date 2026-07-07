@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ShelfMart.Domain\ShelfMart.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

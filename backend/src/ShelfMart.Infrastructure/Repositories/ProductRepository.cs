@@ -4,6 +4,7 @@ using ShelfMart.DomainService.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ShelfMart.Infrastructure.Repositories;
@@ -18,16 +19,23 @@ public class ProductRepository : IProductRepository
         _context = context;
     }
 
-    // This method retrieves the entire catalog available in the database without applying additional filters.
-    public async Task<IEnumerable<Product>> GetAllAsync()
+    // This method retrieves the product catalog. By default, inactive (soft-deleted) products are excluded.
+    public async Task<IEnumerable<Product>> GetAllAsync(bool includeInactive = false)
     {
-        return await _context.Products.AsNoTracking().ToListAsync();
+        var query = _context.Products.AsNoTracking().AsQueryable();
+        if (!includeInactive)
+        {
+            query = query.Where(p => p.IsActive);
+        }
+
+        return await query.ToListAsync();
     }
 
     // This method retrieves the available catalog, filtered and paginated at the database level.
+    // Inactive (soft-deleted) products are always excluded, since this method backs customer-facing listings.
     public async Task<(IEnumerable<Product> Items, int TotalCount)> GetPaginatedAsync(int page, int pageSize, string? search, string? category)
     {
-        var query = _context.Products.AsQueryable();
+        var query = _context.Products.Where(p => p.IsActive).AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(search))
         {

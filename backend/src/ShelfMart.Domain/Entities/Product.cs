@@ -17,6 +17,9 @@ public class Product
     // New real properties for marketing!
     public decimal DiscountPercentage { get; set; } = 0;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    
+
+    // Soft-delete flag: inactive products are excluded from default catalog queries but remain in the database.
+    public bool IsActive { get; set; } = true;
+
     public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 }
