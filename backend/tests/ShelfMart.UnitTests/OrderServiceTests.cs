@@ -1,5 +1,6 @@
 using FluentAssertions;
 using ShelfMart.Domain.Entities;
+using ShelfMart.Domain.Enums;
 using ShelfMart.DomainService;
 using ShelfMart.DomainService.Interfaces;
 using ShelfMart.Dto;
@@ -24,6 +25,11 @@ public class OrderServiceTests
         _orderRepository = Substitute.For<IOrderRepository>();
         _productRepository = Substitute.For<IProductRepository>();
         _orderService = new OrderService(_orderRepository, _productRepository);
+
+        // CheckoutAsync wraps its body in ExecuteInTransactionAsync; the substitute must invoke
+        // the delegate it receives so tests exercise the real logic instead of getting a default value.
+        _orderRepository.ExecuteInTransactionAsync(Arg.Any<Func<Task<CartDto>>>())
+            .Returns(callInfo => callInfo.Arg<Func<Task<CartDto>>>()());
     }
 
     #region AddItemToCartAsync Tests
@@ -127,6 +133,36 @@ public class OrderServiceTests
 
     #endregion
 
+    #region UpdateItemQuantityAsync Tests
+
+    [Fact]
+    public async Task UpdateItemQuantityAsync_ShouldThrowInsufficientStockException_WhenStockIsInsufficient()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+        var product = new Product { ProductResourceId = Guid.NewGuid(), Name = "Product A", Price = 100, Stock = 2 };
+        var cart = new Order
+        {
+            UserResourceId = userId,
+            OrderItems = new List<OrderItem>
+            {
+                new OrderItem { ProductResourceId = product.ProductResourceId, Quantity = 1, UnitPrice = 100 }
+            }
+        };
+
+        _orderRepository.GetActiveCartByUserIdAsync(userId).Returns(cart);
+        _productRepository.GetByIdAsync(product.ProductResourceId).Returns(product);
+
+        // Act
+        Func<Task> act = async () => await _orderService.UpdateItemQuantityAsync(userId, product.ProductResourceId, 5);
+
+        // Assert
+        await act.Should().ThrowAsync<InsufficientStockException>()
+            .WithMessage("Insufficient stock. Available stock: 2");
+    }
+
+    #endregion
+
     #region CheckoutAsync Tests
 
     [Fact]
@@ -171,7 +207,7 @@ public class OrderServiceTests
     }
 
     [Fact]
-    public async Task CheckoutAsync_ShouldThrowBadRequestResponseException_WhenStockIsInsufficient()
+    public async Task CheckoutAsync_ShouldThrowInsufficientStockException_WhenStockIsInsufficient()
     {
         // Arrange
         var userId = Guid.NewGuid();
@@ -203,7 +239,7 @@ public class OrderServiceTests
         Func<Task> act = async () => await _orderService.CheckoutAsync(userId);
 
         // Assert
-        await act.Should().ThrowAsync<BadRequestResponseException>()
+        await act.Should().ThrowAsync<InsufficientStockException>()
             .WithMessage("Insufficient stock.");
     }
 
@@ -232,7 +268,7 @@ public class OrderServiceTests
                 }
             },
             TotalAmount = 300,
-            Status = "Cart"
+            Status = OrderStatus.Cart
         };
 
         _orderRepository.GetActiveCartByUserIdAsync(userId).Returns(cart);
@@ -244,10 +280,39 @@ public class OrderServiceTests
         // Assert
         result.Should().NotBeNull();
         product.Stock.Should().Be(7); // Reduced from 10 to 7
-        cart.Status.Should().Be("Completed");
+        cart.Status.Should().Be(OrderStatus.Pending);
         cart.CreatedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
 
         await _orderRepository.Received(1).UpdateOrderAsync(cart);
+    }
+
+    [Fact]
+    public async Task CheckoutAsync_ShouldWrapOperationInExecuteInTransactionAsync()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+        var product = new Product { ProductResourceId = Guid.NewGuid(), Name = "Product A", Price = 100, Stock = 10 };
+        var cart = new Order
+        {
+            UserResourceId = userId,
+            OrderItems = new List<OrderItem>
+            {
+                new OrderItem { ProductResourceId = product.ProductResourceId, Quantity = 3, UnitPrice = 100 }
+            },
+            TotalAmount = 300,
+            Status = OrderStatus.Cart
+        };
+
+        _orderRepository.GetActiveCartByUserIdAsync(userId).Returns(cart);
+        _productRepository.GetByIdAsync(product.ProductResourceId).Returns(product);
+
+        // Act
+        await _orderService.CheckoutAsync(userId);
+
+        // Assert
+        // Ensures concurrent checkouts cannot both pass stock validation for the same product:
+        // the whole validate-and-deduct flow must run inside a single explicit transaction.
+        await _orderRepository.Received(1).ExecuteInTransactionAsync(Arg.Any<Func<Task<CartDto>>>());
     }
 
     #endregion
