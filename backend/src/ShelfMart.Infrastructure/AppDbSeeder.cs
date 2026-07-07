@@ -26,12 +26,23 @@ public static class AppDbSeeder
             context.Users.Add(adminUser);
             context.SaveChanges();
 
-            context.UserRoles.Add(new UserRole { 
-                UserId = adminUser.UserId, 
+            context.UserRoles.Add(new UserRole {
+                UserId = adminUser.UserId,
                 RoleId = adminRole.RoleId,
                 User = adminUser,
                 Role = adminRole
             });
+            context.SaveChanges();
+        }
+
+        if (!context.Categories.Any())
+        {
+            context.Categories.AddRange(
+                new Category { Name = "General" },
+                new Category { Name = "Electronics" },
+                new Category { Name = "Groceries" },
+                new Category { Name = "Home" }
+            );
             context.SaveChanges();
         }
     }

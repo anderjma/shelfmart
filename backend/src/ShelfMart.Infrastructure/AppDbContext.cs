@@ -15,9 +15,12 @@ public class AppDbContext : DbContext
     public DbSet<UserRole> UserRoles { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
-    
+
     // This property defines the audit log records table.
     public DbSet<AuditLog> AuditLogs { get; set; }
+
+    // This property defines the reference catalog of product categories.
+    public DbSet<Category> Categories { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -45,5 +48,13 @@ public class AppDbContext : DbContext
             .HasOne(o => o.User)
             .WithMany()
             .HasForeignKey(o => o.UserResourceId);
+
+        modelBuilder.Entity<Order>()
+            .Property(o => o.Status)
+            .HasConversion<string>()
+            .HasMaxLength(20);
+
+        modelBuilder.Entity<Category>().HasKey(c => c.CategoryId);
+        modelBuilder.Entity<Category>().HasIndex(c => c.Name).IsUnique();
     }
 }

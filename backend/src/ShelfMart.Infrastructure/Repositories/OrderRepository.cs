@@ -1,5 +1,6 @@
 // This file implements transactional saving and hierarchical querying of orders and their items.
 using ShelfMart.Domain.Entities;
+using ShelfMart.Domain.Enums;
 using ShelfMart.DomainService.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -25,7 +26,17 @@ public class OrderRepository : IOrderRepository
         return await _context.Orders
             .Include(o => o.OrderItems)
             .ThenInclude(oi => oi.Product)
-            .FirstOrDefaultAsync(o => o.UserResourceId == userId && o.Status == "Cart");
+            .FirstOrDefaultAsync(o => o.UserResourceId == userId && o.Status == OrderStatus.Cart);
+    }
+
+    // This method retrieves a single order by its identifier, including its items.
+    public async Task<Order?> GetByIdAsync(Guid orderId)
+    {
+        return await _context.Orders
+            .Include(o => o.User)
+            .Include(o => o.OrderItems)
+            .ThenInclude(oi => oi.Product)
+            .FirstOrDefaultAsync(o => o.OrderId == orderId);
     }
 
     // This method retrieves all orders that have gone through the successful final payment process.
@@ -35,7 +46,7 @@ public class OrderRepository : IOrderRepository
             .Include(o => o.User)
             .Include(o => o.OrderItems)
             .ThenInclude(oi => oi.Product)
-            .Where(o => o.Status != "Cart")
+            .Where(o => o.Status != OrderStatus.Cart)
             .OrderByDescending(o => o.OrderId)
             .ToListAsync();
     }
@@ -63,8 +74,21 @@ public class OrderRepository : IOrderRepository
             .Include(o => o.User)
             .Include(o => o.OrderItems)
             .ThenInclude(oi => oi.Product)
-            .Where(o => o.UserResourceId == userId && o.Status == "Completed")
+            .Where(o => o.UserResourceId == userId && o.Status == OrderStatus.Pending)
             .OrderByDescending(o => o.OrderId)
             .ToListAsync();
+    }
+
+    // Executes the given operation within an explicit database transaction, committing on success and rolling back on failure.
+    public async Task<T> ExecuteInTransactionAsync<T>(Func<Task<T>> operation)
+    {
+        var strategy = _context.Database.CreateExecutionStrategy();
+        return await strategy.ExecuteAsync(async () =>
+        {
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+            var result = await operation();
+            await transaction.CommitAsync();
+            return result;
+        });
     }
 }
