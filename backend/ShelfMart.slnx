@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ShelfMart.Api/ShelfMart.Api.csproj" />
+    <Project Path="src/ShelfMart.Domain/ShelfMart.Domain.csproj" />
+    <Project Path="src/ShelfMart.DomainService/ShelfMart.DomainService.csproj" />
+    <Project Path="src/ShelfMart.Dto/ShelfMart.Dto.csproj" />
+    <Project Path="src/ShelfMart.Exceptions/ShelfMart.Exceptions.csproj" />
+    <Project Path="src/ShelfMart.Facade/ShelfMart.Facade.csproj" />
+    <Project Path="src/ShelfMart.Infrastructure/ShelfMart.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ShelfMart.UnitTests/ShelfMart.UnitTests.csproj" />
+  </Folder>
+</Solution>
