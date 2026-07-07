@@ -7,7 +7,7 @@ import { User, LogOut, LogIn, ShoppingCart, Store, Menu, X } from "lucide-react"
 
 export default function Navbar() {
     const navigate = useNavigate();
-    const { user, logout, isCustomer } = useAuth();
+    const { user, logout, isCustomer, isAdmin } = useAuth();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const handleLogout = () => {
@@ -33,6 +33,9 @@ export default function Navbar() {
                             <Link to="/catalog" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Catalog</Link>
                             <Link to="/about" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">About</Link>
                             <Link to="/contact" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Contact</Link>
+                            {isAdmin && (
+                                <Link to="/admin" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Admin</Link>
+                            )}
                         </div>
                     </div>
 
@@ -81,6 +84,9 @@ export default function Navbar() {
                         <Link to="/catalog" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-blue-600 rounded-md">Catalog</Link>
                         <Link to="/about" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-blue-600 rounded-md">About</Link>
                         <Link to="/contact" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-blue-600 rounded-md">Contact</Link>
+                        {isAdmin && (
+                            <Link to="/admin" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-blue-600 rounded-md">Admin</Link>
+                        )}
 
                         <div className="border-t border-slate-100 my-2"></div>
 

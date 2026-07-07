@@ -1,2 +1,2 @@
-// TODO: implement dashboard feature
-export {};
+export { default as Dashboard } from "./components/Dashboard";
+export * from "./api/dashboardService";

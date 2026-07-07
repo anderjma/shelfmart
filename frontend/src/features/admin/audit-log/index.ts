@@ -1,2 +1,2 @@
-// TODO: implement audit-log feature
-export {};
+export { default as AuditLogTable } from "./components/AuditLogTable";
+export * from "./api/auditLogService";

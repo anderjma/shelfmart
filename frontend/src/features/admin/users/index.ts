@@ -1,2 +1,2 @@
-// TODO: implement users feature
-export {};
+export { default as UsersAdmin } from "./components/UsersAdmin";
+export * from "./api/adminUserService";
