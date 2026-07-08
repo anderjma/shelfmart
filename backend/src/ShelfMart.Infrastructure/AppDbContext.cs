@@ -35,6 +35,10 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<UserRole>().HasOne(ur => ur.Role).WithMany(r => r.UserRoles).HasForeignKey(ur => ur.RoleId);
 
         modelBuilder.Entity<OrderItem>()
+            .Property(oi => oi.OrderItemId)
+            .ValueGeneratedNever();
+
+        modelBuilder.Entity<OrderItem>()
             .HasOne(oi => oi.Order)
             .WithMany(o => o.OrderItems)
             .HasForeignKey(oi => oi.OrderId);
