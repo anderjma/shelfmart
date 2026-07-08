@@ -22,6 +22,13 @@ WORKDIR /app
 
 COPY --from=build /app/publish .
 
+# Npgsql requires GSSAPI/Kerberos libraries at runtime to negotiate SSL connections to PostgreSQL.
+RUN if [ -f /etc/os-release ] && grep -qi alpine /etc/os-release; then \
+        apk add --no-cache krb5-libs; \
+    else \
+        apt-get update && apt-get install -y --no-install-recommends libkrb5-3 && rm -rf /var/lib/apt/lists/*; \
+    fi
+
 EXPOSE 8080
 ENV ASPNETCORE_URLS=http://+:8080
 ENV ASPNETCORE_ENVIRONMENT=Production
