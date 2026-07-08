@@ -52,3 +52,23 @@ The solution is structured into individual projects that logically divide the ap
 *   **Security and Authorization:** Implements role-based authorization policies (`Admin`, `Customer`, etc.) to protect critical routes.
 *   **Operation Transactionality:** Manages atomic transactions when placing orders and updating stock to prevent inventory inconsistencies.
 *   **Asynchronous Programming:** Extensive use of `async/await` in database communication to improve server performance and scalability.
+
+---
+
+## Health Check
+
+The API exposes `GET /health`, returning `200 OK` with a JSON body containing the service status and a UTC timestamp. This endpoint is used by Docker Compose and Northflank for container health checks.
+
+---
+
+## Deployment (Northflank)
+
+The backend is deployed to [Northflank](https://northflank.com) from this repository's `backend/Dockerfile`, which is auto-detected on push to `main`. The container listens on port `8080` and reads its configuration from environment variables:
+
+| Variable | Description |
+| :--- | :--- |
+| `DATABASE_URL` | Not read directly by the app; map it to `ConnectionStrings__DefaultConnection` (Npgsql connection string, e.g. `Host=...;Port=5432;Database=...;Username=...;Password=...;SSL Mode=Require;`). |
+| `JWT_SECRET` | Maps to `Jwt__Key`. Secret key used to sign and validate JWTs, at least 32 characters. |
+| `CORS_ALLOWED_ORIGINS` | Maps to `Cors__AllowedOrigins`. Comma-separated list of origins allowed to call the API (e.g. the GitHub Pages frontend URL). |
+
+ASP.NET Core reads double-underscore (`__`) separated environment variables as nested configuration keys, so `DATABASE_URL` and `CORS_ALLOWED_ORIGINS` must be set on the platform using their `ConnectionStrings__DefaultConnection` / `Cors__AllowedOrigins` names, or mapped to those names via the platform's environment variable configuration.
