@@ -1,8 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\BusinessSystem.DomainService\BusinessSystem.DomainService.csproj" />
-    <ProjectReference Include="..\BusinessSystem.Dto\BusinessSystem.Dto.csproj" />
     <ProjectReference Include="..\BusinessSystem.Infrastructure\BusinessSystem.Infrastructure.csproj" />
   </ItemGroup>
 

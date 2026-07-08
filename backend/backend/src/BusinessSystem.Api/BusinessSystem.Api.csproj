@@ -21,8 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BusinessSystem.Facade\BusinessSystem.Facade.csproj" />
-    <ProjectReference Include="..\BusinessSystem.Dto\BusinessSystem.Dto.csproj" />
     <ProjectReference Include="..\BusinessSystem.Infrastructure\BusinessSystem.Infrastructure.csproj" />
   </ItemGroup>
 

@@ -23,10 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\BusinessSystem.Domain\BusinessSystem.Domain.csproj" />
-    <ProjectReference Include="..\..\src\BusinessSystem.DomainService\BusinessSystem.DomainService.csproj" />
-    <ProjectReference Include="..\..\src\BusinessSystem.Dto\BusinessSystem.Dto.csproj" />
-    <ProjectReference Include="..\..\src\BusinessSystem.Exceptions\BusinessSystem.Exceptions.csproj" />
-  </ItemGroup>
+</ItemGroup>
 
 </Project>
