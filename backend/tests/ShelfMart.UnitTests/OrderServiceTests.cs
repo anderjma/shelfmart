@@ -462,4 +462,88 @@ public class OrderServiceTests
     }
 
     #endregion
+
+    #region CancelOwnOrderAsync Tests
+
+    [Fact]
+    public async Task CancelOwnOrderAsync_ShouldCancelAndRestoreStock_WhenOrderIsPendingAndOwnedByUser()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+        var orderId = Guid.NewGuid();
+        var product = new Product { ProductResourceId = Guid.NewGuid(), Name = "Product A", Price = 100, Stock = 2 };
+        var order = new Order
+        {
+            OrderId = orderId,
+            UserResourceId = userId,
+            Status = OrderStatus.Pending,
+            OrderItems = new List<OrderItem>
+            {
+                new OrderItem { ProductResourceId = product.ProductResourceId, Quantity = 3, UnitPrice = 100 }
+            }
+        };
+
+        _orderRepository.GetByIdAsync(orderId).Returns(order);
+        _productRepository.GetByIdAsync(product.ProductResourceId).Returns(product);
+
+        // Act
+        var result = await _orderService.CancelOwnOrderAsync(userId, orderId);
+
+        // Assert
+        result.Status.Should().Be(OrderStatus.Cancelled.ToString());
+        product.Stock.Should().Be(5); // 2 + 3 restored
+        await _orderRepository.Received(1).UpdateOrderAsync(order);
+    }
+
+    [Fact]
+    public async Task CancelOwnOrderAsync_ShouldThrowNotFoundResponseException_WhenOrderBelongsToAnotherUser()
+    {
+        // Arrange
+        var ownerId = Guid.NewGuid();
+        var requesterId = Guid.NewGuid();
+        var orderId = Guid.NewGuid();
+        var order = new Order { OrderId = orderId, UserResourceId = ownerId, Status = OrderStatus.Pending };
+
+        _orderRepository.GetByIdAsync(orderId).Returns(order);
+
+        // Act
+        Func<Task> act = async () => await _orderService.CancelOwnOrderAsync(requesterId, orderId);
+
+        // Assert
+        await act.Should().ThrowAsync<NotFoundResponseException>();
+    }
+
+    [Fact]
+    public async Task CancelOwnOrderAsync_ShouldThrowNotFoundResponseException_WhenOrderDoesNotExist()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+        var orderId = Guid.NewGuid();
+        _orderRepository.GetByIdAsync(orderId).Returns((Order?)null);
+
+        // Act
+        Func<Task> act = async () => await _orderService.CancelOwnOrderAsync(userId, orderId);
+
+        // Assert
+        await act.Should().ThrowAsync<NotFoundResponseException>();
+    }
+
+    [Fact]
+    public async Task CancelOwnOrderAsync_ShouldThrowBadRequestResponseException_WhenOrderIsNotPending()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+        var orderId = Guid.NewGuid();
+        var order = new Order { OrderId = orderId, UserResourceId = userId, Status = OrderStatus.Shipped };
+
+        _orderRepository.GetByIdAsync(orderId).Returns(order);
+
+        // Act
+        Func<Task> act = async () => await _orderService.CancelOwnOrderAsync(userId, orderId);
+
+        // Assert
+        await act.Should().ThrowAsync<BadRequestResponseException>();
+    }
+
+    #endregion
 }

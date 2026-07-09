@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 // This file provides endpoints specifically oriented toward the system's consumers.
 using ShelfMart.Domain.Entities;
 using ShelfMart.Dto;
@@ -8,6 +9,7 @@ namespace ShelfMart.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[EnableRateLimiting("LoginPolicy")]
 // This controller allows the creation of new accounts for the business's public customers.
 public class CustomersController : ControllerBase
 {

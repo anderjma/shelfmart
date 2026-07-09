@@ -8,11 +8,13 @@ public class ExceptionMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly ILogger<ExceptionMiddleware> _logger;
+    private readonly IHostEnvironment _environment;
 
-    public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger)
+    public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger, IHostEnvironment environment)
     {
         _next = next;
         _logger = logger;
+        _environment = environment;
     }
 
     public async Task InvokeAsync(HttpContext context)
@@ -28,7 +30,11 @@ public class ExceptionMiddleware
         }
     }
 
-    private static Task HandleExceptionAsync(HttpContext context, Exception exception)
+    // Known domain exceptions (anything deriving from MessageException) carry messages that
+    // are already written to be safe to show a client. Anything else is an unexpected failure
+    // (e.g. a raw DB error) whose message may contain internal details (schema, connection
+    // strings, stack info) and must never reach the client outside of local development.
+    private Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         context.Response.ContentType = "application/json";
 
@@ -36,13 +42,17 @@ public class ExceptionMiddleware
         {
             BadRequestResponseException => (int)HttpStatusCode.BadRequest,
             UnauthorizedResponseException => (int)HttpStatusCode.Unauthorized,
-            ResourceNotFoundException => (int)HttpStatusCode.NotFound,
+            NotFoundResponseException or ResourceNotFoundException => (int)HttpStatusCode.NotFound,
             _ => (int)HttpStatusCode.InternalServerError
         };
 
+        var message = exception is MessageException || _environment.IsDevelopment()
+            ? exception.Message
+            : "An unexpected error occurred. Please try again later.";
+
         var response = new
         {
-            message = exception.Message,
+            message,
             statusCode = context.Response.StatusCode
         };
 

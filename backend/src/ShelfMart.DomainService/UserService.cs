@@ -11,6 +11,10 @@ public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
     private static readonly string[] AssignableRoles = { "Admin", "Customer" };
+    // BCrypt work factor 11: higher than the framework default (10) to raise the cost of
+    // offline brute-forcing if the password hash table ever leaks, while staying fast enough
+    // to not noticeably slow down login/registration.
+    private const int PasswordWorkFactor = 11;
 
     public UserService(IUserRepository userRepository)
     {
@@ -26,7 +30,7 @@ public class UserService : IUserService
             throw new BadRequestResponseException("Username already exists.");
         }
 
-        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(plainPassword, 8);
+        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(plainPassword, PasswordWorkFactor);
         user.UserId = Guid.NewGuid();
 
         var customerRole = await _userRepository.GetRoleByNameAsync("Customer");
@@ -53,7 +57,7 @@ public class UserService : IUserService
             throw new BadRequestResponseException("Username already exists.");
         }
 
-        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(plainPassword, 8);
+        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(plainPassword, PasswordWorkFactor);
         user.UserId = Guid.NewGuid();
 
         var customerRole = await _userRepository.GetRoleByNameAsync("Customer");

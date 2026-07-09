@@ -1,9 +1,12 @@
 // This file contains the screen where customers can view their history and personal data.
 import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 import { useAuth } from "../../../lib/auth-context";
-import { getMyOrders } from "../../cart/api/orderService";
+import { getMyOrders, cancelOrder } from "../../cart/api/orderService";
 import type { Cart, CartItem } from "../../cart/types";
 import SEO from "../../../shared/components/SEO";
+import ConfirmDialog from "../../../shared/components/ConfirmDialog";
+import { getErrorMessage } from "../../../lib/http-error";
 import { formatCurrency } from "../../../shared/utils/formatCurrency";
 
 const statusBadgeClasses: Record<string, string> = {
@@ -18,23 +21,39 @@ export default function Profile() {
     const { user } = useAuth();
     const [orders, setOrders] = useState<Cart[]>([]);
     const [loading, setLoading] = useState(true);
+    const [pendingCancelOrderId, setPendingCancelOrderId] = useState<string | null>(null);
+
+    const fetchOrders = async () => {
+        try {
+            const data = await getMyOrders();
+            setOrders(data);
+        } catch (error) {
+            console.error("Error loading history:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchOrders = async () => {
-            try {
-                const data = await getMyOrders();
-                setOrders(data);
-            } catch (error) {
-                console.error("Error loading history:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         if (user) {
             fetchOrders();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user]);
+
+    const handleConfirmCancel = async () => {
+        if (!pendingCancelOrderId) return;
+
+        try {
+            await cancelOrder(pendingCancelOrderId);
+            toast.success("Order cancelled.");
+            await fetchOrders();
+        } catch (err) {
+            toast.error(getErrorMessage(err, "Could not cancel the order."));
+        } finally {
+            setPendingCancelOrderId(null);
+        }
+    };
 
     return (
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
@@ -84,13 +103,23 @@ export default function Profile() {
                                         ))}
                                     </ul>
                                 </div>
-                                <div className="text-left md:text-right border-t md:border-t-0 pt-4 md:pt-0 flex flex-col justify-end">
-                                    <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">Total Amount</p>
-                                    <p className="text-2xl font-bold text-gray-900 mt-0.5">{formatCurrency(order.totalAmount)}</p>
-                                    {order.status && (
-                                        <span className={`text-xs border px-2.5 py-0.5 rounded-full font-medium inline-block mt-2 self-start md:self-end ${statusBadgeClasses[order.status] ?? "bg-gray-100 text-gray-700 border-gray-200"}`}>
-                                            {order.status}
-                                        </span>
+                                <div className="text-left md:text-right border-t md:border-t-0 pt-4 md:pt-0 flex flex-col justify-end gap-2">
+                                    <div>
+                                        <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">Total Amount</p>
+                                        <p className="text-2xl font-bold text-gray-900 mt-0.5">{formatCurrency(order.totalAmount)}</p>
+                                        {order.status && (
+                                            <span className={`text-xs border px-2.5 py-0.5 rounded-full font-medium inline-block mt-2 self-start md:self-end ${statusBadgeClasses[order.status] ?? "bg-gray-100 text-gray-700 border-gray-200"}`}>
+                                                {order.status}
+                                            </span>
+                                        )}
+                                    </div>
+                                    {order.status === "Pending" && (
+                                        <button
+                                            onClick={() => setPendingCancelOrderId(order.orderId)}
+                                            className="text-xs font-medium text-red-600 hover:text-red-800 hover:underline self-start md:self-end focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 rounded"
+                                        >
+                                            Cancel order
+                                        </button>
                                     )}
                                 </div>
                             </div>
@@ -98,6 +127,16 @@ export default function Profile() {
                     </div>
                 )}
             </div>
+
+            <ConfirmDialog
+                isOpen={!!pendingCancelOrderId}
+                title="Cancel Order"
+                message="Do you want to cancel this order? This action cannot be undone."
+                confirmLabel="Cancel Order"
+                confirmVariant="danger"
+                onConfirm={handleConfirmCancel}
+                onCancel={() => setPendingCancelOrderId(null)}
+            />
         </div>
     );
 }

@@ -36,3 +36,9 @@ export const getMyOrders = async () => {
     const response = await axiosClient.get("/Orders/my-orders");
     return response.data;
 };
+
+// This function lets the customer cancel one of their own orders while it is still Pending.
+export const cancelOrder = async (orderId: string) => {
+    const response = await axiosClient.post(`/Orders/${orderId}/cancel`, {});
+    return response.data;
+};

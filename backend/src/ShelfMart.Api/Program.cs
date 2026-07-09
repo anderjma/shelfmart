@@ -136,6 +136,22 @@ using (var scope = app.Services.CreateScope())
     AppDbSeeder.Seed(context);
 }
 
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHsts();
+}
+app.UseHttpsRedirection();
+
+// Baseline security headers: block MIME sniffing, disallow the API from being framed
+// (clickjacking), and avoid leaking the full referrer URL to third-party origins.
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
+    context.Response.Headers.Append("X-Frame-Options", "DENY");
+    context.Response.Headers.Append("Referrer-Policy", "strict-origin-when-cross-origin");
+    await next();
+});
+
 app.UseCors("AllowReactFrontend");
 app.UseRateLimiter();
 

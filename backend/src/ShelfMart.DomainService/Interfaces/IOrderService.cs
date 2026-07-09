@@ -17,4 +17,5 @@ public interface IOrderService
     Task<IEnumerable<AdminOrderDto>> GetAllCompletedOrdersAsync();
     Task<IEnumerable<AdminOrderDto>> GetCustomerOrdersAsync(Guid userId);
     Task<AdminOrderDto> UpdateOrderStatusAsync(Guid orderId, OrderStatus newStatus);
+    Task<AdminOrderDto> CancelOwnOrderAsync(Guid userId, Guid orderId);
 }

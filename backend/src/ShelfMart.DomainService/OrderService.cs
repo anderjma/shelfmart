@@ -197,16 +197,43 @@ public class OrderService : IOrderService
 
         if (newStatus == OrderStatus.Cancelled && !wasAlreadyCancelled)
         {
-            foreach (var item in order.OrderItems)
-            {
-                var product = await _productRepository.GetByIdAsync(item.ProductResourceId);
-                if (product != null) product.Stock += item.Quantity;
-            }
+            await RestoreStockAsync(order);
         }
 
         await _orderRepository.UpdateOrderAsync(order);
 
         return MapToAdminOrderDto(order);
+    }
+
+    // This method lets a customer cancel their own order, but only while it is still Pending —
+    // once an admin has moved it further along fulfillment (Confirmed/Shipped/Delivered), the
+    // customer can no longer unilaterally cancel it. Restores stock just like the admin path.
+    public async Task<AdminOrderDto> CancelOwnOrderAsync(Guid userId, Guid orderId)
+    {
+        var order = await _orderRepository.GetByIdAsync(orderId);
+        if (order == null) throw new NotFoundResponseException("Order not found.");
+        if (order.UserResourceId != userId) throw new NotFoundResponseException("Order not found.");
+
+        if (order.Status != OrderStatus.Pending)
+        {
+            throw new BadRequestResponseException("Only orders that are still Pending can be cancelled by the customer.");
+        }
+
+        order.Cancel();
+        await RestoreStockAsync(order);
+        await _orderRepository.UpdateOrderAsync(order);
+
+        return MapToAdminOrderDto(order);
+    }
+
+    // This method returns the stock deducted at checkout back to each product in a cancelled order.
+    private async Task RestoreStockAsync(Order order)
+    {
+        foreach (var item in order.OrderItems)
+        {
+            var product = await _productRepository.GetByIdAsync(item.ProductResourceId);
+            if (product != null) product.Stock += item.Quantity;
+        }
     }
 
     // This method converts the database entity into a safe, standardized format for transmission to the client.

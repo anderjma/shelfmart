@@ -4,6 +4,7 @@ using ShelfMart.Dto;
 using Microsoft.AspNetCore.RateLimiting;
 // This file establishes the REST routes for the comprehensive management of orders and shopping carts.
 using ShelfMart.DomainService.Interfaces;
+using ShelfMart.Exceptions;
 using System.Security.Claims;
 using System;
 using System.Linq;
@@ -50,13 +51,13 @@ public class OrdersController : ControllerBase
     [HttpGet("cart")]
     public async Task<IActionResult> GetCart()
     {
-        try 
+        try
         {
             var userId = await GetUserIdAsync();
             var cart = await _orderService.GetCartAsync(userId);
             return Ok(cart);
         }
-        catch (Exception ex) { return BadRequest(new { message = ex.Message }); }
+        catch (MessageException ex) { return BadRequest(new { message = ex.Message }); }
     }
 
     [HttpPost("cart/items")]
@@ -64,13 +65,13 @@ public class OrdersController : ControllerBase
     {
         if (!ModelState.IsValid) return BadRequest(new { message = "Invalid data sent from the browser." });
 
-        try 
+        try
         {
             var userId = await GetUserIdAsync();
             var cart = await _orderService.AddItemToCartAsync(userId, dto);
             return Ok(cart);
         }
-        catch (Exception ex) { return BadRequest(new { message = ex.Message }); }
+        catch (MessageException ex) { return BadRequest(new { message = ex.Message }); }
     }
 
     [HttpPut("cart/items/{productId}")]
@@ -84,7 +85,7 @@ public class OrdersController : ControllerBase
             var cart = await _orderService.UpdateItemQuantityAsync(userId, productId, dto.Quantity);
             return Ok(cart);
         }
-        catch (Exception ex) { return BadRequest(new { message = ex.Message }); }
+        catch (MessageException ex) { return BadRequest(new { message = ex.Message }); }
     }
 
     [HttpDelete("cart/items/{productId}")]
@@ -96,7 +97,7 @@ public class OrdersController : ControllerBase
             var cart = await _orderService.RemoveItemFromCartAsync(userId, productId);
             return Ok(cart);
         }
-        catch (Exception ex) { return BadRequest(new { message = ex.Message }); }
+        catch (MessageException ex) { return BadRequest(new { message = ex.Message }); }
     }
 
     [HttpPost("checkout")]
@@ -115,11 +116,14 @@ public class OrdersController : ControllerBase
 
             return Ok(new { message = "Order processed successfully.", order = result });
         }
-        catch (Exception ex)
+        catch (ShelfMart.Exceptions.MessageException ex)
         {
-            var inner = ex.InnerException != null ? " | DB Error: " + ex.InnerException.Message : "";
-            return BadRequest(new { message = ex.Message + inner });
+            // Known domain failures (e.g. insufficient stock, empty cart) are safe to surface as-is.
+            return BadRequest(new { message = ex.Message });
         }
+        // Anything else (e.g. an infrastructure/DB error) is left to propagate to the global
+        // exception middleware, which logs it and returns a generic message instead of leaking
+        // internal details such as raw database error text to the client.
     }
 
     // Restricted to administrators: this endpoint exposes every customer's completed orders.
@@ -132,7 +136,7 @@ public class OrdersController : ControllerBase
             var orders = await _orderService.GetAllCompletedOrdersAsync();
             return Ok(orders);
         }
-        catch (Exception ex) { return BadRequest(new { message = ex.Message }); }
+        catch (MessageException ex) { return BadRequest(new { message = ex.Message }); }
     }
 
     // Allows an administrator to move an order to a new status (e.g. Confirmed, Shipped, Delivered, Cancelled).
@@ -145,18 +149,33 @@ public class OrdersController : ControllerBase
             var order = await _orderService.UpdateOrderStatusAsync(orderId, dto.Status);
             return Ok(order);
         }
-        catch (Exception ex) { return BadRequest(new { message = ex.Message }); }
+        catch (MessageException ex) { return BadRequest(new { message = ex.Message }); }
     }
 
     [HttpGet("my-orders")]
     public async Task<IActionResult> GetMyOrders()
     {
-        try 
+        try
         {
             var userId = await GetUserIdAsync();
             var orders = await _orderService.GetCustomerOrdersAsync(userId);
             return Ok(orders);
         }
-        catch (Exception ex) { return BadRequest(new { message = ex.Message }); }
+        catch (MessageException ex) { return BadRequest(new { message = ex.Message }); }
+    }
+
+    // Allows a customer to cancel their own order, but only while it hasn't progressed
+    // past the point where fulfillment has started (i.e. still Pending). Restoring stock
+    // is handled by the same domain logic the admin cancellation path already uses.
+    [HttpPost("{orderId:guid}/cancel")]
+    public async Task<IActionResult> CancelMyOrder(Guid orderId)
+    {
+        try
+        {
+            var userId = await GetUserIdAsync();
+            var order = await _orderService.CancelOwnOrderAsync(userId, orderId);
+            return Ok(order);
+        }
+        catch (MessageException ex) { return BadRequest(new { message = ex.Message }); }
     }
 }
