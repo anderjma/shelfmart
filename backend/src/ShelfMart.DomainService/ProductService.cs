@@ -15,12 +15,14 @@ namespace ShelfMart.DomainService;
 public class ProductService : IProductService
 {
     private readonly IProductRepository _productRepository;
+    private readonly ICategoryRepository _categoryRepository;
     private readonly IMemoryCache _cache;
     private const string AllProductsCacheKey = "AllProductsCache";
 
-    public ProductService(IProductRepository productRepository, IMemoryCache cache)
+    public ProductService(IProductRepository productRepository, ICategoryRepository categoryRepository, IMemoryCache cache)
     {
         _productRepository = productRepository;
+        _categoryRepository = categoryRepository;
         _cache = cache;
     }
 
@@ -65,13 +67,17 @@ public class ProductService : IProductService
     }
 
     // This method initializes and persists a new product in the inventory, applying default values if necessary.
+    // The category must already exist in the reference catalog (Categories), which is the single
+    // source of truth consumed by both the storefront filter and the admin product form.
     public async Task<ProductDto> CreateProductAsync(CreateProductDto dto)
     {
+        var category = await ResolveCategoryAsync(dto.Category);
+
         var product = new Product
         {
             ProductResourceId = Guid.NewGuid(),
             Name = dto.Name,
-            Category = string.IsNullOrWhiteSpace(dto.Category) ? "General" : dto.Category,
+            Category = category,
             Stock = dto.Stock,
             Price = dto.Price,
             ImageUrl = dto.ImageUrl,
@@ -95,11 +101,7 @@ public class ProductService : IProductService
         product.Stock = dto.Stock;
         product.Price = dto.Price;
         product.DiscountPercentage = dto.DiscountPercentage;
-
-        if (!string.IsNullOrWhiteSpace(dto.Category))
-        {
-            product.Category = dto.Category;
-        }
+        product.Category = await ResolveCategoryAsync(dto.Category);
 
         if (!string.IsNullOrEmpty(dto.ImageUrl))
         {
@@ -110,6 +112,20 @@ public class ProductService : IProductService
         _cache.Remove(AllProductsCacheKey);
 
         return ToDto(product);
+    }
+
+    // This method enforces that every product's category exists in the Categories reference
+    // catalog, so Products.Category can never drift into a value the storefront filter doesn't know about.
+    private async Task<string> ResolveCategoryAsync(string? category)
+    {
+        if (string.IsNullOrWhiteSpace(category)) throw new InvalidCategoryException("A category is required.");
+
+        if (!await _categoryRepository.ExistsByNameAsync(category))
+        {
+            throw new InvalidCategoryException($"'{category}' is not a recognized category.");
+        }
+
+        return category;
     }
 
     // This method deactivates a product instead of permanently deleting it, preserving its history

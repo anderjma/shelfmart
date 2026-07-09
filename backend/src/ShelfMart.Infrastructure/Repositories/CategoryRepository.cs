@@ -21,4 +21,11 @@ public class CategoryRepository : ICategoryRepository
     {
         return await _context.Categories.AsNoTracking().OrderBy(c => c.Name).ToListAsync();
     }
+
+    // This method checks whether a category name exists in the reference catalog, used to
+    // validate product writes so Products.Category can never drift from Categories.
+    public async Task<bool> ExistsByNameAsync(string name)
+    {
+        return await _context.Categories.AsNoTracking().AnyAsync(c => c.Name == name);
+    }
 }

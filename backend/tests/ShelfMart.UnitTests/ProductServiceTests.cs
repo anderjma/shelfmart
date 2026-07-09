@@ -16,17 +16,20 @@ namespace ShelfMart.UnitTests;
 public class ProductServiceTests
 {
     private readonly IProductRepository _productRepository;
+    private readonly ICategoryRepository _categoryRepository;
     private readonly IMemoryCache _cache;
     private readonly ProductService _productService;
 
     public ProductServiceTests()
     {
         _productRepository = Substitute.For<IProductRepository>();
+        _categoryRepository = Substitute.For<ICategoryRepository>();
+        _categoryRepository.ExistsByNameAsync(Arg.Any<string>()).Returns(true);
         // A real MemoryCache is used instead of a substitute: IMemoryCache.TryGetValue has an
         // out parameter, which NSubstitute cannot express cleanly. A real cache starts empty,
         // so every test exercises the repository path exactly like a cold cache would.
         _cache = new MemoryCache(new MemoryCacheOptions());
-        _productService = new ProductService(_productRepository, _cache);
+        _productService = new ProductService(_productRepository, _categoryRepository, _cache);
     }
 
     #region GetProductByIdAsync Tests
@@ -78,24 +81,38 @@ public class ProductServiceTests
     #region CreateProductAsync Tests
 
     [Fact]
-    public async Task CreateProductAsync_ShouldDefaultCategoryToGeneral_WhenCategoryIsWhitespace()
+    public async Task CreateProductAsync_ShouldThrowInvalidCategoryException_WhenCategoryIsWhitespace()
     {
         // Arrange
         var dto = new CreateProductDto { Name = "Product A", Stock = 1, Price = 10, Category = "   " };
-        _productRepository.AddAsync(Arg.Any<Product>()).Returns(callInfo => callInfo.Arg<Product>());
 
         // Act
-        var result = await _productService.CreateProductAsync(dto);
+        Func<Task> act = async () => await _productService.CreateProductAsync(dto);
 
         // Assert
-        result.Category.Should().Be("General");
+        await act.Should().ThrowAsync<InvalidCategoryException>();
     }
 
     [Fact]
-    public async Task CreateProductAsync_ShouldPersistProvidedCategory_WhenCategoryIsNotWhitespace()
+    public async Task CreateProductAsync_ShouldThrowInvalidCategoryException_WhenCategoryDoesNotExistInCatalog()
+    {
+        // Arrange
+        var dto = new CreateProductDto { Name = "Product A", Stock = 1, Price = 10, Category = "MadeUpCategory" };
+        _categoryRepository.ExistsByNameAsync("MadeUpCategory").Returns(false);
+
+        // Act
+        Func<Task> act = async () => await _productService.CreateProductAsync(dto);
+
+        // Assert
+        await act.Should().ThrowAsync<InvalidCategoryException>();
+    }
+
+    [Fact]
+    public async Task CreateProductAsync_ShouldPersistProvidedCategory_WhenCategoryExistsInCatalog()
     {
         // Arrange
         var dto = new CreateProductDto { Name = "Product A", Stock = 1, Price = 10, Category = "Electronics" };
+        _categoryRepository.ExistsByNameAsync("Electronics").Returns(true);
         _productRepository.AddAsync(Arg.Any<Product>()).Returns(callInfo => callInfo.Arg<Product>());
 
         // Act
@@ -126,7 +143,7 @@ public class ProductServiceTests
     }
 
     [Fact]
-    public async Task UpdateProductAsync_ShouldNotOverwriteCategory_WhenDtoCategoryIsWhitespace()
+    public async Task UpdateProductAsync_ShouldThrowInvalidCategoryException_WhenDtoCategoryIsWhitespace()
     {
         // Arrange
         var product = new Product
@@ -141,10 +158,33 @@ public class ProductServiceTests
         _productRepository.GetByIdAsync(product.ProductResourceId).Returns(product);
 
         // Act
-        var result = await _productService.UpdateProductAsync(product.ProductResourceId, dto);
+        Func<Task> act = async () => await _productService.UpdateProductAsync(product.ProductResourceId, dto);
 
         // Assert
-        result.Category.Should().Be("Electronics");
+        await act.Should().ThrowAsync<InvalidCategoryException>();
+    }
+
+    [Fact]
+    public async Task UpdateProductAsync_ShouldThrowInvalidCategoryException_WhenCategoryDoesNotExistInCatalog()
+    {
+        // Arrange
+        var product = new Product
+        {
+            ProductResourceId = Guid.NewGuid(),
+            Name = "Product A",
+            Stock = 5,
+            Price = 100,
+            Category = "Electronics"
+        };
+        var dto = new UpdateProductDto { Name = "Product A Updated", Stock = 5, Price = 100, Category = "MadeUpCategory" };
+        _productRepository.GetByIdAsync(product.ProductResourceId).Returns(product);
+        _categoryRepository.ExistsByNameAsync("MadeUpCategory").Returns(false);
+
+        // Act
+        Func<Task> act = async () => await _productService.UpdateProductAsync(product.ProductResourceId, dto);
+
+        // Assert
+        await act.Should().ThrowAsync<InvalidCategoryException>();
     }
 
     #endregion

@@ -19,29 +19,32 @@ const inputClasses =
     "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm";
 const labelClasses = "block text-sm font-medium text-gray-700";
 
-const emptyForm: ProductPayload = {
-    name: "",
-    stock: 0,
-    price: 0,
-    imageUrl: "",
-    category: "General",
-    discountPercentage: 0
-};
+function toFormState(product: Product | null | undefined, categories: Category[]): ProductPayload {
+    if (product) {
+        return {
+            name: product.name,
+            stock: product.stock,
+            price: product.price,
+            imageUrl: product.imageUrl ?? "",
+            category: product.category,
+            discountPercentage: product.discountPercentage
+        };
+    }
 
-function toFormState(product?: Product | null): ProductPayload {
-    if (!product) return emptyForm;
     return {
-        name: product.name,
-        stock: product.stock,
-        price: product.price,
-        imageUrl: product.imageUrl ?? "",
-        category: product.category,
-        discountPercentage: product.discountPercentage
+        name: "",
+        stock: 0,
+        price: 0,
+        imageUrl: "",
+        // Default to the first category from the real catalog instead of a hardcoded name,
+        // since a hardcoded value could stop existing in Categories and break product creation.
+        category: categories[0]?.name ?? "",
+        discountPercentage: 0
     };
 }
 
 export default function ProductFormModal({ isOpen, onClose, onSubmit, categories, product }: ProductFormModalProps) {
-    const [form, setForm] = useState<ProductPayload>(() => toFormState(product));
+    const [form, setForm] = useState<ProductPayload>(() => toFormState(product, categories));
     const [error, setError] = useState("");
     const [submitting, setSubmitting] = useState(false);
 

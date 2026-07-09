@@ -70,5 +70,15 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Category>().HasKey(c => c.CategoryId);
         modelBuilder.Entity<Category>().Property(c => c.CategoryId).ValueGeneratedNever();
         modelBuilder.Entity<Category>().HasIndex(c => c.Name).IsUnique();
+
+        // Products.Category is a real foreign key into Categories.Name (not free text), so the
+        // storefront filter and the admin category picker can never drift apart again. Renaming a
+        // category cascades to every product using it instead of orphaning them.
+        modelBuilder.Entity<Product>()
+            .HasOne<Category>()
+            .WithMany()
+            .HasForeignKey(p => p.Category)
+            .HasPrincipalKey(c => c.Name)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

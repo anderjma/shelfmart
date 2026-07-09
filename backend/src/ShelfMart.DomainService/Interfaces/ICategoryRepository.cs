@@ -6,4 +6,5 @@ namespace ShelfMart.DomainService.Interfaces;
 public interface ICategoryRepository
 {
     Task<IEnumerable<Category>> GetAllAsync();
+    Task<bool> ExistsByNameAsync(string name);
 }

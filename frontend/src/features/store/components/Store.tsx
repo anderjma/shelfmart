@@ -36,6 +36,8 @@ export default function Store() {
     }, [searchInput]);
 
     // Load the category list once; it's independent of the current page/filter.
+    // Same source (/api/Categories) used by the admin product form, so the store
+    // filter and the admin category picker never drift apart.
     useEffect(() => {
         const fetchCategories = async () => {
             try {
