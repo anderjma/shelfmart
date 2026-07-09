@@ -20,6 +20,10 @@ export default function AuditLogTable() {
             setError(null);
             try {
                 const result = await getAuditLogs(page);
+                if (result.totalPages > 0 && page > result.totalPages) {
+                    setPage(result.totalPages);
+                    return;
+                }
                 setLogs(result.items);
                 setTotalPages(result.totalPages);
             } catch {

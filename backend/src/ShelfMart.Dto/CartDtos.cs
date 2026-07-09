@@ -1,6 +1,7 @@
 // This file groups multiple transfer models designed to operate on carts and orders.
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ShelfMart.Dto;
 
@@ -8,6 +9,8 @@ namespace ShelfMart.Dto;
 public class AddToCartDto
 {
     public Guid ProductId { get; set; }
+
+    [Range(1, int.MaxValue, ErrorMessage = "Quantity must be greater than zero.")]
     public int Quantity { get; set; }
 }
 
@@ -32,6 +35,7 @@ public class CartDto
 // This class carries the updated quantity for a cart item.
 public class UpdateCartItemDto
 {
+    [Range(1, int.MaxValue, ErrorMessage = "Quantity must be greater than zero.")]
     public int Quantity { get; set; }
 }
 

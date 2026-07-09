@@ -23,19 +23,22 @@ public class AuditRepository : IAuditRepository
     // This method computes the total billed value of completed orders as a global metric.
     public async Task<decimal> GetTotalRevenueAsync()
     {
-        return await _context.Orders.Where(o => o.Status == OrderStatus.Pending).SumAsync(o => o.TotalAmount);
+        return await _context.Orders
+            .Where(o => o.Status != OrderStatus.Cart && o.Status != OrderStatus.Cancelled)
+            .SumAsync(o => o.TotalAmount);
     }
 
     // This method counts the total number of successfully completed transactions.
     public async Task<int> GetTotalCompletedOrdersAsync()
     {
-        return await _context.Orders.CountAsync(o => o.Status == OrderStatus.Pending);
+        return await _context.Orders
+            .CountAsync(o => o.Status != OrderStatus.Cart && o.Status != OrderStatus.Cancelled);
     }
 
-    // This method quantifies the items whose inventory is below the alert threshold.
+    // This method quantifies the active items whose inventory is below the alert threshold.
     public async Task<int> GetLowStockProductsCountAsync()
     {
-        return await _context.Products.CountAsync(p => p.Stock <= 5);
+        return await _context.Products.CountAsync(p => p.IsActive && p.Stock <= 5);
     }
 
     // This method counts the total number of registered customer accounts.
@@ -69,20 +72,11 @@ public class AuditRepository : IAuditRepository
     // This method retrieves the daily sales groupings needed to build the analytics chart.
     public async Task<IEnumerable<Order>> GetOrdersFromLastDaysAsync(int days)
     {
-        var orders = await _context.Orders
-            .Where(o => o.Status == OrderStatus.Pending)
-            .ToListAsync();
-
-        // This block assigns the current date to old orders that have a migration-default date, to keep them in the chart.
-        foreach(var order in orders)
-        {
-            if (order.CreatedAt.Year < 2020) 
-            {
-                order.CreatedAt = DateTime.UtcNow;
-            }
-        }
-
         var dateThreshold = DateTime.UtcNow.AddDays(-days);
-        return orders.Where(o => o.CreatedAt >= dateThreshold).ToList();
+
+        return await _context.Orders
+            .AsNoTracking()
+            .Where(o => o.Status != OrderStatus.Cart && o.Status != OrderStatus.Cancelled && o.CreatedAt >= dateThreshold)
+            .ToListAsync();
     }
 }

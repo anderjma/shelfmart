@@ -27,9 +27,18 @@ public class AppDbContext : DbContext
         base.OnModelCreating(modelBuilder);
         
         modelBuilder.Entity<Product>().HasKey(p => p.ProductResourceId);
+        modelBuilder.Entity<Product>().Property(p => p.ProductResourceId).ValueGeneratedNever();
+
         modelBuilder.Entity<User>().HasKey(u => u.UserId);
+        modelBuilder.Entity<User>().Property(u => u.UserId).ValueGeneratedNever();
+
         modelBuilder.Entity<AuditLog>().HasKey(a => a.AuditLogId);
-        
+        modelBuilder.Entity<AuditLog>().Property(a => a.AuditLogId).ValueGeneratedNever();
+
+        modelBuilder.Entity<Role>().Property(r => r.RoleId).ValueGeneratedNever();
+
+        modelBuilder.Entity<Order>().Property(o => o.OrderId).ValueGeneratedNever();
+
         modelBuilder.Entity<UserRole>().HasKey(ur => new { ur.UserId, ur.RoleId });
         modelBuilder.Entity<UserRole>().HasOne(ur => ur.User).WithMany(u => u.UserRoles).HasForeignKey(ur => ur.UserId);
         modelBuilder.Entity<UserRole>().HasOne(ur => ur.Role).WithMany(r => r.UserRoles).HasForeignKey(ur => ur.RoleId);
@@ -59,6 +68,7 @@ public class AppDbContext : DbContext
             .HasMaxLength(20);
 
         modelBuilder.Entity<Category>().HasKey(c => c.CategoryId);
+        modelBuilder.Entity<Category>().Property(c => c.CategoryId).ValueGeneratedNever();
         modelBuilder.Entity<Category>().HasIndex(c => c.Name).IsUnique();
     }
 }

@@ -18,6 +18,7 @@ public class UserService : IUserService
     }
 
     // This method manages the creation of base users, performing preventive validations on the credentials to be used.
+    // New users default to the Customer role; admins can promote them afterwards via UpdateUserRoleAsync.
     public async Task<UserDto> CreateUserAsync(User user, string plainPassword)
     {
         if (await _userRepository.ExistsAsync(user.Username))
@@ -27,6 +28,18 @@ public class UserService : IUserService
 
         user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(plainPassword, 8);
         user.UserId = Guid.NewGuid();
+
+        var customerRole = await _userRepository.GetRoleByNameAsync("Customer");
+        if (customerRole != null)
+        {
+            user.UserRoles.Add(new UserRole
+            {
+                UserId = user.UserId,
+                RoleId = customerRole.RoleId,
+                User = user,
+                Role = customerRole
+            });
+        }
 
         var createdUser = await _userRepository.AddAsync(user);
 

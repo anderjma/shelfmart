@@ -47,7 +47,7 @@ public class OrderRepository : IOrderRepository
             .Include(o => o.OrderItems)
             .ThenInclude(oi => oi.Product)
             .Where(o => o.Status != OrderStatus.Cart)
-            .OrderByDescending(o => o.OrderId)
+            .OrderByDescending(o => o.CreatedAt)
             .ToListAsync();
     }
 
@@ -67,15 +67,15 @@ public class OrderRepository : IOrderRepository
         await _context.SaveChangesAsync();
     }
 
-    // This method gathers the previous, completed purchase history for a specific customer.
+    // This method gathers the previous purchase history for a specific customer, across all non-cart statuses.
     public async Task<IEnumerable<Order>> GetOrdersByUserIdAsync(Guid userId)
     {
         return await _context.Orders
             .Include(o => o.User)
             .Include(o => o.OrderItems)
             .ThenInclude(oi => oi.Product)
-            .Where(o => o.UserResourceId == userId && o.Status == OrderStatus.Pending)
-            .OrderByDescending(o => o.OrderId)
+            .Where(o => o.UserResourceId == userId && o.Status != OrderStatus.Cart)
+            .OrderByDescending(o => o.CreatedAt)
             .ToListAsync();
     }
 

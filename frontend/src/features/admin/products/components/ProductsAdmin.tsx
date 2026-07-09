@@ -36,6 +36,10 @@ export default function ProductsAdmin() {
             setError(null);
             try {
                 const result = await getProducts({ page, pageSize: PAGE_SIZE });
+                if (result.totalPages > 0 && page > result.totalPages) {
+                    setPage(result.totalPages);
+                    return;
+                }
                 setProducts(result.items);
                 setTotalPages(result.totalPages);
             } catch {

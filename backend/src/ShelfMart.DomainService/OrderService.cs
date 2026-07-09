@@ -61,10 +61,18 @@ public class OrderService : IOrderService
             isNewCart = true;
         }
 
+        if (dto.Quantity <= 0) throw new BadRequestResponseException("Quantity must be greater than zero.");
+
         var existingItem = cart.OrderItems.FirstOrDefault(i => i.ProductResourceId == product.ProductResourceId);
+        var requestedQuantity = (existingItem?.Quantity ?? 0) + dto.Quantity;
+        if (product.Stock < requestedQuantity) throw new InsufficientStockException($"Insufficient stock. Available stock: {product.Stock}");
+
+        var unitPrice = product.Price * (1 - product.DiscountPercentage / 100m);
+
         if (existingItem != null)
         {
-            existingItem.Quantity += dto.Quantity;
+            existingItem.Quantity = requestedQuantity;
+            existingItem.UnitPrice = unitPrice;
         }
         else
         {
@@ -73,7 +81,7 @@ public class OrderService : IOrderService
                 ProductResourceId = product.ProductResourceId,
                 Product = product,
                 Quantity = dto.Quantity,
-                UnitPrice = product.Price
+                UnitPrice = unitPrice
             });
         }
 
@@ -105,6 +113,7 @@ public class OrderService : IOrderService
             if (product.Stock < quantity) throw new InsufficientStockException($"Insufficient stock. Available stock: {product.Stock}");
 
             item.Quantity = quantity;
+            item.UnitPrice = product.Price * (1 - product.DiscountPercentage / 100m);
         }
 
         cart.TotalAmount = cart.OrderItems.Sum(i => i.Quantity * i.UnitPrice);
@@ -156,7 +165,8 @@ public class OrderService : IOrderService
     }
 
     // This method transitions an order to a new status. Cancellation goes through the entity's own
-    // invariant check; other transitions are plain assignments since no workflow engine is enforced yet.
+    // invariant check and restores the stock that was deducted at checkout; other transitions are
+    // plain assignments since no workflow engine is enforced yet.
     public async Task<AdminOrderDto> UpdateOrderStatusAsync(Guid orderId, OrderStatus newStatus)
     {
         var order = await _orderRepository.GetByIdAsync(orderId);
@@ -166,6 +176,8 @@ public class OrderService : IOrderService
         {
             throw new BadRequestResponseException("An order cannot be moved back to the Cart status.");
         }
+
+        var wasAlreadyCancelled = order.Status == OrderStatus.Cancelled;
 
         try
         {
@@ -181,6 +193,15 @@ public class OrderService : IOrderService
         catch (InvalidOperationException ex)
         {
             throw new BadRequestResponseException(ex.Message);
+        }
+
+        if (newStatus == OrderStatus.Cancelled && !wasAlreadyCancelled)
+        {
+            foreach (var item in order.OrderItems)
+            {
+                var product = await _productRepository.GetByIdAsync(item.ProductResourceId);
+                if (product != null) product.Stock += item.Quantity;
+            }
         }
 
         await _orderRepository.UpdateOrderAsync(order);

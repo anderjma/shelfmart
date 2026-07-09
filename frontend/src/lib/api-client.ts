@@ -23,6 +23,9 @@ axiosClient.interceptors.response.use(
     error => {
         if (error.response?.status === 401) {
             localStorage.removeItem("token");
+            // Notify any mounted AuthProvider so in-memory auth state is invalidated
+            // even when no full page navigation happens (e.g. we're already on /login).
+            window.dispatchEvent(new Event("auth:unauthorized"));
             // Redirect to login only if we're not already there
             if (window.location.pathname !== "/login") {
                 window.location.href = "/login";

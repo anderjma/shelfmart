@@ -110,8 +110,8 @@ export default function Cart() {
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                            {cart.items.map((item, index) => (
-                                <tr key={index}>
+                            {cart.items.map((item) => (
+                                <tr key={item.productId}>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.productName}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">₡{item.unitPrice}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -152,8 +152,8 @@ export default function Cart() {
 
             {/* Mobile cards */}
             <div className="block sm:hidden space-y-4 px-4 sm:px-0">
-                {cart.items.map((item, index) => (
-                    <div key={index} className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 flex flex-col gap-3">
+                {cart.items.map((item) => (
+                    <div key={item.productId} className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 flex flex-col gap-3">
                         <div className="flex justify-between items-start gap-2">
                             <h3 className="font-bold text-gray-900 text-base leading-tight">{item.productName}</h3>
                             <span className="text-base font-bold text-gray-900 whitespace-nowrap">₡{item.subTotal}</span>

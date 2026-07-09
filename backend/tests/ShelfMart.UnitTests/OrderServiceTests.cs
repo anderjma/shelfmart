@@ -131,6 +131,68 @@ public class OrderServiceTests
         await _orderRepository.Received(1).UpdateOrderAsync(existingCart);
     }
 
+    [Fact]
+    public async Task AddItemToCartAsync_ShouldThrowBadRequestResponseException_WhenQuantityIsNotPositive()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+        var product = new Product { ProductResourceId = Guid.NewGuid(), Name = "Product A", Price = 100, Stock = 10 };
+        var dto = new AddToCartDto { ProductId = product.ProductResourceId, Quantity = 0 };
+
+        _productRepository.GetByIdAsync(product.ProductResourceId).Returns(product);
+        _orderRepository.GetActiveCartByUserIdAsync(userId).Returns((Order?)null);
+
+        // Act
+        Func<Task> act = async () => await _orderService.AddItemToCartAsync(userId, dto);
+
+        // Assert
+        await act.Should().ThrowAsync<BadRequestResponseException>();
+    }
+
+    [Fact]
+    public async Task AddItemToCartAsync_ShouldThrowInsufficientStockException_WhenRequestedQuantityExceedsStock()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+        var product = new Product { ProductResourceId = Guid.NewGuid(), Name = "Product A", Price = 100, Stock = 2 };
+        var dto = new AddToCartDto { ProductId = product.ProductResourceId, Quantity = 5 };
+
+        _productRepository.GetByIdAsync(product.ProductResourceId).Returns(product);
+        _orderRepository.GetActiveCartByUserIdAsync(userId).Returns((Order?)null);
+
+        // Act
+        Func<Task> act = async () => await _orderService.AddItemToCartAsync(userId, dto);
+
+        // Assert
+        await act.Should().ThrowAsync<InsufficientStockException>();
+    }
+
+    [Fact]
+    public async Task AddItemToCartAsync_ShouldApplyDiscountedPrice_WhenProductHasDiscount()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+        var product = new Product
+        {
+            ProductResourceId = Guid.NewGuid(),
+            Name = "Product A",
+            Price = 100,
+            Stock = 10,
+            DiscountPercentage = 25
+        };
+        var dto = new AddToCartDto { ProductId = product.ProductResourceId, Quantity = 2 };
+
+        _productRepository.GetByIdAsync(product.ProductResourceId).Returns(product);
+        _orderRepository.GetActiveCartByUserIdAsync(userId).Returns((Order?)null);
+
+        // Act
+        var result = await _orderService.AddItemToCartAsync(userId, dto);
+
+        // Assert
+        result.Items[0].UnitPrice.Should().Be(75); // 100 - 25%
+        result.TotalAmount.Should().Be(150);
+    }
+
     #endregion
 
     #region UpdateItemQuantityAsync Tests
@@ -313,6 +375,90 @@ public class OrderServiceTests
         // Ensures concurrent checkouts cannot both pass stock validation for the same product:
         // the whole validate-and-deduct flow must run inside a single explicit transaction.
         await _orderRepository.Received(1).ExecuteInTransactionAsync(Arg.Any<Func<Task<CartDto>>>());
+    }
+
+    #endregion
+
+    #region UpdateOrderStatusAsync Tests
+
+    [Fact]
+    public async Task UpdateOrderStatusAsync_ShouldRestoreStock_WhenOrderIsCancelled()
+    {
+        // Arrange
+        var orderId = Guid.NewGuid();
+        var product = new Product { ProductResourceId = Guid.NewGuid(), Name = "Product A", Price = 100, Stock = 5 };
+        var order = new Order
+        {
+            OrderId = orderId,
+            Status = OrderStatus.Pending,
+            OrderItems = new List<OrderItem>
+            {
+                new OrderItem { ProductResourceId = product.ProductResourceId, Quantity = 3, UnitPrice = 100 }
+            }
+        };
+
+        _orderRepository.GetByIdAsync(orderId).Returns(order);
+        _productRepository.GetByIdAsync(product.ProductResourceId).Returns(product);
+
+        // Act
+        await _orderService.UpdateOrderStatusAsync(orderId, OrderStatus.Cancelled);
+
+        // Assert
+        product.Stock.Should().Be(8); // 5 + 3 restored
+        order.Status.Should().Be(OrderStatus.Cancelled);
+    }
+
+    [Fact]
+    public async Task UpdateOrderStatusAsync_ShouldNotRestoreStockTwice_WhenOrderIsAlreadyCancelled()
+    {
+        // Arrange
+        var orderId = Guid.NewGuid();
+        var product = new Product { ProductResourceId = Guid.NewGuid(), Name = "Product A", Price = 100, Stock = 5 };
+        var order = new Order
+        {
+            OrderId = orderId,
+            Status = OrderStatus.Cancelled,
+            OrderItems = new List<OrderItem>
+            {
+                new OrderItem { ProductResourceId = product.ProductResourceId, Quantity = 3, UnitPrice = 100 }
+            }
+        };
+
+        _orderRepository.GetByIdAsync(orderId).Returns(order);
+        _productRepository.GetByIdAsync(product.ProductResourceId).Returns(product);
+
+        // Act
+        Func<Task> act = async () => await _orderService.UpdateOrderStatusAsync(orderId, OrderStatus.Cancelled);
+
+        // Assert
+        await act.Should().ThrowAsync<BadRequestResponseException>();
+        product.Stock.Should().Be(5); // unchanged
+    }
+
+    [Fact]
+    public async Task UpdateOrderStatusAsync_ShouldNotRestoreStock_WhenTransitioningToNonCancelledStatus()
+    {
+        // Arrange
+        var orderId = Guid.NewGuid();
+        var product = new Product { ProductResourceId = Guid.NewGuid(), Name = "Product A", Price = 100, Stock = 5 };
+        var order = new Order
+        {
+            OrderId = orderId,
+            Status = OrderStatus.Pending,
+            OrderItems = new List<OrderItem>
+            {
+                new OrderItem { ProductResourceId = product.ProductResourceId, Quantity = 3, UnitPrice = 100 }
+            }
+        };
+
+        _orderRepository.GetByIdAsync(orderId).Returns(order);
+
+        // Act
+        await _orderService.UpdateOrderStatusAsync(orderId, OrderStatus.Confirmed);
+
+        // Assert
+        product.Stock.Should().Be(5); // unchanged
+        order.Status.Should().Be(OrderStatus.Confirmed);
     }
 
     #endregion
