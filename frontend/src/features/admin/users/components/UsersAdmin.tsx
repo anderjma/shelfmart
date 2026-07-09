@@ -7,6 +7,8 @@ import type { TableColumn } from "../../../../shared/components/Table";
 import { getUsers, updateUserRole } from "../api/adminUserService";
 import type { AdminUser, UserRole } from "../api/adminUserService";
 import EditUserModal from "./EditUserModal";
+import { getErrorMessage } from "../../../../lib/http-error";
+import AdminNav from "../../components/AdminNav";
 
 export default function UsersAdmin() {
     const [users, setUsers] = useState<AdminUser[]>([]);
@@ -21,9 +23,10 @@ export default function UsersAdmin() {
             try {
                 const data = await getUsers();
                 setUsers(data);
-            } catch {
-                setError("Could not load users.");
-                toast.error("Could not load users.");
+            } catch (err) {
+                const message = getErrorMessage(err, "Could not load users.");
+                setError(message);
+                toast.error(message);
             } finally {
                 setLoading(false);
             }
@@ -73,7 +76,8 @@ export default function UsersAdmin() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <SEO title="Manage Users" description="Review accounts and manage their roles." />
 
-            <h1 className="text-2xl font-bold text-gray-900 mb-6">Users</h1>
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">Users</h1>
+            <AdminNav />
 
             {error && !loading && (
                 <div className="text-red-500 text-sm text-center bg-red-50 p-3 rounded mb-4">{error}</div>

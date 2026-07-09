@@ -26,21 +26,24 @@ export default function Footer() {
                     <Link to="/contact" className="text-gray-500 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded px-1">Contact</Link>
                 </div>
 
-                {/* Social media */}
+                {/* Social media: not yet linked to a real account, so they're presented as disabled rather than dead links */}
                 <div className="flex space-x-6 justify-center">
-                    <a href="#" className="text-gray-400 hover:text-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 rounded p-1" aria-label="Go to our Facebook">
+                    <span className="text-gray-400 p-1" aria-disabled="true" title="Coming soon">
                         <SiFacebook className="h-5 w-5" aria-hidden="true" />
-                    </a>
-                    <a href="#" className="text-gray-400 hover:text-pink-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 rounded p-1" aria-label="Go to our Instagram">
+                        <span className="sr-only">Facebook (coming soon)</span>
+                    </span>
+                    <span className="text-gray-400 p-1" aria-disabled="true" title="Coming soon">
                         <SiInstagram className="h-5 w-5" aria-hidden="true" />
-                    </a>
-                    <a href="#" className="text-gray-400 hover:text-black transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 rounded p-1" aria-label="Go to our TikTok">
+                        <span className="sr-only">Instagram (coming soon)</span>
+                    </span>
+                    <span className="text-gray-400 p-1" aria-disabled="true" title="Coming soon">
                         <SiTiktok className="h-5 w-5" aria-hidden="true" />
-                    </a>
+                        <span className="sr-only">TikTok (coming soon)</span>
+                    </span>
                 </div>
 
                 {/* Copyright */}
-                <div className="border-t border-gray-100 pt-6 w-full flex flex-col sm:flex-row justify-between items-center text-xs text-gray-400 gap-2">
+                <div className="border-t border-gray-100 pt-6 w-full flex flex-col sm:flex-row justify-between items-center text-xs text-gray-500 gap-2">
                     <p>
                         &copy; {new Date().getFullYear()} ShelfMart. All rights reserved.
                     </p>

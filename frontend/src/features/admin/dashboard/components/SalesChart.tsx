@@ -1,5 +1,6 @@
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import type { SalesChartPoint } from "../api/dashboardService";
+import { formatCurrency } from "../../../../shared/utils/formatCurrency";
 
 export interface SalesChartProps {
     data: SalesChartPoint[];
@@ -17,7 +18,7 @@ export default function SalesChart({ data }: SalesChartProps) {
                         <YAxis tick={{ fontSize: 12, fill: "#6b7280" }} />
                         <Tooltip
                             contentStyle={{ borderRadius: 8, borderColor: "#e5e7eb", fontSize: 13 }}
-                            formatter={(value) => [`₡${Number(value).toFixed(2)}`, "Total"]}
+                            formatter={(value) => [formatCurrency(Number(value)), "Total"]}
                         />
                         <Line type="monotone" dataKey="total" stroke="#2563eb" strokeWidth={2} dot={{ r: 3 }} />
                     </LineChart>

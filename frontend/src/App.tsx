@@ -2,6 +2,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import Layout from "./shared/components/Layout";
+import ErrorBoundary from "./shared/components/ErrorBoundary";
 import { AuthProvider, useAuth } from "./lib/auth-context";
 import type { JSX } from "react";
 import { Toaster } from "react-hot-toast";
@@ -58,8 +59,8 @@ function App() {
                 <Suspense fallback={<PageLoader />}>
                 <Routes>
                     {/* Routes without Layout */}
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/register" element={<Register />} />
+                    <Route path="/login" element={<ErrorBoundary><Login /></ErrorBoundary>} />
+                    <Route path="/register" element={<ErrorBoundary><Register /></ErrorBoundary>} />
 
                     {/* Routes with Layout */}
                     <Route element={<Layout />}>

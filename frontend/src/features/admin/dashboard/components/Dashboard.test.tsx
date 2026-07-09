@@ -1,6 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
+import type { ReactElement } from "react";
+import { MemoryRouter } from "react-router-dom";
 import Dashboard from "./Dashboard";
+
+function renderWithRouter(ui: ReactElement) {
+    return render(ui, { wrapper: MemoryRouter });
+}
 
 const { mockGetDashboardStats } = vi.hoisted(() => ({ mockGetDashboardStats: vi.fn() }));
 
@@ -24,7 +30,7 @@ describe("Dashboard", () => {
     it("renders metric cards after fetching data", async () => {
         mockGetDashboardStats.mockResolvedValue(sampleStats);
 
-        render(<Dashboard />);
+        renderWithRouter(<Dashboard />);
 
         await waitFor(() => {
             expect(screen.getByText("Total Orders")).toBeInTheDocument();
@@ -36,7 +42,7 @@ describe("Dashboard", () => {
     it("shows a loading state before data arrives", () => {
         mockGetDashboardStats.mockReturnValue(new Promise(() => {}));
 
-        const { container } = render(<Dashboard />);
+        const { container } = renderWithRouter(<Dashboard />);
 
         expect(container.querySelectorAll(".animate-pulse").length).toBeGreaterThan(0);
     });
@@ -44,7 +50,7 @@ describe("Dashboard", () => {
     it("shows an error message when the request fails", async () => {
         mockGetDashboardStats.mockRejectedValue(new Error("network error"));
 
-        render(<Dashboard />);
+        renderWithRouter(<Dashboard />);
 
         expect(await screen.findByText("Could not load dashboard statistics.")).toBeInTheDocument();
     });

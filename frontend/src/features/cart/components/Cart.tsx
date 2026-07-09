@@ -1,11 +1,14 @@
 // This file handles the shopping cart view and the order confirmation flow.
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getCart, checkout, updateCartItemQuantity, removeFromCart } from "../api/orderService";
 import toast from "react-hot-toast";
 import type { Cart as CartType } from "../types";
 import { Trash2, Plus, Minus } from "lucide-react";
 import SEO from "../../../shared/components/SEO";
+import ConfirmDialog from "../../../shared/components/ConfirmDialog";
+import { getErrorMessage } from "../../../lib/http-error";
+import { formatCurrency } from "../../../shared/utils/formatCurrency";
 
 // This component lists the selected items, calculates totals, and initiates the checkout process.
 export default function Cart() {
@@ -13,6 +16,8 @@ export default function Cart() {
     const [loading, setLoading] = useState(true);
     const [processing, setProcessing] = useState(false);
     const [error, setError] = useState("");
+    const [pendingRemoval, setPendingRemoval] = useState<string | null>(null);
+    const [confirmingCheckout, setConfirmingCheckout] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -32,7 +37,7 @@ export default function Cart() {
     const handleUpdateQuantity = async (productId: string, currentQty: number, change: number) => {
         const newQty = currentQty + change;
         if (newQty < 1) {
-            handleRemoveItem(productId);
+            setPendingRemoval(productId);
             return;
         }
 
@@ -40,42 +45,40 @@ export default function Cart() {
             const updatedCart = await updateCartItemQuantity(productId, newQty);
             setCart(updatedCart);
         } catch (err) {
-            const error = err as { response?: { data?: { message?: string } } };
-            toast.error(error.response?.data?.message || "Error updating the quantity.");
+            toast.error(getErrorMessage(err, "Error updating the quantity."));
         }
     };
 
-    const handleRemoveItem = async (productId: string) => {
-        if (!window.confirm("Do you want to remove this product from the cart?")) return;
+    const handleConfirmRemoveItem = async () => {
+        if (!pendingRemoval) return;
 
         try {
-            const updatedCart = await removeFromCart(productId);
+            const updatedCart = await removeFromCart(pendingRemoval);
             setCart(updatedCart);
             toast.success("Product removed from cart");
         } catch (err) {
-            const error = err as { response?: { data?: { message?: string } } };
-            toast.error(error.response?.data?.message || "Error removing the product.");
+            toast.error(getErrorMessage(err, "Error removing the product."));
+        } finally {
+            setPendingRemoval(null);
         }
     };
 
-    const handleCheckout = async () => {
-        if (!window.confirm("Do you want to confirm your purchase?")) return;
-
+    const handleConfirmCheckout = async () => {
         setProcessing(true);
         try {
             await checkout();
             toast.success("Purchase processed successfully!");
             navigate("/");
         } catch (err) {
-            const error = err as { response?: { data?: { message?: string } } };
-            toast.error(error.response?.data?.message || "Error processing the purchase.");
+            toast.error(getErrorMessage(err, "Error processing the purchase."));
         } finally {
             setProcessing(false);
+            setConfirmingCheckout(false);
         }
     };
 
     if (loading) return <div className="text-center p-8">Loading cart...</div>;
-    if (error) return <div className="text-center p-8 text-red-500">{error}</div>;
+    if (error) return <div className="text-center p-8 text-red-500" role="alert">{error}</div>;
 
     if (!cart || !cart.items || cart.items.length === 0) {
         return (
@@ -113,34 +116,34 @@ export default function Cart() {
                             {cart.items.map((item) => (
                                 <tr key={item.productId}>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.productName}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">₡{item.unitPrice}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatCurrency(item.unitPrice)}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         <div className="flex items-center gap-2">
                                             <button
                                                 onClick={() => handleUpdateQuantity(item.productId, item.quantity, -1)}
                                                 className="p-1 rounded bg-gray-100 hover:bg-gray-200 text-gray-600 transition-colors"
-                                                title="Decrease quantity"
+                                                aria-label={`Decrease quantity of ${item.productName}`}
                                             >
-                                                <Minus className="w-3.5 h-3.5" />
+                                                <Minus className="w-3.5 h-3.5" aria-hidden="true" />
                                             </button>
                                             <span className="font-semibold text-gray-800 w-8 text-center">{item.quantity}</span>
                                             <button
                                                 onClick={() => handleUpdateQuantity(item.productId, item.quantity, 1)}
                                                 className="p-1 rounded bg-gray-100 hover:bg-gray-200 text-gray-600 transition-colors"
-                                                title="Increase quantity"
+                                                aria-label={`Increase quantity of ${item.productName}`}
                                             >
-                                                <Plus className="w-3.5 h-3.5" />
+                                                <Plus className="w-3.5 h-3.5" aria-hidden="true" />
                                             </button>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">₡{item.subTotal}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">{formatCurrency(item.subTotal)}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <button
-                                            onClick={() => handleRemoveItem(item.productId)}
+                                            onClick={() => setPendingRemoval(item.productId)}
                                             className="text-red-600 hover:text-red-950 p-1.5 rounded-full hover:bg-red-50 transition-colors"
-                                            title="Remove product"
+                                            aria-label={`Remove ${item.productName} from cart`}
                                         >
-                                            <Trash2 className="w-4 h-4" />
+                                            <Trash2 className="w-4 h-4" aria-hidden="true" />
                                         </button>
                                     </td>
                                 </tr>
@@ -156,32 +159,34 @@ export default function Cart() {
                     <div key={item.productId} className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 flex flex-col gap-3">
                         <div className="flex justify-between items-start gap-2">
                             <h3 className="font-bold text-gray-900 text-base leading-tight">{item.productName}</h3>
-                            <span className="text-base font-bold text-gray-900 whitespace-nowrap">₡{item.subTotal}</span>
+                            <span className="text-base font-bold text-gray-900 whitespace-nowrap">{formatCurrency(item.subTotal)}</span>
                         </div>
                         <div className="flex justify-between items-center text-sm">
-                            <span className="text-gray-500">Price: ₡{item.unitPrice}</span>
+                            <span className="text-gray-500">Price: {formatCurrency(item.unitPrice)}</span>
                             <div className="flex items-center gap-3">
                                 <div className="flex items-center gap-1.5 bg-gray-50 border border-gray-200 rounded px-1.5 py-0.5">
                                     <button
                                         onClick={() => handleUpdateQuantity(item.productId, item.quantity, -1)}
                                         className="p-0.5 text-gray-500 hover:text-gray-700"
+                                        aria-label={`Decrease quantity of ${item.productName}`}
                                     >
-                                        <Minus className="w-3.5 h-3.5" />
+                                        <Minus className="w-3.5 h-3.5" aria-hidden="true" />
                                     </button>
                                     <span className="font-semibold text-gray-800 text-xs w-6 text-center">{item.quantity}</span>
                                     <button
                                         onClick={() => handleUpdateQuantity(item.productId, item.quantity, 1)}
                                         className="p-0.5 text-gray-500 hover:text-gray-700"
+                                        aria-label={`Increase quantity of ${item.productName}`}
                                     >
-                                        <Plus className="w-3.5 h-3.5" />
+                                        <Plus className="w-3.5 h-3.5" aria-hidden="true" />
                                     </button>
                                 </div>
                                 <button
-                                    onClick={() => handleRemoveItem(item.productId)}
+                                    onClick={() => setPendingRemoval(item.productId)}
                                     className="text-red-600 hover:text-red-950 p-1 rounded hover:bg-red-50"
-                                    title="Remove"
+                                    aria-label={`Remove ${item.productName} from cart`}
                                 >
-                                    <Trash2 className="w-4 h-4" />
+                                    <Trash2 className="w-4 h-4" aria-hidden="true" />
                                 </button>
                             </div>
                         </div>
@@ -196,19 +201,38 @@ export default function Cart() {
                         <span className="text-gray-600 font-medium sm:hidden">Total due:</span>
                         <span className="text-xl font-bold text-gray-900">
                             <span className="hidden sm:inline">Total: </span>
-                            ₡{cart.totalAmount}
+                            {formatCurrency(cart.totalAmount)}
                         </span>
                     </div>
                     <button
-                        onClick={handleCheckout}
+                        onClick={() => setConfirmingCheckout(true)}
                         disabled={processing}
-                        className="w-full sm:w-auto bg-green-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-green-700 disabled:bg-green-400 transition-colors text-center shadow-sm"
+                        className="w-full sm:w-auto bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 disabled:bg-blue-400 transition-colors text-center shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                     >
                         {processing ? "Processing..." : "Complete Purchase"}
                     </button>
                 </div>
             </div>
+
+            <ConfirmDialog
+                isOpen={!!pendingRemoval}
+                title="Remove Item"
+                message="Do you want to remove this product from the cart?"
+                confirmLabel="Remove"
+                confirmVariant="danger"
+                onConfirm={handleConfirmRemoveItem}
+                onCancel={() => setPendingRemoval(null)}
+            />
+
+            <ConfirmDialog
+                isOpen={confirmingCheckout}
+                title="Confirm Purchase"
+                message="Do you want to confirm your purchase? This action cannot be undone."
+                confirmLabel="Confirm Purchase"
+                confirmVariant="primary"
+                onConfirm={handleConfirmCheckout}
+                onCancel={() => setConfirmingCheckout(false)}
+            />
         </div>
     );
 }
-

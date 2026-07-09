@@ -3,6 +3,8 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import Navbar from "./Header";
 import Footer from "./Footer";
+import BackButton from "./BackButton";
+import ErrorBoundary from "./ErrorBoundary";
 
 // This component coordinates the layout of the top navbar, the main content, and the footer.
 export default function Layout() {
@@ -17,7 +19,10 @@ export default function Layout() {
 
             {/* Central container */}
             <main className="flex-grow w-full max-w-7xl mx-auto py-6 sm:px-6 lg:px-8" id="main-content" tabIndex={-1}>
-                <Outlet />
+                <BackButton />
+                <ErrorBoundary>
+                    <Outlet />
+                </ErrorBoundary>
             </main>
 
             {/* Footer */}

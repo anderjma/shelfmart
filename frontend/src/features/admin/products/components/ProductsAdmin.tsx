@@ -14,6 +14,9 @@ import { createProduct, updateProduct, deleteProduct } from "../api/adminProduct
 import type { ProductPayload } from "../api/adminProductService";
 import ProductFormModal from "./ProductFormModal";
 import DeleteProductDialog from "./DeleteProductDialog";
+import { getErrorMessage } from "../../../../lib/http-error";
+import { formatCurrency } from "../../../../shared/utils/formatCurrency";
+import AdminNav from "../../components/AdminNav";
 
 const PAGE_SIZE = 10;
 
@@ -42,9 +45,10 @@ export default function ProductsAdmin() {
                 }
                 setProducts(result.items);
                 setTotalPages(result.totalPages);
-            } catch {
-                setError("Could not load the product catalog.");
-                toast.error("Could not load the product catalog.");
+            } catch (err) {
+                const message = getErrorMessage(err, "Could not load the product catalog.");
+                setError(message);
+                toast.error(message);
             } finally {
                 setLoading(false);
             }
@@ -58,8 +62,8 @@ export default function ProductsAdmin() {
             try {
                 const data = await getCategories();
                 setCategories(data);
-            } catch {
-                toast.error("Could not load categories.");
+            } catch (err) {
+                toast.error(getErrorMessage(err, "Could not load categories."));
             }
         };
 
@@ -94,8 +98,8 @@ export default function ProductsAdmin() {
             await deleteProduct(product.productResourceId);
             toast.success("Product deactivated successfully.");
             refresh();
-        } catch {
-            toast.error("Could not deactivate the product.");
+        } catch (err) {
+            toast.error(getErrorMessage(err, "Could not deactivate the product."));
         }
     };
 
@@ -107,7 +111,7 @@ export default function ProductsAdmin() {
             header: "Stock",
             render: (p) => (p.stock <= 5 ? <span className="text-amber-600 font-medium">{p.stock}</span> : p.stock)
         },
-        { key: "price", header: "Price", render: (p) => `₡${p.price.toFixed(2)}` },
+        { key: "price", header: "Price", render: (p) => formatCurrency(p.price) },
         {
             key: "actions",
             header: "Actions",
@@ -135,6 +139,8 @@ export default function ProductsAdmin() {
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <SEO title="Manage Products" description="Create, edit, and deactivate catalog products." />
+
+            <AdminNav />
 
             <div className="flex items-center justify-between mb-6">
                 <h1 className="text-2xl font-bold text-gray-900">Products</h1>

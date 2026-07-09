@@ -1,6 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import type { ReactElement } from "react";
+import { MemoryRouter } from "react-router-dom";
 import ProductsAdmin from "./ProductsAdmin";
+
+function renderWithRouter(ui: ReactElement) {
+    return render(ui, { wrapper: MemoryRouter });
+}
 
 const { mockGetProducts, mockGetCategories, mockCreateProduct, mockDeleteProduct } = vi.hoisted(() => ({
     mockGetProducts: vi.fn(),
@@ -52,7 +58,7 @@ describe("ProductsAdmin", () => {
     it("renders the product list from the API response", async () => {
         mockGetProducts.mockResolvedValue(mockPaginatedResponse());
 
-        render(<ProductsAdmin />);
+        renderWithRouter(<ProductsAdmin />);
 
         expect(await screen.findByText("Widget")).toBeInTheDocument();
     });
@@ -60,7 +66,7 @@ describe("ProductsAdmin", () => {
     it("opens the form modal when the New Product button is clicked", async () => {
         mockGetProducts.mockResolvedValue(mockPaginatedResponse());
 
-        render(<ProductsAdmin />);
+        renderWithRouter(<ProductsAdmin />);
         await screen.findByText("Widget");
 
         fireEvent.click(screen.getByText("New Product"));
@@ -72,7 +78,7 @@ describe("ProductsAdmin", () => {
         mockGetProducts.mockResolvedValue(mockPaginatedResponse());
         mockDeleteProduct.mockResolvedValue(undefined);
 
-        render(<ProductsAdmin />);
+        renderWithRouter(<ProductsAdmin />);
         await screen.findByText("Widget");
 
         fireEvent.click(screen.getByLabelText("Deactivate Widget"));

@@ -6,6 +6,9 @@ import { getDashboardStats } from "../api/dashboardService";
 import type { DashboardStats } from "../api/dashboardService";
 import StatCard from "./StatCard";
 import SalesChart from "./SalesChart";
+import { getErrorMessage } from "../../../../lib/http-error";
+import { formatCurrency } from "../../../../shared/utils/formatCurrency";
+import AdminNav from "../../components/AdminNav";
 
 const StatCardSkeleton = () => (
     <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5 flex items-center gap-4 animate-pulse">
@@ -29,9 +32,10 @@ export default function Dashboard() {
             try {
                 const data = await getDashboardStats();
                 setStats(data);
-            } catch {
-                setError("Could not load dashboard statistics.");
-                toast.error("Could not load dashboard statistics.");
+            } catch (err) {
+                const message = getErrorMessage(err, "Could not load dashboard statistics.");
+                setError(message);
+                toast.error(message);
             } finally {
                 setLoading(false);
             }
@@ -44,7 +48,8 @@ export default function Dashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <SEO title="Admin Dashboard" description="Business metrics overview for administrators." />
 
-            <h1 className="text-2xl font-bold text-gray-900 mb-6">Dashboard</h1>
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">Dashboard</h1>
+            <AdminNav />
 
             {error && !loading && (
                 <div className="text-red-500 text-sm text-center bg-red-50 p-3 rounded mb-6">{error}</div>
@@ -62,7 +67,7 @@ export default function Dashboard() {
                     <>
                         <StatCard
                             label="Total Revenue"
-                            value={`₡${(stats?.revenue ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`}
+                            value={formatCurrency(stats?.revenue ?? 0)}
                             icon={<DollarSign className="w-5 h-5" aria-hidden="true" />}
                         />
                         <StatCard

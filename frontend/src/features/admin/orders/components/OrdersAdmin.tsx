@@ -5,6 +5,9 @@ import Table from "../../../../shared/components/Table";
 import type { TableColumn } from "../../../../shared/components/Table";
 import { getAllOrders, updateOrderStatus } from "../api/adminOrderService";
 import type { AdminOrder, OrderStatus } from "../api/adminOrderService";
+import { getErrorMessage } from "../../../../lib/http-error";
+import { formatCurrency } from "../../../../shared/utils/formatCurrency";
+import AdminNav from "../../components/AdminNav";
 
 const ASSIGNABLE_STATUSES: OrderStatus[] = ["Pending", "Confirmed", "Shipped", "Delivered", "Cancelled"];
 
@@ -30,9 +33,10 @@ export default function OrdersAdmin() {
             try {
                 const data = await getAllOrders();
                 setOrders(data);
-            } catch {
-                setError("Could not load orders.");
-                toast.error("Could not load orders.");
+            } catch (err) {
+                const message = getErrorMessage(err, "Could not load orders.");
+                setError(message);
+                toast.error(message);
             } finally {
                 setLoading(false);
             }
@@ -47,8 +51,8 @@ export default function OrdersAdmin() {
             const updated = await updateOrderStatus(orderId, status);
             setOrders((prev) => prev.map((o) => (o.orderId === orderId ? updated : o)));
             toast.success("Order status updated.");
-        } catch {
-            toast.error("Could not update the order status.");
+        } catch (err) {
+            toast.error(getErrorMessage(err, "Could not update the order status."));
         } finally {
             setUpdatingOrderId(null);
         }
@@ -57,7 +61,7 @@ export default function OrdersAdmin() {
     const columns: TableColumn<AdminOrder>[] = [
         { key: "orderId", header: "Order", render: (o) => o.orderId.slice(0, 8) },
         { key: "customerUsername", header: "Customer" },
-        { key: "totalAmount", header: "Total", render: (o) => `₡${o.totalAmount.toFixed(2)}` },
+        { key: "totalAmount", header: "Total", render: (o) => formatCurrency(o.totalAmount) },
         {
             key: "status",
             header: "Status",
@@ -91,7 +95,8 @@ export default function OrdersAdmin() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <SEO title="Manage Orders" description="Review orders and update their fulfillment status." />
 
-            <h1 className="text-2xl font-bold text-gray-900 mb-6">Orders</h1>
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">Orders</h1>
+            <AdminNav />
 
             {error && !loading && (
                 <div className="text-red-500 text-sm text-center bg-red-50 p-3 rounded mb-4">{error}</div>

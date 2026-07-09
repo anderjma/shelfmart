@@ -22,14 +22,13 @@ docker compose up --build
 ## Deployment
 
 - **Backend** deploys to [Northflank](https://northflank.com), which auto-detects `backend/Dockerfile` and redeploys on every push to `main`. See [backend/README.md](backend/README.md#deployment-northflank) for the required environment variables.
-- **Frontend** deploys to GitHub Pages via the `deploy-frontend.yml` GitHub Actions workflow, which builds and publishes `frontend/dist/` on every push to `main` that touches `frontend/`.
+- **Frontend** deploys to [Vercel](https://vercel.com), which builds and publishes `frontend/` on every push to `main`.
 - **Local development** uses Docker Compose, as described above.
 
 ## CI/CD
 
-Two GitHub Actions workflows live in [.github/workflows/](.github/workflows/):
+One GitHub Actions workflow lives in [.github/workflows/](.github/workflows/):
 
 - **`ci.yml`** — runs on every pull request and push to `main`. It path-filters so only the affected project builds: `backend-ci` restores, builds, and tests the .NET solution; `frontend-ci` installs dependencies, lints, builds, and tests the React app.
-- **`deploy-frontend.yml`** — runs on push to `main` when `frontend/` changes. It builds the frontend with the `VITE_API_URL` secret and publishes the result to GitHub Pages using `actions/deploy-pages`.
 
 Branch protection requiring these checks to pass before merge is configured directly in the GitHub repository settings.

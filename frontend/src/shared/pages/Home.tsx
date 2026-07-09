@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { getProducts } from "../../features/store/api/productService";
 import type { Product } from "../../features/store/types";
 import SEO from "../components/SEO";
+import { formatCurrency } from "../utils/formatCurrency";
 
 // This component presents the value proposition and the store's main calls to action.
 export default function Home() {
@@ -25,7 +26,7 @@ export default function Home() {
     }, []);
 
     const ProductSkeleton = () => (
-        <div className="bg-white border border-slate-200/60 rounded-md shadow-sm overflow-hidden flex flex-col h-full animate-pulse">
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden flex flex-col h-full animate-pulse">
             <div className="h-40 sm:h-48 bg-slate-200 rounded-t-md"></div>
             <div className="p-3 sm:p-4 flex-1 flex flex-col justify-between bg-white rounded-b-md">
                 <div className="h-4 sm:h-5 bg-slate-200 rounded w-3/4 mb-3"></div>
@@ -128,7 +129,7 @@ const ProductCard = ({ product, type }: { product: Product, type: 'offer' | 'new
         : product.price;
 
     return (
-        <Link to="/catalog" className="bg-white border border-slate-200/60 rounded-md shadow-sm hover:shadow-md transition-all duration-200 flex flex-col h-full group">
+        <Link to="/catalog" className="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 flex flex-col h-full group">
             <div className="relative h-40 sm:h-48 bg-slate-50 flex items-center justify-center overflow-hidden rounded-t-md">
                 <div className="absolute top-2 left-2 right-2 flex justify-between items-start z-10">
                     <span className="bg-white/90 text-slate-600 text-[9px] uppercase font-medium px-1.5 py-0.5 rounded shadow-sm">
@@ -148,8 +149,8 @@ const ProductCard = ({ product, type }: { product: Product, type: 'offer' | 'new
             <div className="p-3 sm:p-4 flex-1 flex flex-col justify-between bg-white rounded-b-md">
                 <h3 className="font-medium text-slate-800 text-sm sm:text-base line-clamp-2 leading-snug mb-3" title={product.name}>{product.name}</h3>
                 <div className="flex items-center gap-2 mt-auto flex-wrap">
-                    <p className="text-blue-600 font-semibold text-sm sm:text-base">₡{finalPrice.toFixed(2)}</p>
-                    {product.discountPercentage > 0 && <p className="text-xs text-slate-400 line-through">₡{product.price}</p>}
+                    <p className="text-blue-600 font-semibold text-sm sm:text-base">{formatCurrency(finalPrice)}</p>
+                    {product.discountPercentage > 0 && <p className="text-xs text-slate-400 line-through">{formatCurrency(product.price)}</p>}
                 </div>
             </div>
         </Link>

@@ -8,6 +8,8 @@ import toast from "react-hot-toast";
 import { ShoppingCart, Search } from "lucide-react";
 import SEO from "../../../shared/components/SEO";
 import Pagination from "../../../shared/components/Pagination";
+import { getErrorMessage } from "../../../lib/http-error";
+import { formatCurrency } from "../../../shared/utils/formatCurrency";
 
 const PAGE_SIZE = 8;
 const SEARCH_DEBOUNCE_MS = 300;
@@ -71,8 +73,7 @@ export default function Store() {
             await addToCart({ productId, quantity: 1 });
             toast.success("Product added to cart");
         } catch (err) {
-            const error = err as { response?: { data?: { message?: string } } };
-            toast.error(error.response?.data?.message || "You must sign in to purchase.");
+            toast.error(getErrorMessage(err, "You must sign in to purchase."));
         }
     };
 
@@ -146,6 +147,7 @@ export default function Store() {
                 </div>
             ) : (
                 <div className="space-y-8">
+                    <h2 className="sr-only">Products</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         {products.map((product) => {
                             const finalPrice = product.discountPercentage > 0
@@ -174,8 +176,8 @@ export default function Store() {
                                     <div className="p-5 flex-1 flex flex-col">
                                         <h3 className="font-bold text-gray-900 text-lg mb-1 line-clamp-1" title={product.name}>{product.name}</h3>
                                         <div className="flex items-baseline gap-2 mb-4">
-                                            <p className="text-2xl font-bold text-blue-600">₡{finalPrice.toFixed(2)}</p>
-                                            {product.discountPercentage > 0 && <p className="text-sm text-gray-400 line-through">₡{product.price}</p>}
+                                            <p className="text-2xl font-bold text-blue-600">{formatCurrency(finalPrice)}</p>
+                                            {product.discountPercentage > 0 && <p className="text-sm text-gray-400 line-through">{formatCurrency(product.price)}</p>}
                                         </div>
 
                                         <div className="mt-auto">

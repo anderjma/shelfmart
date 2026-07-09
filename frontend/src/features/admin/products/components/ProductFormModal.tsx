@@ -5,6 +5,7 @@ import Button from "../../../../shared/components/Button";
 import type { Product } from "../../../store/types";
 import type { Category } from "../api/categoryService";
 import type { ProductPayload } from "../api/adminProductService";
+import { getErrorMessage } from "../../../../lib/http-error";
 
 export interface ProductFormModalProps {
     isOpen: boolean;
@@ -53,8 +54,7 @@ export default function ProductFormModal({ isOpen, onClose, onSubmit, categories
             await onSubmit(form);
             onClose();
         } catch (err) {
-            const error = err as { response?: { data?: { message?: string } } };
-            setError(error.response?.data?.message || "Could not save the product.");
+            setError(getErrorMessage(err, "Could not save the product."));
         } finally {
             setSubmitting(false);
         }
@@ -78,11 +78,12 @@ export default function ProductFormModal({ isOpen, onClose, onSubmit, categories
             }
         >
             <form id="product-form" onSubmit={handleSubmit} className="space-y-4">
-                {error && <div className="text-red-500 text-sm text-center bg-red-50 p-3 rounded">{error}</div>}
+                {error && <div className="text-red-500 text-sm text-center bg-red-50 p-3 rounded" role="alert">{error}</div>}
 
                 <div>
-                    <label className={labelClasses}>Name</label>
+                    <label htmlFor="product-name" className={labelClasses}>Name</label>
                     <input
+                        id="product-name"
                         type="text"
                         required
                         className={inputClasses}
@@ -93,8 +94,9 @@ export default function ProductFormModal({ isOpen, onClose, onSubmit, categories
 
                 <div className="grid grid-cols-2 gap-4">
                     <div>
-                        <label className={labelClasses}>Stock</label>
+                        <label htmlFor="product-stock" className={labelClasses}>Stock</label>
                         <input
+                            id="product-stock"
                             type="number"
                             min={0}
                             required
@@ -104,8 +106,9 @@ export default function ProductFormModal({ isOpen, onClose, onSubmit, categories
                         />
                     </div>
                     <div>
-                        <label className={labelClasses}>Price</label>
+                        <label htmlFor="product-price" className={labelClasses}>Price</label>
                         <input
+                            id="product-price"
                             type="number"
                             min={0}
                             step="0.01"
@@ -118,8 +121,9 @@ export default function ProductFormModal({ isOpen, onClose, onSubmit, categories
                 </div>
 
                 <div>
-                    <label className={labelClasses}>Category</label>
+                    <label htmlFor="product-category" className={labelClasses}>Category</label>
                     <select
+                        id="product-category"
                         className={inputClasses}
                         value={form.category}
                         onChange={(e) => setForm({ ...form, category: e.target.value })}
@@ -134,8 +138,9 @@ export default function ProductFormModal({ isOpen, onClose, onSubmit, categories
                 </div>
 
                 <div>
-                    <label className={labelClasses}>Image URL</label>
+                    <label htmlFor="product-image-url" className={labelClasses}>Image URL</label>
                     <input
+                        id="product-image-url"
                         type="text"
                         className={inputClasses}
                         value={form.imageUrl}
@@ -144,8 +149,9 @@ export default function ProductFormModal({ isOpen, onClose, onSubmit, categories
                 </div>
 
                 <div>
-                    <label className={labelClasses}>Discount Percentage</label>
+                    <label htmlFor="product-discount" className={labelClasses}>Discount Percentage</label>
                     <input
+                        id="product-discount"
                         type="number"
                         min={0}
                         max={100}

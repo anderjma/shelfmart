@@ -69,6 +69,6 @@ The backend is deployed to [Northflank](https://northflank.com) from this reposi
 | :--- | :--- |
 | `DATABASE_URL` | Not read directly by the app; map it to `ConnectionStrings__DefaultConnection` (Npgsql connection string, e.g. `Host=...;Port=5432;Database=...;Username=...;Password=...;SSL Mode=Require;`). |
 | `JWT_SECRET` | Maps to `Jwt__Key`. Secret key used to sign and validate JWTs, at least 32 characters. |
-| `CORS_ALLOWED_ORIGINS` | Maps to `Cors__AllowedOrigins`. Comma-separated list of origins allowed to call the API (e.g. the GitHub Pages frontend URL). |
+| `CORS_ALLOWED_ORIGINS` | Maps to `Cors__AllowedOrigins`. Comma-separated list of origins allowed to call the API (e.g. the Vercel frontend URL). |
 
 ASP.NET Core reads double-underscore (`__`) separated environment variables as nested configuration keys, so `DATABASE_URL` and `CORS_ALLOWED_ORIGINS` must be set on the platform using their `ConnectionStrings__DefaultConnection` / `Cors__AllowedOrigins` names, or mapped to those names via the platform's environment variable configuration.

@@ -38,20 +38,21 @@ export default function Contact() {
                     <div className="space-y-6">
                         <h2 className="text-xl font-semibold text-gray-900 border-b pb-2">Our Social Media</h2>
 
-                        <a href="#" className="flex items-center text-gray-700 hover:text-blue-600 transition-colors">
-                            <SiFacebook className="w-6 h-6 mr-4" />
-                            <span className="font-medium">Facebook</span>
-                        </a>
-                        
-                        <a href="#" className="flex items-center text-gray-700 hover:text-pink-600 transition-colors">
-                            <SiInstagram className="w-6 h-6 mr-4" />
-                            <span className="font-medium">Instagram</span>
-                        </a>
-                        
-                        <a href="#" className="flex items-center text-gray-700 hover:text-black transition-colors">
-                            <SiTiktok className="w-6 h-6 mr-4" />
-                            <span className="font-medium">TikTok</span>
-                        </a>
+                        {/* Not yet linked to a real account, so presented as disabled rather than dead links */}
+                        <span className="flex items-center text-gray-400" aria-disabled="true" title="Coming soon">
+                            <SiFacebook className="w-6 h-6 mr-4" aria-hidden="true" />
+                            <span className="font-medium">Facebook (coming soon)</span>
+                        </span>
+
+                        <span className="flex items-center text-gray-400" aria-disabled="true" title="Coming soon">
+                            <SiInstagram className="w-6 h-6 mr-4" aria-hidden="true" />
+                            <span className="font-medium">Instagram (coming soon)</span>
+                        </span>
+
+                        <span className="flex items-center text-gray-400" aria-disabled="true" title="Coming soon">
+                            <SiTiktok className="w-6 h-6 mr-4" aria-hidden="true" />
+                            <span className="font-medium">TikTok (coming soon)</span>
+                        </span>
                     </div>
                 </div>
             </div>

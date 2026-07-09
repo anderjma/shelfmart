@@ -1,6 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
+import type { ReactElement } from "react";
+import { MemoryRouter } from "react-router-dom";
 import AuditLogTable from "./AuditLogTable";
+
+function renderWithRouter(ui: ReactElement) {
+    return render(ui, { wrapper: MemoryRouter });
+}
 
 const { mockGetAuditLogs } = vi.hoisted(() => ({ mockGetAuditLogs: vi.fn() }));
 
@@ -24,7 +30,7 @@ describe("AuditLogTable", () => {
             totalPages: 1
         });
 
-        render(<AuditLogTable />);
+        renderWithRouter(<AuditLogTable />);
 
         expect(await screen.findByText("Deleted product X")).toBeInTheDocument();
         expect(screen.getByText("admin")).toBeInTheDocument();
@@ -33,7 +39,7 @@ describe("AuditLogTable", () => {
     it("shows an error message when the request fails", async () => {
         mockGetAuditLogs.mockRejectedValue(new Error("network error"));
 
-        render(<AuditLogTable />);
+        renderWithRouter(<AuditLogTable />);
 
         expect(await screen.findByText("Could not load the audit log.")).toBeInTheDocument();
     });
@@ -41,7 +47,7 @@ describe("AuditLogTable", () => {
     it("shows the empty state when there are no entries", async () => {
         mockGetAuditLogs.mockResolvedValue({ items: [], totalCount: 0, page: 1, pageSize: 20, totalPages: 1 });
 
-        render(<AuditLogTable />);
+        renderWithRouter(<AuditLogTable />);
 
         expect(await screen.findByText("No audit log entries found.")).toBeInTheDocument();
     });

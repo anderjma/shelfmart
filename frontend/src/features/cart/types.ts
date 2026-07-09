@@ -12,6 +12,7 @@ export interface Cart {
     orderId: string;
     totalAmount: number;
     items: CartItem[];
+    status?: string;
 }
 
 // This interface consolidates the technical information of a product that will be sent to the server to add it to the cart.

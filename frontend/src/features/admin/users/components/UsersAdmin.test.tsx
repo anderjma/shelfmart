@@ -1,6 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, within } from "@testing-library/react";
+import type { ReactElement } from "react";
+import { MemoryRouter } from "react-router-dom";
 import UsersAdmin from "./UsersAdmin";
+
+function renderWithRouter(ui: ReactElement) {
+    return render(ui, { wrapper: MemoryRouter });
+}
 
 const { mockGetUsers, mockUpdateUserRole } = vi.hoisted(() => ({
     mockGetUsers: vi.fn(),
@@ -27,12 +33,12 @@ describe("UsersAdmin", () => {
     });
 
     it("renders the user list from the API response", async () => {
-        render(<UsersAdmin />);
+        renderWithRouter(<UsersAdmin />);
         expect(await screen.findByText("Jane Doe")).toBeInTheDocument();
     });
 
     it("opens the edit role modal and only offers Admin and Customer options", async () => {
-        render(<UsersAdmin />);
+        renderWithRouter(<UsersAdmin />);
         await screen.findByText("Jane Doe");
 
         fireEvent.click(screen.getByLabelText("Edit role for Jane Doe"));
@@ -47,7 +53,7 @@ describe("UsersAdmin", () => {
     it("calls updateUserRole with the selected role when saving", async () => {
         mockUpdateUserRole.mockResolvedValue({ ...sampleUser, role: "Admin" });
 
-        render(<UsersAdmin />);
+        renderWithRouter(<UsersAdmin />);
         await screen.findByText("Jane Doe");
 
         fireEvent.click(screen.getByLabelText("Edit role for Jane Doe"));
