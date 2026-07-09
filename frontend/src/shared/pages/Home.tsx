@@ -53,13 +53,10 @@ export default function Home() {
                 <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center"></div>
                 <div className="relative z-10 px-6 py-12 sm:py-16 md:py-20 text-center max-w-3xl mx-auto">
                     <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
-                        Advanced Commercial Platform
+                        Welcome to ShelfMart!
                     </h1>
-                    <p className="text-sm sm:text-base text-slate-300 mb-6 font-normal leading-relaxed">
-                        Inventory and purchasing management system with real-time synchronization.
-                    </p>
                     <Link to="/catalog" className="inline-block bg-blue-600 text-white px-5 sm:px-6 py-2.5 rounded text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm">
-                        View Full Catalog
+                        Explore our catalog
                     </Link>
                 </div>
             </div>
