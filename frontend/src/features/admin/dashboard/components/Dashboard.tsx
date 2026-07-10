@@ -11,11 +11,11 @@ import { formatCurrency } from "../../../../shared/utils/formatCurrency";
 import AdminNav from "../../components/AdminNav";
 
 const StatCardSkeleton = () => (
-    <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5 flex items-center gap-4 animate-pulse">
-        <div className="w-11 h-11 rounded-md bg-gray-200 shrink-0"></div>
+    <div className="bg-white border border-sand-300 rounded-2xl shadow-sm p-5 flex items-center gap-4 animate-pulse">
+        <div className="w-11 h-11 rounded-xl bg-cream-200 shrink-0"></div>
         <div className="flex-1 space-y-2">
-            <div className="h-3 bg-gray-200 rounded w-1/2"></div>
-            <div className="h-5 bg-gray-200 rounded w-2/3"></div>
+            <div className="h-3 bg-cream-200 rounded w-1/2"></div>
+            <div className="h-5 bg-cream-200 rounded w-2/3"></div>
         </div>
     </div>
 );
@@ -48,11 +48,11 @@ export default function Dashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <SEO title="Admin Dashboard" description="Business metrics overview for administrators." />
 
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">Dashboard</h1>
+            <h1 className="text-2xl font-bold text-ink-900 mb-4">Dashboard</h1>
             <AdminNav />
 
             {error && !loading && (
-                <div className="text-red-500 text-sm text-center bg-red-50 p-3 rounded mb-6">{error}</div>
+                <div className="text-red-700 text-sm text-center bg-red-50 p-3 rounded-xl mb-6">{error}</div>
             )}
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">

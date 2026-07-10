@@ -41,8 +41,8 @@ export default function DeleteProductDialog({ product, onClose, onConfirm }: Del
                 </>
             }
         >
-            <p className="text-sm text-gray-600">
-                Are you sure you want to deactivate <span className="font-medium text-gray-900">{product.name}</span>?
+            <p className="text-sm text-ink-700">
+                Are you sure you want to deactivate <span className="font-medium text-ink-900">{product.name}</span>?
                 It will be hidden from the storefront but its order history will be preserved.
             </p>
         </Modal>

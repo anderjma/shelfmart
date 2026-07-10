@@ -45,6 +45,6 @@ describe("Button", () => {
 
     it("applies the danger variant class", () => {
         render(<Button variant="danger">Delete</Button>);
-        expect(screen.getByText("Delete")).toHaveClass("text-red-600");
+        expect(screen.getByText("Delete")).toHaveClass("text-red-700");
     });
 });

@@ -82,21 +82,21 @@ export default function Store() {
     const renderBadges = (product: Product) => {
         const isNew = product.createdAt && (new Date().getTime() - new Date(product.createdAt).getTime()) / (1000 * 3600 * 24) <= 7;
 
-        if (product.stock === 0) return <span className="bg-gray-500 text-white text-[10px] uppercase font-bold px-2 py-1 rounded shadow-sm">Sold Out</span>;
-        if (product.stock > 0 && product.stock <= 5) return <span className="bg-amber-500 text-white text-[10px] uppercase font-bold px-2 py-1 rounded shadow-sm animate-pulse">Only {product.stock} left!</span>;
-        if (product.discountPercentage > 0) return <span className="bg-red-500 text-white text-[10px] uppercase font-bold px-2 py-1 rounded shadow-sm">-{product.discountPercentage}% OFF</span>;
-        if (isNew) return <span className="bg-emerald-500 text-white text-[10px] uppercase font-bold px-2 py-1 rounded shadow-sm">New</span>;
+        if (product.stock === 0) return <span className="bg-ink-900 text-white text-[10px] uppercase font-bold px-2 py-1 rounded-md shadow-sm">Sold Out</span>;
+        if (product.stock > 0 && product.stock <= 5) return <span className="bg-ink-900 text-white text-[10px] uppercase font-bold px-2 py-1 rounded-md shadow-sm">Only {product.stock} left!</span>;
+        if (product.discountPercentage > 0) return <span className="bg-accent-500 text-white text-[10px] uppercase font-bold px-2 py-1 rounded-md shadow-sm">-{product.discountPercentage}% OFF</span>;
+        if (isNew) return <span className="bg-white text-accent-500 border border-accent-500 text-[10px] uppercase font-bold px-2 py-1 rounded-md shadow-sm">New</span>;
         return null;
     };
 
     // This component represents the visual skeleton while data is loading.
     const ProductSkeleton = () => (
-        <div className="bg-white border border-gray-100 rounded-lg shadow-sm overflow-hidden flex flex-col animate-pulse">
-            <div className="h-48 bg-gray-200"></div>
+        <div className="bg-white border border-sand-300 rounded-2xl shadow-sm overflow-hidden flex flex-col animate-pulse">
+            <div className="h-48 bg-cream-200"></div>
             <div className="p-5 flex-1 flex flex-col gap-4">
-                <div className="h-5 bg-gray-200 rounded w-3/4"></div>
-                <div className="h-8 bg-gray-200 rounded w-1/3"></div>
-                <div className="mt-auto h-10 bg-gray-200 rounded w-full"></div>
+                <div className="h-5 bg-cream-200 rounded w-3/4"></div>
+                <div className="h-8 bg-cream-200 rounded w-1/3"></div>
+                <div className="mt-auto h-10 bg-cream-200 rounded w-full"></div>
             </div>
         </div>
     );
@@ -105,8 +105,8 @@ export default function Store() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
             <SEO title="Product Catalog" description="Explore our complete product catalog with real-time stock control and special offers." />
             <div className="text-center space-y-4 mb-8">
-                <h1 className="text-3xl font-bold text-gray-900">Product Catalog</h1>
-                <p className="text-gray-500">Explore our selection and find what you need.</p>
+                <h1 className="text-3xl font-bold text-ink-900">Product Catalog</h1>
+                <p className="text-ink-700">Explore our selection and find what you need.</p>
             </div>
 
             <div className="space-y-6">
@@ -116,9 +116,9 @@ export default function Store() {
                         placeholder="Search products by name or category..."
                         value={searchInput}
                         onChange={(e) => setSearchInput(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm transition-all"
+                        className="w-full pl-10 pr-4 py-2.5 bg-white border border-sand-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 text-sm transition-all"
                     />
-                    <Search className="w-5 h-5 text-gray-400 absolute left-3 top-3" />
+                    <Search className="w-5 h-5 text-ink-700/40 absolute left-3 top-3" />
                 </div>
 
                 <div className="flex flex-wrap justify-center gap-2 mb-8">
@@ -126,8 +126,8 @@ export default function Store() {
                         <button
                             key={cat}
                             onClick={() => { setSelectedCategory(cat); setPage(1); }}
-                            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                                selectedCategory === cat ? "bg-blue-600 text-white shadow-sm" : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
+                            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-accent-500 ${
+                                selectedCategory === cat ? "bg-accent-500 text-white shadow-sm" : "bg-white text-ink-700 border border-sand-300 hover:bg-cream-100"
                             }`}
                             aria-pressed={selectedCategory === cat}
                         >
@@ -142,10 +142,10 @@ export default function Store() {
                     {[...Array(8)].map((_, i) => <ProductSkeleton key={i} />)}
                 </div>
             ) : products.length === 0 ? (
-                <div className="text-center p-16 bg-white border border-gray-200 rounded-lg flex flex-col items-center justify-center">
-                    <ShoppingCart className="w-16 h-16 text-gray-300 mb-4" />
-                    <h3 className="text-lg font-medium text-gray-900">No products available</h3>
-                    <p className="text-gray-500 mt-1">Try selecting a different category.</p>
+                <div className="text-center p-16 bg-white border border-sand-300 rounded-2xl flex flex-col items-center justify-center">
+                    <ShoppingCart className="w-16 h-16 text-sand-400 mb-4" />
+                    <h3 className="text-lg font-medium text-ink-900">No products available</h3>
+                    <p className="text-ink-700 mt-1">Try selecting a different category.</p>
                 </div>
             ) : (
                 <div className="space-y-8">
@@ -157,9 +157,9 @@ export default function Store() {
                                 : product.price;
 
                             return (
-                                <div key={product.productResourceId} className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden flex flex-col transition-transform hover:-translate-y-1 hover:shadow-md relative group">
+                                <div key={product.productResourceId} className="bg-white border border-sand-300 rounded-2xl shadow-sm overflow-hidden flex flex-col transition-transform hover:-translate-y-1 hover:shadow-md relative group">
                                     <div className="absolute top-2 left-2 right-2 flex justify-between items-start z-10 pointer-events-none">
-                                        <span className="bg-black/70 text-white text-[10px] uppercase font-bold px-2 py-1 rounded backdrop-blur-sm">
+                                        <span className="bg-ink-900/75 text-white text-[10px] uppercase font-bold px-2 py-1 rounded-md backdrop-blur-sm">
                                             {product.category || 'General'}
                                         </span>
                                         <div className="flex flex-col gap-1 items-end">
@@ -167,32 +167,32 @@ export default function Store() {
                                         </div>
                                     </div>
 
-                                    <div className="h-48 bg-gray-100 flex items-center justify-center overflow-hidden">
+                                    <div className="h-48 bg-cream-100 flex items-center justify-center overflow-hidden">
                                         {product.imageUrl ? (
                                             <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
                                         ) : (
-                                            <span className="text-gray-400 text-sm font-medium">No image</span>
+                                            <span className="text-sand-400 text-sm font-medium">No image</span>
                                         )}
                                     </div>
 
                                     <div className="p-5 flex-1 flex flex-col">
-                                        <h3 className="font-bold text-gray-900 text-lg mb-1 line-clamp-1" title={product.name}>{product.name}</h3>
+                                        <h3 className="font-bold text-ink-900 text-lg mb-1 line-clamp-1" title={product.name}>{product.name}</h3>
                                         <div className="flex items-baseline gap-2 mb-4">
-                                            <p className="text-2xl font-bold text-blue-600">{formatCurrency(finalPrice)}</p>
-                                            {product.discountPercentage > 0 && <p className="text-sm text-gray-400 line-through">{formatCurrency(product.price)}</p>}
+                                            <p className="text-2xl font-bold text-accent-500">{formatCurrency(finalPrice)}</p>
+                                            {product.discountPercentage > 0 && <p className="text-sm text-ink-700/50 line-through">{formatCurrency(product.price)}</p>}
                                         </div>
 
                                         <div className="mt-auto">
                                             {product.stock > 0 ? (
                                                 <button
                                                     onClick={() => handleAddToCart(product.productResourceId)}
-                                                    className="w-full bg-blue-600 text-white py-2.5 rounded-md font-medium hover:bg-blue-700 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center gap-2"
+                                                    className="w-full bg-accent-500 text-white py-2.5 rounded-xl font-medium hover:bg-accent-600 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2 flex items-center justify-center gap-2"
                                                     aria-label={`Add ${product.name} to cart`}
                                                 >
                                                     <ShoppingCart className="w-4 h-4" /> Add to Cart
                                                 </button>
                                             ) : (
-                                                <button disabled className="w-full bg-gray-100 text-gray-400 py-2.5 rounded-md font-medium cursor-not-allowed border border-gray-200">
+                                                <button disabled className="w-full bg-cream-200 text-ink-700/40 py-2.5 rounded-xl font-medium cursor-not-allowed border border-sand-300">
                                                     Sold Out
                                                 </button>
                                             )}
@@ -203,7 +203,7 @@ export default function Store() {
                         })}
                     </div>
 
-                    <p className="text-center text-sm text-gray-500">{totalCount} results</p>
+                    <p className="text-center text-sm text-ink-700">{totalCount} results</p>
                     <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
                 </div>
             )}

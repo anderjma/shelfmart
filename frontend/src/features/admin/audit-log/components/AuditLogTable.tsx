@@ -55,11 +55,11 @@ export default function AuditLogTable() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <SEO title="Audit Log" description="Review the history of administrative actions." />
 
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">Audit Log</h1>
+            <h1 className="text-2xl font-bold text-ink-900 mb-4">Audit Log</h1>
             <AdminNav />
 
             {error && !loading && (
-                <div className="text-red-500 text-sm text-center bg-red-50 p-3 rounded mb-4">{error}</div>
+                <div className="text-red-700 text-sm text-center bg-red-50 p-3 rounded-xl mb-4">{error}</div>
             )}
 
             <Table

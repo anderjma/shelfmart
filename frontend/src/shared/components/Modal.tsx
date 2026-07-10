@@ -87,16 +87,16 @@ export default function Modal({ isOpen, onClose, title, children, footer, size =
                 aria-modal="true"
                 aria-label={title}
                 tabIndex={-1}
-                className={`bg-white rounded-lg shadow-xl w-full ${sizeClasses[size]} flex flex-col max-h-[85vh] focus:outline-none`}
+                className={`bg-white rounded-2xl shadow-xl w-full ${sizeClasses[size]} flex flex-col max-h-[85vh] focus:outline-none`}
                 onClick={(event) => event.stopPropagation()}
             >
-                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-                    <h2 className="text-lg font-medium text-gray-900">{title}</h2>
+                <div className="flex items-center justify-between px-6 py-4 border-b border-sand-300">
+                    <h2 className="text-lg font-medium text-ink-900">{title}</h2>
                     <button
                         type="button"
                         onClick={onClose}
                         aria-label="Close"
-                        className="text-slate-400 hover:text-slate-900 hover:bg-gray-100 transition-colors p-1 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="text-ink-700/60 hover:text-ink-900 hover:bg-cream-100 transition-colors p-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500"
                     >
                         <X className="w-5 h-5" aria-hidden="true" />
                     </button>
@@ -105,7 +105,7 @@ export default function Modal({ isOpen, onClose, title, children, footer, size =
                 <div className="px-6 py-4 overflow-y-auto max-h-[70vh]">{children}</div>
 
                 {footer && (
-                    <div className="flex justify-end gap-2 px-6 py-4 border-t border-gray-200">{footer}</div>
+                    <div className="flex justify-end gap-2 px-6 py-4 border-t border-sand-300">{footer}</div>
                 )}
             </div>
         </div>

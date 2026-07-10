@@ -109,7 +109,7 @@ export default function ProductsAdmin() {
         {
             key: "stock",
             header: "Stock",
-            render: (p) => (p.stock <= 5 ? <span className="text-amber-600 font-medium">{p.stock}</span> : p.stock)
+            render: (p) => (p.stock <= 5 ? <span className="text-accent-500 font-semibold">{p.stock}</span> : p.stock)
         },
         { key: "price", header: "Price", render: (p) => formatCurrency(p.price) },
         {
@@ -119,14 +119,14 @@ export default function ProductsAdmin() {
                 <div className="flex items-center gap-3">
                     <button
                         onClick={() => openEditForm(p)}
-                        className="text-slate-500 hover:text-blue-600 transition-colors"
+                        className="text-ink-700/60 hover:text-accent-500 transition-colors"
                         aria-label={`Edit ${p.name}`}
                     >
                         <Pencil className="w-4 h-4" aria-hidden="true" />
                     </button>
                     <button
                         onClick={() => setProductPendingDelete(p)}
-                        className="text-slate-500 hover:text-red-600 transition-colors"
+                        className="text-ink-700/60 hover:text-red-600 transition-colors"
                         aria-label={`Deactivate ${p.name}`}
                     >
                         <Trash2 className="w-4 h-4" aria-hidden="true" />
@@ -143,7 +143,7 @@ export default function ProductsAdmin() {
             <AdminNav />
 
             <div className="flex items-center justify-between mb-6">
-                <h1 className="text-2xl font-bold text-gray-900">Products</h1>
+                <h1 className="text-2xl font-bold text-ink-900">Products</h1>
                 <Button onClick={openCreateForm}>
                     <Plus className="w-4 h-4" aria-hidden="true" />
                     New Product
@@ -151,7 +151,7 @@ export default function ProductsAdmin() {
             </div>
 
             {error && !loading && (
-                <div className="text-red-500 text-sm text-center bg-red-50 p-3 rounded mb-4">{error}</div>
+                <div className="text-red-700 text-sm text-center bg-red-50 p-3 rounded-xl mb-4">{error}</div>
             )}
 
             <Table

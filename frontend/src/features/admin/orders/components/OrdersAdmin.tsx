@@ -12,7 +12,7 @@ import AdminNav from "../../components/AdminNav";
 const ASSIGNABLE_STATUSES: OrderStatus[] = ["Pending", "Confirmed", "Shipped", "Delivered", "Cancelled"];
 
 const statusBadgeClasses: Record<OrderStatus, string> = {
-    Cart: "bg-gray-100 text-gray-700",
+    Cart: "bg-cream-200 text-ink-700",
     Pending: "bg-amber-100 text-amber-800",
     Confirmed: "bg-blue-100 text-blue-800",
     Shipped: "bg-indigo-100 text-indigo-800",
@@ -79,7 +79,7 @@ export default function OrdersAdmin() {
                     value={o.status}
                     disabled={updatingOrderId === o.orderId}
                     onChange={(e) => handleStatusChange(o.orderId, e.target.value as OrderStatus)}
-                    className="text-sm border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50"
+                    className="text-sm border border-sand-400 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 disabled:opacity-50"
                 >
                     {ASSIGNABLE_STATUSES.map((status) => (
                         <option key={status} value={status}>
@@ -95,11 +95,11 @@ export default function OrdersAdmin() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <SEO title="Manage Orders" description="Review orders and update their fulfillment status." />
 
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">Orders</h1>
+            <h1 className="text-2xl font-bold text-ink-900 mb-4">Orders</h1>
             <AdminNav />
 
             {error && !loading && (
-                <div className="text-red-500 text-sm text-center bg-red-50 p-3 rounded mb-4">{error}</div>
+                <div className="text-red-700 text-sm text-center bg-red-50 p-3 rounded-xl mb-4">{error}</div>
             )}
 
             <Table

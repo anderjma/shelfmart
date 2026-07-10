@@ -77,15 +77,15 @@ export default function Cart() {
         }
     };
 
-    if (loading) return <div className="text-center p-8">Loading cart...</div>;
-    if (error) return <div className="text-center p-8 text-red-500" role="alert">{error}</div>;
+    if (loading) return <div className="text-center p-8 text-ink-700">Loading cart...</div>;
+    if (error) return <div className="text-center p-8 text-red-600" role="alert">{error}</div>;
 
     if (!cart || !cart.items || cart.items.length === 0) {
         return (
-            <div className="text-center py-16 mx-4 sm:mx-0 bg-white rounded-lg shadow-sm border border-gray-200">
+            <div className="text-center py-16 mx-4 sm:mx-0 bg-white rounded-2xl shadow-sm border border-sand-300">
                 <SEO title="My Cart" description="Your shopping cart is empty." />
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">Your cart is empty</h2>
-                <button onClick={() => navigate("/")} className="text-blue-600 font-medium hover:text-blue-800 underline">
+                <h2 className="text-2xl font-bold text-ink-900 mb-4">Your cart is empty</h2>
+                <button onClick={() => navigate("/")} className="text-accent-500 font-medium hover:underline">
                     Back to catalog
                 </button>
             </div>
@@ -96,51 +96,51 @@ export default function Cart() {
         <div className="max-w-7xl mx-auto space-y-6">
             <SEO title="My Cart" description="Review your selected products and complete your purchase securely." />
             <div className="px-4 sm:px-0">
-                <h2 className="text-2xl font-bold text-gray-900">My Shopping Cart</h2>
+                <h2 className="text-2xl font-bold text-ink-900">My Shopping Cart</h2>
             </div>
 
             {/* Desktop table */}
-            <div className="hidden sm:block bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200">
+            <div className="hidden sm:block bg-white rounded-2xl shadow-sm overflow-hidden border border-sand-300">
                 <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
+                    <table className="min-w-full divide-y divide-sand-300">
+                        <thead className="bg-cream-100">
                             <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit Price</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subtotal</th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-ink-700 uppercase tracking-wider">Product</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-ink-700 uppercase tracking-wider">Unit Price</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-ink-700 uppercase tracking-wider">Quantity</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-ink-700 uppercase tracking-wider">Subtotal</th>
+                                <th className="px-6 py-3 text-right text-xs font-medium text-ink-700 uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
+                        <tbody className="bg-white divide-y divide-sand-300">
                             {cart.items.map((item) => (
                                 <tr key={item.productId}>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.productName}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatCurrency(item.unitPrice)}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-ink-900">{item.productName}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-ink-700">{formatCurrency(item.unitPrice)}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-ink-700">
                                         <div className="flex items-center gap-2">
                                             <button
                                                 onClick={() => handleUpdateQuantity(item.productId, item.quantity, -1)}
-                                                className="p-1 rounded bg-gray-100 hover:bg-gray-200 text-gray-600 transition-colors"
+                                                className="p-1 rounded-lg bg-cream-100 hover:bg-cream-200 text-ink-700 transition-colors"
                                                 aria-label={`Decrease quantity of ${item.productName}`}
                                             >
                                                 <Minus className="w-3.5 h-3.5" aria-hidden="true" />
                                             </button>
-                                            <span className="font-semibold text-gray-800 w-8 text-center">{item.quantity}</span>
+                                            <span className="font-semibold text-ink-900 w-8 text-center">{item.quantity}</span>
                                             <button
                                                 onClick={() => handleUpdateQuantity(item.productId, item.quantity, 1)}
-                                                className="p-1 rounded bg-gray-100 hover:bg-gray-200 text-gray-600 transition-colors"
+                                                className="p-1 rounded-lg bg-cream-100 hover:bg-cream-200 text-ink-700 transition-colors"
                                                 aria-label={`Increase quantity of ${item.productName}`}
                                             >
                                                 <Plus className="w-3.5 h-3.5" aria-hidden="true" />
                                             </button>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">{formatCurrency(item.subTotal)}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-ink-900 font-medium">{formatCurrency(item.subTotal)}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <button
                                             onClick={() => setPendingRemoval(item.productId)}
-                                            className="text-red-600 hover:text-red-950 p-1.5 rounded-full hover:bg-red-50 transition-colors"
+                                            className="text-red-600 hover:text-red-800 p-1.5 rounded-full hover:bg-red-50 transition-colors"
                                             aria-label={`Remove ${item.productName} from cart`}
                                         >
                                             <Trash2 className="w-4 h-4" aria-hidden="true" />
@@ -156,26 +156,26 @@ export default function Cart() {
             {/* Mobile cards */}
             <div className="block sm:hidden space-y-4 px-4 sm:px-0">
                 {cart.items.map((item) => (
-                    <div key={item.productId} className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 flex flex-col gap-3">
+                    <div key={item.productId} className="bg-white p-4 rounded-2xl shadow-sm border border-sand-300 flex flex-col gap-3">
                         <div className="flex justify-between items-start gap-2">
-                            <h3 className="font-bold text-gray-900 text-base leading-tight">{item.productName}</h3>
-                            <span className="text-base font-bold text-gray-900 whitespace-nowrap">{formatCurrency(item.subTotal)}</span>
+                            <h3 className="font-bold text-ink-900 text-base leading-tight">{item.productName}</h3>
+                            <span className="text-base font-bold text-ink-900 whitespace-nowrap">{formatCurrency(item.subTotal)}</span>
                         </div>
                         <div className="flex justify-between items-center text-sm">
-                            <span className="text-gray-500">Price: {formatCurrency(item.unitPrice)}</span>
+                            <span className="text-ink-700">Price: {formatCurrency(item.unitPrice)}</span>
                             <div className="flex items-center gap-3">
-                                <div className="flex items-center gap-1.5 bg-gray-50 border border-gray-200 rounded px-1.5 py-0.5">
+                                <div className="flex items-center gap-1.5 bg-cream-100 border border-sand-300 rounded-lg px-1.5 py-0.5">
                                     <button
                                         onClick={() => handleUpdateQuantity(item.productId, item.quantity, -1)}
-                                        className="p-0.5 text-gray-500 hover:text-gray-700"
+                                        className="p-0.5 text-ink-700 hover:text-ink-900"
                                         aria-label={`Decrease quantity of ${item.productName}`}
                                     >
                                         <Minus className="w-3.5 h-3.5" aria-hidden="true" />
                                     </button>
-                                    <span className="font-semibold text-gray-800 text-xs w-6 text-center">{item.quantity}</span>
+                                    <span className="font-semibold text-ink-900 text-xs w-6 text-center">{item.quantity}</span>
                                     <button
                                         onClick={() => handleUpdateQuantity(item.productId, item.quantity, 1)}
-                                        className="p-0.5 text-gray-500 hover:text-gray-700"
+                                        className="p-0.5 text-ink-700 hover:text-ink-900"
                                         aria-label={`Increase quantity of ${item.productName}`}
                                     >
                                         <Plus className="w-3.5 h-3.5" aria-hidden="true" />
@@ -183,7 +183,7 @@ export default function Cart() {
                                 </div>
                                 <button
                                     onClick={() => setPendingRemoval(item.productId)}
-                                    className="text-red-600 hover:text-red-950 p-1 rounded hover:bg-red-50"
+                                    className="text-red-600 hover:text-red-800 p-1 rounded-lg hover:bg-red-50"
                                     aria-label={`Remove ${item.productName} from cart`}
                                 >
                                     <Trash2 className="w-4 h-4" aria-hidden="true" />
@@ -195,11 +195,11 @@ export default function Cart() {
             </div>
 
             {/* Cart summary */}
-            <div className="bg-white px-4 sm:px-6 py-5 sm:rounded-lg sm:shadow-sm sm:border sm:border-gray-200 border-y border-gray-200 sm:border-y-0">
+            <div className="bg-white px-4 sm:px-6 py-5 sm:rounded-2xl sm:shadow-sm sm:border sm:border-sand-300 border-y border-sand-300 sm:border-y-0">
                 <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
                     <div className="w-full sm:w-auto flex justify-between items-center sm:block">
-                        <span className="text-gray-600 font-medium sm:hidden">Total due:</span>
-                        <span className="text-xl font-bold text-gray-900">
+                        <span className="text-ink-700 font-medium sm:hidden">Total due:</span>
+                        <span className="text-xl font-bold text-ink-900">
                             <span className="hidden sm:inline">Total: </span>
                             {formatCurrency(cart.totalAmount)}
                         </span>
@@ -207,7 +207,7 @@ export default function Cart() {
                     <button
                         onClick={() => setConfirmingCheckout(true)}
                         disabled={processing}
-                        className="w-full sm:w-auto bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 disabled:bg-blue-400 transition-colors text-center shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                        className="w-full sm:w-auto bg-accent-500 text-white px-8 py-3 rounded-xl font-medium hover:bg-accent-600 disabled:bg-accent-500/40 transition-colors text-center shadow-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2"
                     >
                         {processing ? "Processing..." : "Complete Purchase"}
                     </button>

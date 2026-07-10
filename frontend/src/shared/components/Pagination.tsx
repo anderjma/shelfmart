@@ -10,35 +10,35 @@ export default function Pagination({ page, totalPages, onPageChange }: Paginatio
     if (totalPages <= 1) return null;
 
     return (
-        <div className="flex items-center justify-between border-t border-gray-100 bg-white px-4 py-3 sm:px-6 rounded-lg shadow-sm">
+        <div className="flex items-center justify-between border-t border-sand-300 bg-white px-4 py-3 sm:px-6 rounded-2xl shadow-sm">
             <div className="flex flex-1 justify-between sm:hidden">
                 <button
                     onClick={() => onPageChange(Math.max(page - 1, 1))}
                     disabled={page === 1}
-                    className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="relative inline-flex items-center rounded-xl border border-sand-300 bg-white px-4 py-2 text-sm font-medium text-ink-700 hover:bg-cream-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                     Previous
                 </button>
                 <button
                     onClick={() => onPageChange(Math.min(page + 1, totalPages))}
                     disabled={page === totalPages}
-                    className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="relative ml-3 inline-flex items-center rounded-xl border border-sand-300 bg-white px-4 py-2 text-sm font-medium text-ink-700 hover:bg-cream-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                     Next
                 </button>
             </div>
             <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
                 <div>
-                    <p className="text-sm text-gray-700">
+                    <p className="text-sm text-ink-700">
                         Page <span className="font-medium">{page}</span> of <span className="font-medium">{totalPages}</span>
                     </p>
                 </div>
                 <div>
-                    <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
+                    <nav className="isolate inline-flex -space-x-px rounded-xl shadow-sm" aria-label="Pagination">
                         <button
                             onClick={() => onPageChange(Math.max(page - 1, 1))}
                             disabled={page === 1}
-                            className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                            className="relative inline-flex items-center rounded-l-xl px-2 py-2 text-ink-700/60 ring-1 ring-inset ring-sand-300 hover:bg-cream-100 focus:z-20 focus:outline-offset-0 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                         >
                             <span className="sr-only">Previous</span>
                             <ChevronLeft className="h-5 w-5" aria-hidden="true" />
@@ -49,8 +49,8 @@ export default function Pagination({ page, totalPages, onPageChange }: Paginatio
                                 onClick={() => onPageChange(pNum)}
                                 className={`relative inline-flex items-center px-4 py-2 text-sm font-semibold focus:z-20 ${
                                     pNum === page
-                                        ? "z-10 bg-blue-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-                                        : "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0"
+                                        ? "z-10 bg-accent-500 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-500"
+                                        : "text-ink-900 ring-1 ring-inset ring-sand-300 hover:bg-cream-100 focus:outline-offset-0"
                                 } transition-colors`}
                             >
                                 {pNum}
@@ -59,7 +59,7 @@ export default function Pagination({ page, totalPages, onPageChange }: Paginatio
                         <button
                             onClick={() => onPageChange(Math.min(page + 1, totalPages))}
                             disabled={page === totalPages}
-                            className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                            className="relative inline-flex items-center rounded-r-xl px-2 py-2 text-ink-700/60 ring-1 ring-inset ring-sand-300 hover:bg-cream-100 focus:z-20 focus:outline-offset-0 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                         >
                             <span className="sr-only">Next</span>
                             <ChevronRight className="h-5 w-5" aria-hidden="true" />

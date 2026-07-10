@@ -5,7 +5,11 @@ import { ArrowLeft } from "lucide-react";
 // Routes with no meaningful "back" target (top-level landing pages).
 const HIDDEN_ON = ["/"];
 
-export default function BackButton() {
+export interface BackButtonProps {
+    className?: string;
+}
+
+export default function BackButton({ className }: BackButtonProps) {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -24,7 +28,9 @@ export default function BackButton() {
     return (
         <button
             onClick={handleBack}
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded px-1 py-1 mb-4"
+            className={`inline-flex items-center gap-1.5 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-1 rounded-lg px-1 py-1 mb-4 ${
+                className ?? "text-ink-700 hover:text-accent-500"
+            }`}
         >
             <ArrowLeft className="w-4 h-4" aria-hidden="true" />
             Back

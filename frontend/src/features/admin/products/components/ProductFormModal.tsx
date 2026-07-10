@@ -16,8 +16,8 @@ export interface ProductFormModalProps {
 }
 
 const inputClasses =
-    "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm";
-const labelClasses = "block text-sm font-medium text-gray-700";
+    "mt-1 block w-full px-3 py-2 border border-sand-400 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 sm:text-sm";
+const labelClasses = "block text-sm font-medium text-ink-700";
 
 function toFormState(product: Product | null | undefined, categories: Category[]): ProductPayload {
     if (product) {
@@ -81,7 +81,7 @@ export default function ProductFormModal({ isOpen, onClose, onSubmit, categories
             }
         >
             <form id="product-form" onSubmit={handleSubmit} className="space-y-4">
-                {error && <div className="text-red-500 text-sm text-center bg-red-50 p-3 rounded" role="alert">{error}</div>}
+                {error && <div className="text-red-700 text-sm text-center bg-red-50 p-3 rounded-xl" role="alert">{error}</div>}
 
                 <div>
                     <label htmlFor="product-name" className={labelClasses}>Name</label>

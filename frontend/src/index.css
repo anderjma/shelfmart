@@ -1,15 +1,44 @@
-﻿@import "tailwindcss";
+@import "tailwindcss";
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  
-  /* We define our corporate color palette (based on a technological blue) */
-  --color-primary-50: #eff6ff;
-  --color-primary-100: #dbeafe;
-  --color-primary-500: #3b82f6;
-  --color-primary-600: #2563eb;
-  --color-primary-700: #1d4ed8;
-  --color-primary-900: #1e3a8a;
+
+  /* Exact brand palette, no others: dark blue accent, white chrome,
+     near-black text, light grey page background. Every other surface
+     (borders, hover tints, disabled states) is a mix/opacity of these four. */
+  --color-accent-500: #014681;
+  --color-accent-600: #013a6c;
+  --color-accent-700: #012c53;
+
+  --color-chrome: #ffffff;
+  --color-text: #101828;
+  --color-page: #efefef;
+
+  /* Tints derived from the exact four colors — used for borders, hover
+     backgrounds, and disabled states instead of introducing new hues. */
+  --color-ink-700: color-mix(in srgb, var(--color-text) 78%, transparent);
+  --color-ink-900: var(--color-text);
+  --color-cream-50: var(--color-chrome);
+  --color-cream-100: var(--color-page);
+  --color-cream-200: color-mix(in srgb, var(--color-text) 8%, var(--color-page));
+  --color-sand-300: color-mix(in srgb, var(--color-text) 16%, var(--color-page));
+  --color-sand-400: color-mix(in srgb, var(--color-text) 26%, var(--color-page));
+
+  /* Primary brand accent. */
+  --color-primary-50: color-mix(in srgb, var(--color-accent-500) 6%, white);
+  --color-primary-100: color-mix(in srgb, var(--color-accent-500) 16%, white);
+  --color-primary-500: var(--color-accent-500);
+  --color-primary-600: var(--color-accent-600);
+  --color-primary-700: var(--color-accent-700);
+  --color-primary-900: #011f39;
+
+  /* navy-* kept as an alias of the accent so already-written component
+     classes (bg-navy-800, text-navy-800, focus:ring-navy-700, ...) resolve
+     to the exact requested blue without a mass find-and-replace. */
+  --color-navy-600: var(--color-accent-500);
+  --color-navy-700: var(--color-accent-500);
+  --color-navy-800: var(--color-accent-500);
+  --color-navy-900: var(--color-accent-600);
 }
 
 /* Smooth out scrolling and backgrounds */
@@ -28,12 +57,12 @@ body {
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #f1f5f9; 
+  background: var(--color-cream-200);
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1; 
+  background: var(--color-sand-400);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8; 
+  background: color-mix(in srgb, var(--color-text) 40%, var(--color-page));
 }

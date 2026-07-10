@@ -27,36 +27,36 @@ export default function Table<T>({
 }: TableProps<T>) {
     if (!isLoading && data.length === 0) {
         return (
-            <div className="text-center p-16 bg-white border border-gray-200 rounded-lg flex flex-col items-center justify-center">
-                {emptyIcon ?? <Inbox className="w-16 h-16 text-gray-300 mb-4" aria-hidden="true" />}
-                <h3 className="text-lg font-medium text-gray-900">{emptyMessage}</h3>
+            <div className="text-center p-16 bg-white border border-sand-300 rounded-2xl flex flex-col items-center justify-center">
+                {emptyIcon ?? <Inbox className="w-16 h-16 text-sand-400 mb-4" aria-hidden="true" />}
+                <h3 className="text-lg font-medium text-ink-900">{emptyMessage}</h3>
             </div>
         );
     }
 
     return (
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200 overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+        <div className="bg-white rounded-2xl shadow-sm overflow-hidden border border-sand-300 overflow-x-auto">
+            <table className="min-w-full divide-y divide-sand-300">
+                <thead className="bg-cream-100">
                     <tr>
                         {columns.map((column) => (
                             <th
                                 key={column.key}
                                 scope="col"
-                                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                className="px-6 py-3 text-left text-xs font-medium text-ink-700 uppercase tracking-wider"
                             >
                                 {column.header}
                             </th>
                         ))}
                     </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white divide-y divide-sand-300">
                     {isLoading
                         ? Array.from({ length: 5 }).map((_, rowIndex) => (
                               <tr key={`skeleton-${rowIndex}`} className="animate-pulse">
                                   {columns.map((column) => (
                                       <td key={column.key} className="px-6 py-4 whitespace-nowrap">
-                                          <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                                          <div className="h-4 bg-cream-200 rounded w-3/4"></div>
                                       </td>
                                   ))}
                               </tr>
@@ -66,7 +66,7 @@ export default function Table<T>({
                                   {columns.map((column) => (
                                       <td
                                           key={column.key}
-                                          className={`px-6 py-4 whitespace-nowrap text-sm text-gray-700 ${column.className ?? ""}`}
+                                          className={`px-6 py-4 whitespace-nowrap text-sm text-ink-700 ${column.className ?? ""}`}
                                       >
                                           {column.render ? column.render(row) : String((row as Record<string, unknown>)[column.key] ?? "")}
                                       </td>

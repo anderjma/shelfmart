@@ -29,8 +29,8 @@ const AdminAuditLog = lazy(() => import("./features/admin/audit-log/components/A
 const PageLoader = () => (
     <div className="flex items-center justify-center min-h-[60vh]">
         <div className="flex flex-col items-center gap-3">
-            <div className="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-            <span className="text-sm text-gray-500 font-medium">Loading...</span>
+            <div className="w-8 h-8 border-3 border-accent-500 border-t-transparent rounded-full animate-spin"></div>
+            <span className="text-sm text-ink-700 font-medium">Loading...</span>
         </div>
     </div>
 );

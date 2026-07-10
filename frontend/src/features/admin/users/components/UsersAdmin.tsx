@@ -50,7 +50,7 @@ export default function UsersAdmin() {
             render: (u) => (
                 <span
                     className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${
-                        u.role === "Admin" ? "bg-blue-100 text-blue-800" : "bg-gray-100 text-gray-700"
+                        u.role === "Admin" ? "bg-primary-100 text-accent-500" : "bg-cream-200 text-ink-700"
                     }`}
                 >
                     {u.role}
@@ -63,7 +63,7 @@ export default function UsersAdmin() {
             render: (u) => (
                 <button
                     onClick={() => setEditingUser(u)}
-                    className="text-slate-500 hover:text-blue-600 transition-colors"
+                    className="text-ink-700/60 hover:text-accent-500 transition-colors"
                     aria-label={`Edit role for ${u.name}`}
                 >
                     <Pencil className="w-4 h-4" aria-hidden="true" />
@@ -76,11 +76,11 @@ export default function UsersAdmin() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <SEO title="Manage Users" description="Review accounts and manage their roles." />
 
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">Users</h1>
+            <h1 className="text-2xl font-bold text-ink-900 mb-4">Users</h1>
             <AdminNav />
 
             {error && !loading && (
-                <div className="text-red-500 text-sm text-center bg-red-50 p-3 rounded mb-4">{error}</div>
+                <div className="text-red-700 text-sm text-center bg-red-50 p-3 rounded-xl mb-4">{error}</div>
             )}
 
             <Table
