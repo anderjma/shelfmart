@@ -160,6 +160,12 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
-app.MapGet("/health", () => Results.Ok(new { status = "Healthy", timestamp = DateTime.UtcNow }));
+app.MapGet("/health", async (AppDbContext context) =>
+{
+    var canConnect = await context.Database.CanConnectAsync();
+    var status = canConnect ? "Healthy" : "Unhealthy";
+    var statusCode = canConnect ? StatusCodes.Status200OK : StatusCodes.Status503ServiceUnavailable;
+    return Results.Json(new { status, timestamp = DateTime.UtcNow }, statusCode: statusCode);
+});
 
 app.Run();
