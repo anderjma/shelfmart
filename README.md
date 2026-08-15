@@ -2,6 +2,15 @@
 
 ShelfMart is a full-stack inventory and e-commerce management platform, composed of a .NET Web API ([backend/](backend/README.md)) and a React + Vite single-page app ([frontend/](frontend/README.md)).
 
+**Live demo:** [shelfmart.vercel.app](https://shelfmart.vercel.app/)
+
+## Screenshots
+
+<!-- TODO: replace with real screenshots -->
+<!-- ![Product catalog](docs/screenshots/catalog.png) -->
+<!-- ![Admin dashboard](docs/screenshots/dashboard.png) -->
+<!-- ![Checkout flow](docs/screenshots/checkout.png) -->
+
 ## Local Development
 
 The full stack (backend, frontend, and a local PostgreSQL instance) can be run with Docker Compose:
