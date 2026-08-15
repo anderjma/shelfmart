@@ -12,5 +12,8 @@
                 "Audience":  "InventoryUsers",
                 "Key":  "YOUR_JWT_SECRET_KEY_AT_LEAST_32_CHARACTERS",
                 "Issuer":  "ShelfMart"
-            }
+            },
+    "Seed":  {
+                 "AdminPassword":  "YOUR_LOCAL_ADMIN_PASSWORD"
+             }
 }

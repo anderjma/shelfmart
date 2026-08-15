@@ -133,7 +133,8 @@ app.UseSwaggerUI(c =>
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    AppDbSeeder.Seed(context);
+    var seedAdminUser = app.Environment.IsDevelopment();
+    AppDbSeeder.Seed(context, seedAdminUser, builder.Configuration["Seed:AdminPassword"]);
 }
 
 if (!app.Environment.IsDevelopment())

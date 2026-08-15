@@ -5,7 +5,9 @@ namespace ShelfMart.Infrastructure;
 
 public static class AppDbSeeder
 {
-    public static void Seed(AppDbContext context)
+    private const int PasswordWorkFactor = 11;
+
+    public static void Seed(AppDbContext context, bool seedAdminUser, string? adminPassword)
     {
         context.Database.Migrate();
 
@@ -16,23 +18,26 @@ public static class AppDbSeeder
             context.Roles.AddRange(adminRole, customerRole);
             context.SaveChanges();
 
-            var adminUser = new User
+            if (seedAdminUser && !string.IsNullOrWhiteSpace(adminPassword))
             {
-                Name = "Administrator",
-                Username = "admin",
-                Email = "admin@company.com",
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123!", 8)
-            };
-            context.Users.Add(adminUser);
-            context.SaveChanges();
+                var adminUser = new User
+                {
+                    Name = "Administrator",
+                    Username = "admin",
+                    Email = "admin@company.com",
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword(adminPassword, PasswordWorkFactor)
+                };
+                context.Users.Add(adminUser);
+                context.SaveChanges();
 
-            context.UserRoles.Add(new UserRole {
-                UserId = adminUser.UserId,
-                RoleId = adminRole.RoleId,
-                User = adminUser,
-                Role = adminRole
-            });
-            context.SaveChanges();
+                context.UserRoles.Add(new UserRole {
+                    UserId = adminUser.UserId,
+                    RoleId = adminRole.RoleId,
+                    User = adminUser,
+                    Role = adminRole
+                });
+                context.SaveChanges();
+            }
         }
 
         if (!context.Categories.Any())
