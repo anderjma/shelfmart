@@ -23,7 +23,7 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> GetAll()
     {
         var users = await _userFacade.GetAllUsersAsync();
-        return Ok(users);
+        return Ok(users.Where(u => u.Role == "Customer"));
     }
 
     [HttpPost]
