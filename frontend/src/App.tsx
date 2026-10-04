@@ -17,6 +17,7 @@ const About = lazy(() => import("./shared/pages/About"));
 const Profile = lazy(() => import("./features/profile/components/Profile"));
 const Cart = lazy(() => import("./features/cart/components/Cart"));
 const NotFound = lazy(() => import("./shared/pages/NotFound"));
+const PrivacyPolicy = lazy(() => import("./shared/pages/PrivacyPolicy"));
 
 // Admin panel pages (lazy-loaded, only reachable by users with the Admin role)
 const AdminDashboard = lazy(() => import("./features/admin/dashboard/components/Dashboard"));
@@ -69,6 +70,7 @@ function App() {
                         <Route path="/catalog" element={<Store />} />
                         <Route path="/contact" element={<Contact />} />
                         <Route path="/about" element={<About />} />
+                        <Route path="/privacy" element={<PrivacyPolicy />} />
 
                         {/* Private: Customers */}
                         <Route path="/perfil" element={<PrivateRoute><Profile /></PrivateRoute>} />
