@@ -26,4 +26,19 @@ public class CategoriesController : ControllerBase
         var categories = await _categoryFacade.GetAllCategoriesAsync();
         return Ok(categories);
     }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] ShelfMart.Dto.CreateCategoryDto dto)
+    {
+        try
+        {
+            var result = await _categoryFacade.CreateCategoryAsync(dto);
+            return Created("", result);
+        }
+        catch (System.Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
 }

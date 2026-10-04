@@ -125,19 +125,19 @@ export default function ProductFormModal({ isOpen, onClose, onSubmit, categories
 
                 <div>
                     <label htmlFor="product-category" className={labelClasses}>Category</label>
-                    <select
+                    <input
                         id="product-category"
+                        list="categories-list"
+                        required
                         className={inputClasses}
                         value={form.category}
                         onChange={(e) => setForm({ ...form, category: e.target.value })}
-                    >
-                        {categories.length === 0 && <option value={form.category}>{form.category}</option>}
+                    />
+                    <datalist id="categories-list">
                         {categories.map((c) => (
-                            <option key={c.categoryId} value={c.name}>
-                                {c.name}
-                            </option>
+                            <option key={c.categoryId} value={c.name} />
                         ))}
-                    </select>
+                    </datalist>
                 </div>
 
                 <div>

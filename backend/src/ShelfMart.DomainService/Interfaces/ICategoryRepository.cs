@@ -7,4 +7,5 @@ public interface ICategoryRepository
 {
     Task<IEnumerable<Category>> GetAllAsync();
     Task<bool> ExistsByNameAsync(string name);
+    Task<Category> AddAsync(Category category);
 }

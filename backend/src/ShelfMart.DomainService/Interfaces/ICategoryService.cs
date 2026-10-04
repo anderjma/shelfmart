@@ -6,4 +6,5 @@ namespace ShelfMart.DomainService.Interfaces;
 public interface ICategoryService
 {
     Task<IEnumerable<CategoryDto>> GetAllCategoriesAsync();
+    Task<CategoryDto> CreateCategoryAsync(string name);
 }

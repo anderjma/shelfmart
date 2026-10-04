@@ -19,4 +19,9 @@ public class CategoryFacade : ICategoryFacade
     {
         return await _categoryService.GetAllCategoriesAsync();
     }
+
+    public async Task<CategoryDto> CreateCategoryAsync(CreateCategoryDto dto)
+    {
+        return await _categoryService.CreateCategoryAsync(dto.Name);
+    }
 }

@@ -6,4 +6,5 @@ namespace ShelfMart.Facade.Interfaces;
 public interface ICategoryFacade
 {
     Task<IEnumerable<CategoryDto>> GetAllCategoriesAsync();
+    Task<CategoryDto> CreateCategoryAsync(CreateCategoryDto dto);
 }

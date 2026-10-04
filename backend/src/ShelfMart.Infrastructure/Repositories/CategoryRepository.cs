@@ -28,4 +28,11 @@ public class CategoryRepository : ICategoryRepository
     {
         return await _context.Categories.AsNoTracking().AnyAsync(c => c.Name == name);
     }
+
+    public async Task<Category> AddAsync(Category category)
+    {
+        _context.Categories.Add(category);
+        await _context.SaveChangesAsync();
+        return category;
+    }
 }
