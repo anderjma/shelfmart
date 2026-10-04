@@ -1,16 +1,14 @@
-// This file specifies the central identity model used throughout the entire application.
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 
 namespace ShelfMart.Domain.Entities;
 
-// This class stores credentials in a secure format and the essential contact information of a customer or employee.
-public class User
+public class User : IdentityUser<Guid>
 {
-    public Guid UserId { get; set; } = Guid.NewGuid();
+    public Guid UserId { get => Id; set => Id = value; }
+    public string Username { get => UserName ?? ""; set => UserName = value; }
+    
     public string Name { get; set; } = string.Empty;
-    public string Username { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
-    public string PasswordHash { get; set; } = string.Empty;
     public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
 }

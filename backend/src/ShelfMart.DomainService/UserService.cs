@@ -3,98 +3,71 @@ using ShelfMart.Domain.Entities;
 using ShelfMart.DomainService.Interfaces;
 using ShelfMart.Dto;
 using ShelfMart.Exceptions;
+using Microsoft.AspNetCore.Identity;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ShelfMart.DomainService;
 
 // This class encapsulates the underlying business logic for profiles, registration, and authentication.
 public class UserService : IUserService
 {
-    private readonly IUserRepository _userRepository;
+    private readonly UserManager<User> _userManager;
+    private readonly RoleManager<Role> _roleManager;
+    private readonly IUserRepository _userRepository; // Keeping for GetAllUsersAsync or if needed
     private static readonly string[] AssignableRoles = { "Admin", "Customer" };
-    // BCrypt work factor 11: higher than the framework default (10) to raise the cost of
-    // offline brute-forcing if the password hash table ever leaks, while staying fast enough
-    // to not noticeably slow down login/registration.
-    private const int PasswordWorkFactor = 11;
 
-    public UserService(IUserRepository userRepository)
+    public UserService(UserManager<User> userManager, RoleManager<Role> roleManager, IUserRepository userRepository)
     {
+        _userManager = userManager;
+        _roleManager = roleManager;
         _userRepository = userRepository;
     }
 
-    // This method manages the creation of base users, performing preventive validations on the credentials to be used.
-    // New users default to the Customer role; admins can promote them afterwards via UpdateUserRoleAsync.
     public async Task<UserDto> CreateUserAsync(User user, string plainPassword)
     {
-        if (await _userRepository.ExistsAsync(user.Username))
-        {
-            throw new BadRequestResponseException("Username already exists.");
-        }
-
-        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(plainPassword, PasswordWorkFactor);
         user.UserId = Guid.NewGuid();
-
-        var customerRole = await _userRepository.GetRoleByNameAsync("Customer");
-        if (customerRole != null)
+        var result = await _userManager.CreateAsync(user, plainPassword);
+        if (!result.Succeeded)
         {
-            user.UserRoles.Add(new UserRole
-            {
-                UserId = user.UserId,
-                RoleId = customerRole.RoleId,
-                User = user,
-                Role = customerRole
-            });
+            throw new BadRequestResponseException(string.Join(", ", result.Errors.Select(e => e.Description)));
         }
 
-        var createdUser = await _userRepository.AddAsync(user);
+        if (await _roleManager.RoleExistsAsync("Customer"))
+        {
+            await _userManager.AddToRoleAsync(user, "Customer");
+        }
 
-        return ToDto(createdUser);
+        var createdUser = await _userRepository.GetByIdAsync(user.Id);
+        return ToDto(createdUser ?? user);
     }
 
     public async Task<UserDto> RegisterCustomerAsync(User user, string plainPassword)
     {
-        if (await _userRepository.ExistsAsync(user.Username))
-        {
-            throw new BadRequestResponseException("Username already exists.");
-        }
-
-        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(plainPassword, PasswordWorkFactor);
-        user.UserId = Guid.NewGuid();
-
-        var customerRole = await _userRepository.GetRoleByNameAsync("Customer");
-        if (customerRole != null)
-        {
-            user.UserRoles.Add(new UserRole
-            {
-                UserId = user.UserId,
-                RoleId = customerRole.RoleId,
-                User = user,
-                Role = customerRole
-            });
-        }
-
-        var createdUser = await _userRepository.AddAsync(user);
-
-        return ToDto(createdUser);
+        return await CreateUserAsync(user, plainPassword);
     }
 
     public async Task<User?> ValidateUserCredentialsAsync(string username, string plainPassword)
     {
-        var user = await _userRepository.GetByUsernameAsync(username);
-        if (user == null || !BCrypt.Net.BCrypt.Verify(plainPassword, user.PasswordHash))
+        var user = await _userManager.FindByNameAsync(username);
+        if (user == null || !await _userManager.CheckPasswordAsync(user, plainPassword))
         {
             throw new UnauthorizedResponseException("Invalid credentials.");
         }
-        return user;
+        
+        // Ensure user is loaded with roles for token generation
+        var fullUser = await _userRepository.GetByIdAsync(user.Id);
+        return fullUser ?? user;
     }
 
-    // This method lists the transferable data for all user profiles in the system.
     public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
     {
         var users = await _userRepository.GetAllAsync();
         return users.Select(ToDto);
     }
 
-    // This method changes a user's role, restricted to the roles the admin panel is allowed to assign.
     public async Task<UserDto> UpdateUserRoleAsync(Guid userId, string newRole)
     {
         if (!AssignableRoles.Contains(newRole))
@@ -102,19 +75,20 @@ public class UserService : IUserService
             throw new BadRequestResponseException($"'{newRole}' is not a valid role. Allowed roles: {string.Join(", ", AssignableRoles)}.");
         }
 
-        var user = await _userRepository.GetByIdAsync(userId);
+        var user = await _userManager.FindByIdAsync(userId.ToString());
         if (user == null) throw new ResourceNotFoundException("User not found.");
 
-        var role = await _userRepository.GetRoleByNameAsync(newRole);
-        if (role == null) throw new ResourceNotFoundException($"Role '{newRole}' does not exist.");
+        if (!await _roleManager.RoleExistsAsync(newRole))
+            throw new ResourceNotFoundException($"Role '{newRole}' does not exist.");
 
-        await _userRepository.SetUserRoleAsync(user, role);
+        var currentRoles = await _userManager.GetRolesAsync(user);
+        await _userManager.RemoveFromRolesAsync(user, currentRoles);
+        await _userManager.AddToRoleAsync(user, newRole);
 
         var updatedUser = await _userRepository.GetByIdAsync(userId);
         return ToDto(updatedUser!);
     }
 
-    // This method converts a user entity into its transfer object representation, including its current role.
     private static UserDto ToDto(User user)
     {
         return new UserDto
@@ -123,7 +97,7 @@ public class UserService : IUserService
             Name = user.Name,
             Username = user.Username,
             Email = user.Email,
-            Role = user.UserRoles.Select(ur => ur.Role.Name).FirstOrDefault() ?? string.Empty
+            Role = user.UserRoles?.Select(ur => ur.Role.Name).FirstOrDefault() ?? string.Empty
         };
     }
 }

@@ -1,13 +1,11 @@
-// This file declares the database model used for role-based access control.
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 
 namespace ShelfMart.Domain.Entities;
 
-// This class represents a role within the system, determining users' authorization levels.
-public class Role
+public class Role : IdentityRole<Guid>
 {
-    public Guid RoleId { get; set; } = Guid.NewGuid();
-    public string Name { get; set; } = string.Empty;
+    public Guid RoleId { get => Id; set => Id = value; }
     public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
 }

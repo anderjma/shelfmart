@@ -1,18 +1,17 @@
 // This file configures the data access layer and the representation of the relational database schema.
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ShelfMart.Domain.Entities;
+using System;
 
 namespace ShelfMart.Infrastructure;
 
-// This class handles the object-relational mapping (ORM), linking the domain entities to the physical database tables.
-public class AppDbContext : DbContext
+public class AppDbContext : IdentityDbContext<User, Role, Guid, IdentityUserClaim<Guid>, UserRole, IdentityUserLogin<Guid>, IdentityRoleClaim<Guid>, IdentityUserToken<Guid>>
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
     public DbSet<Product> Products { get; set; }
-    public DbSet<User> Users { get; set; }
-    public DbSet<Role> Roles { get; set; }
-    public DbSet<UserRole> UserRoles { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
 
@@ -29,17 +28,11 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Product>().HasKey(p => p.ProductResourceId);
         modelBuilder.Entity<Product>().Property(p => p.ProductResourceId).ValueGeneratedNever();
 
-        modelBuilder.Entity<User>().HasKey(u => u.UserId);
-        modelBuilder.Entity<User>().Property(u => u.UserId).ValueGeneratedNever();
-
         modelBuilder.Entity<AuditLog>().HasKey(a => a.AuditLogId);
         modelBuilder.Entity<AuditLog>().Property(a => a.AuditLogId).ValueGeneratedNever();
 
-        modelBuilder.Entity<Role>().Property(r => r.RoleId).ValueGeneratedNever();
-
         modelBuilder.Entity<Order>().Property(o => o.OrderId).ValueGeneratedNever();
 
-        modelBuilder.Entity<UserRole>().HasKey(ur => new { ur.UserId, ur.RoleId });
         modelBuilder.Entity<UserRole>().HasOne(ur => ur.User).WithMany(u => u.UserRoles).HasForeignKey(ur => ur.UserId);
         modelBuilder.Entity<UserRole>().HasOne(ur => ur.Role).WithMany(r => r.UserRoles).HasForeignKey(ur => ur.RoleId);
 

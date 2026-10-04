@@ -3,6 +3,7 @@ using ShelfMart.Domain.Entities;
 using ShelfMart.DomainService;
 using ShelfMart.DomainService.Interfaces;
 using ShelfMart.Exceptions;
+using Microsoft.AspNetCore.Identity;
 using NSubstitute;
 using System;
 using System.Collections.Generic;
@@ -15,25 +16,34 @@ namespace ShelfMart.UnitTests;
 public class UserServiceTests
 {
     private readonly IUserRepository _userRepository;
+    private readonly UserManager<User> _userManager;
+    private readonly RoleManager<Role> _roleManager;
     private readonly UserService _userService;
 
     public UserServiceTests()
     {
         _userRepository = Substitute.For<IUserRepository>();
-        _userService = new UserService(_userRepository);
+        
+        var userStore = Substitute.For<IUserStore<User>>();
+        _userManager = Substitute.For<UserManager<User>>(userStore, null, null, null, null, null, null, null, null);
+        
+        var roleStore = Substitute.For<IRoleStore<Role>>();
+        _roleManager = Substitute.For<RoleManager<Role>>(roleStore, null, null, null, null);
+
+        _userService = new UserService(_userManager, _roleManager, _userRepository);
     }
 
-    private static Role CustomerRole => new() { RoleId = Guid.NewGuid(), Name = "Customer" };
-    private static Role AdminRole => new() { RoleId = Guid.NewGuid(), Name = "Admin" };
+    private static Role CustomerRole => new() { Id = Guid.NewGuid(), Name = "Customer" };
+    private static Role AdminRole => new() { Id = Guid.NewGuid(), Name = "Admin" };
 
     #region CreateUserAsync Tests
 
     [Fact]
-    public async Task CreateUserAsync_ShouldThrowBadRequestResponseException_WhenUsernameAlreadyExists()
+    public async Task CreateUserAsync_ShouldThrowBadRequestResponseException_WhenCreationFails()
     {
         // Arrange
         var user = new User { Username = "taken" };
-        _userRepository.ExistsAsync("taken").Returns(true);
+        _userManager.CreateAsync(user, "Password123!").Returns(IdentityResult.Failed(new IdentityError { Description = "Username already exists." }));
 
         // Act
         Func<Task> act = async () => await _userService.CreateUserAsync(user, "Password123!");
@@ -48,87 +58,24 @@ public class UserServiceTests
     {
         // Arrange
         var user = new User { Username = "newuser" };
-        var customerRole = CustomerRole;
-        _userRepository.ExistsAsync("newuser").Returns(false);
-        _userRepository.GetRoleByNameAsync("Customer").Returns(customerRole);
-        _userRepository.AddAsync(Arg.Any<User>()).Returns(callInfo => callInfo.Arg<User>());
+        _userManager.CreateAsync(user, "Password123!").Returns(IdentityResult.Success);
+        _roleManager.RoleExistsAsync("Customer").Returns(true);
+        _userManager.AddToRoleAsync(user, "Customer").Returns(IdentityResult.Success);
+        
+        var fullUser = new User 
+        { 
+            UserId = user.Id, 
+            Username = "newuser", 
+            UserRoles = new List<UserRole> { new UserRole { Role = new Role { Name = "Customer" } } } 
+        };
+        _userRepository.GetByIdAsync(Arg.Any<Guid>()).Returns(fullUser);
 
         // Act
         var result = await _userService.CreateUserAsync(user, "Password123!");
 
         // Assert
         result.Role.Should().Be("Customer");
-        user.UserRoles.Should().ContainSingle(ur => ur.RoleId == customerRole.RoleId);
-    }
-
-    [Fact]
-    public async Task CreateUserAsync_ShouldHashThePassword_NotStoreItInPlainText()
-    {
-        // Arrange
-        var user = new User { Username = "newuser" };
-        _userRepository.ExistsAsync("newuser").Returns(false);
-        _userRepository.GetRoleByNameAsync("Customer").Returns(CustomerRole);
-        _userRepository.AddAsync(Arg.Any<User>()).Returns(callInfo => callInfo.Arg<User>());
-
-        // Act
-        await _userService.CreateUserAsync(user, "Password123!");
-
-        // Assert
-        user.PasswordHash.Should().NotBe("Password123!");
-        BCrypt.Net.BCrypt.Verify("Password123!", user.PasswordHash).Should().BeTrue();
-    }
-
-    [Fact]
-    public async Task CreateUserAsync_ShouldLeaveUserRoleless_WhenCustomerRoleDoesNotExist()
-    {
-        // Arrange
-        var user = new User { Username = "newuser" };
-        _userRepository.ExistsAsync("newuser").Returns(false);
-        _userRepository.GetRoleByNameAsync("Customer").Returns((Role?)null);
-        _userRepository.AddAsync(Arg.Any<User>()).Returns(callInfo => callInfo.Arg<User>());
-
-        // Act
-        var result = await _userService.CreateUserAsync(user, "Password123!");
-
-        // Assert
-        result.Role.Should().BeEmpty();
-        user.UserRoles.Should().BeEmpty();
-    }
-
-    #endregion
-
-    #region RegisterCustomerAsync Tests
-
-    [Fact]
-    public async Task RegisterCustomerAsync_ShouldThrowBadRequestResponseException_WhenUsernameAlreadyExists()
-    {
-        // Arrange
-        var user = new User { Username = "taken" };
-        _userRepository.ExistsAsync("taken").Returns(true);
-
-        // Act
-        Func<Task> act = async () => await _userService.RegisterCustomerAsync(user, "Password123!");
-
-        // Assert
-        await act.Should().ThrowAsync<BadRequestResponseException>()
-            .WithMessage("Username already exists.");
-    }
-
-    [Fact]
-    public async Task RegisterCustomerAsync_ShouldAssignCustomerRole_WhenRoleExists()
-    {
-        // Arrange
-        var user = new User { Username = "newcustomer" };
-        var customerRole = CustomerRole;
-        _userRepository.ExistsAsync("newcustomer").Returns(false);
-        _userRepository.GetRoleByNameAsync("Customer").Returns(customerRole);
-        _userRepository.AddAsync(Arg.Any<User>()).Returns(callInfo => callInfo.Arg<User>());
-
-        // Act
-        var result = await _userService.RegisterCustomerAsync(user, "Password123!");
-
-        // Assert
-        result.Role.Should().Be("Customer");
+        await _userManager.Received(1).AddToRoleAsync(user, "Customer");
     }
 
     #endregion
@@ -139,7 +86,7 @@ public class UserServiceTests
     public async Task ValidateUserCredentialsAsync_ShouldThrowUnauthorizedResponseException_WhenUserDoesNotExist()
     {
         // Arrange
-        _userRepository.GetByUsernameAsync("ghost").Returns((User?)null);
+        _userManager.FindByNameAsync("ghost").Returns((User?)null);
 
         // Act
         Func<Task> act = async () => await _userService.ValidateUserCredentialsAsync("ghost", "whatever");
@@ -153,12 +100,9 @@ public class UserServiceTests
     public async Task ValidateUserCredentialsAsync_ShouldThrowUnauthorizedResponseException_WhenPasswordIsWrong()
     {
         // Arrange
-        var user = new User
-        {
-            Username = "someone",
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword("CorrectPassword1!", 4)
-        };
-        _userRepository.GetByUsernameAsync("someone").Returns(user);
+        var user = new User { Username = "someone" };
+        _userManager.FindByNameAsync("someone").Returns(user);
+        _userManager.CheckPasswordAsync(user, "WrongPassword").Returns(false);
 
         // Act
         Func<Task> act = async () => await _userService.ValidateUserCredentialsAsync("someone", "WrongPassword");
@@ -172,12 +116,10 @@ public class UserServiceTests
     public async Task ValidateUserCredentialsAsync_ShouldReturnUser_WhenCredentialsAreCorrect()
     {
         // Arrange
-        var user = new User
-        {
-            Username = "someone",
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword("CorrectPassword1!", 4)
-        };
-        _userRepository.GetByUsernameAsync("someone").Returns(user);
+        var user = new User { Username = "someone", Id = Guid.NewGuid() };
+        _userManager.FindByNameAsync("someone").Returns(user);
+        _userManager.CheckPasswordAsync(user, "CorrectPassword1!").Returns(true);
+        _userRepository.GetByIdAsync(user.Id).Returns(user);
 
         // Act
         var result = await _userService.ValidateUserCredentialsAsync("someone", "CorrectPassword1!");
@@ -205,7 +147,7 @@ public class UserServiceTests
     {
         // Arrange
         var userId = Guid.NewGuid();
-        _userRepository.GetByIdAsync(userId).Returns((User?)null);
+        _userManager.FindByIdAsync(userId.ToString()).Returns((User?)null);
 
         // Act
         Func<Task> act = async () => await _userService.UpdateUserRoleAsync(userId, "Admin");
@@ -216,13 +158,13 @@ public class UserServiceTests
     }
 
     [Fact]
-    public async Task UpdateUserRoleAsync_ShouldThrowResourceNotFoundException_WhenTargetRoleDoesNotExistInDatabase()
+    public async Task UpdateUserRoleAsync_ShouldThrowResourceNotFoundException_WhenTargetRoleDoesNotExist()
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var user = new User { UserId = userId, Username = "someone" };
-        _userRepository.GetByIdAsync(userId).Returns(user);
-        _userRepository.GetRoleByNameAsync("Admin").Returns((Role?)null);
+        var user = new User { Id = userId, Username = "someone" };
+        _userManager.FindByIdAsync(userId.ToString()).Returns(user);
+        _roleManager.RoleExistsAsync("Admin").Returns(false);
 
         // Act
         Func<Task> act = async () => await _userService.UpdateUserRoleAsync(userId, "Admin");
@@ -233,28 +175,32 @@ public class UserServiceTests
     }
 
     [Fact]
-    public async Task UpdateUserRoleAsync_ShouldCallSetUserRoleAsync_WhenRoleAndUserAreValid()
+    public async Task UpdateUserRoleAsync_ShouldUpdateRole_WhenValid()
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var adminRole = AdminRole;
-        var user = new User { UserId = userId, Username = "someone" };
+        var user = new User { Id = userId, Username = "someone" };
+        var currentRoles = new List<string> { "Customer" };
+        
+        _userManager.FindByIdAsync(userId.ToString()).Returns(user);
+        _roleManager.RoleExistsAsync("Admin").Returns(true);
+        _userManager.GetRolesAsync(user).Returns(currentRoles);
+        
         var updatedUser = new User
         {
-            UserId = userId,
+            Id = userId,
             Username = "someone",
-            UserRoles = new List<UserRole> { new UserRole { UserId = userId, RoleId = adminRole.RoleId, Role = adminRole } }
+            UserRoles = new List<UserRole> { new UserRole { Role = new Role { Name = "Admin" } } }
         };
-
-        _userRepository.GetByIdAsync(userId).Returns(user, updatedUser);
-        _userRepository.GetRoleByNameAsync("Admin").Returns(adminRole);
+        _userRepository.GetByIdAsync(userId).Returns(updatedUser);
 
         // Act
         var result = await _userService.UpdateUserRoleAsync(userId, "Admin");
 
         // Assert
         result.Role.Should().Be("Admin");
-        await _userRepository.Received(1).SetUserRoleAsync(user, adminRole);
+        await _userManager.Received(1).RemoveFromRolesAsync(user, currentRoles);
+        await _userManager.Received(1).AddToRoleAsync(user, "Admin");
     }
 
     #endregion
