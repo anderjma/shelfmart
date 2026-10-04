@@ -15,6 +15,7 @@ export default function AuditLogTable() {
     const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
         const loadLogs = async () => {
@@ -40,6 +41,11 @@ export default function AuditLogTable() {
         loadLogs();
     }, [page]);
 
+    const filteredLogs = logs.filter((log) => {
+        const term = searchTerm.toLowerCase();
+        return log.user.toLowerCase().includes(term) || log.action.toLowerCase().includes(term);
+    });
+
     const columns: TableColumn<AuditLogEntry>[] = [
         { key: "user", header: "Performed By" },
         { key: "action", header: "Action" },
@@ -58,13 +64,23 @@ export default function AuditLogTable() {
             <h1 className="text-2xl font-bold text-ink-900 mb-4">Audit Log</h1>
             <AdminNav />
 
+            <div className="mb-6 max-w-md relative">
+                <input
+                    type="text"
+                    placeholder="Search logs..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-4 pr-4 py-2.5 bg-white border border-sand-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
+                />
+            </div>
+
             {error && !loading && (
                 <div className="text-red-700 text-sm text-center bg-red-50 p-3 rounded-xl mb-4">{error}</div>
             )}
 
             <Table
                 columns={columns}
-                data={logs}
+                data={filteredLogs}
                 keyExtractor={(log) => log.auditLogId}
                 isLoading={loading}
                 emptyMessage="No audit log entries found."

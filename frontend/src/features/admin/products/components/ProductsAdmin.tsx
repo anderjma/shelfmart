@@ -32,6 +32,7 @@ export default function ProductsAdmin() {
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [productPendingDelete, setProductPendingDelete] = useState<Product | null>(null);
+    const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
         const loadProducts = async () => {
@@ -69,6 +70,11 @@ export default function ProductsAdmin() {
 
         void loadCategories();
     }, []);
+
+    const filteredProducts = products.filter((p) => {
+        const term = searchTerm.toLowerCase();
+        return p.name.toLowerCase().includes(term) || (p.category && p.category.toLowerCase().includes(term));
+    });
 
     const refresh = () => setRefreshKey((key) => key + 1);
 
@@ -142,12 +148,21 @@ export default function ProductsAdmin() {
 
             <AdminNav />
 
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
                 <h1 className="text-2xl font-bold text-ink-900">Products</h1>
-                <Button onClick={openCreateForm}>
-                    <Plus className="w-4 h-4" aria-hidden="true" />
-                    New Product
-                </Button>
+                <div className="flex items-center gap-4">
+                    <input
+                        type="text"
+                        placeholder="Search products..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="pl-4 pr-4 py-2 bg-white border border-sand-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
+                    />
+                    <Button onClick={openCreateForm}>
+                        <Plus className="w-4 h-4" aria-hidden="true" />
+                        New Product
+                    </Button>
+                </div>
             </div>
 
             {error && !loading && (
@@ -156,7 +171,7 @@ export default function ProductsAdmin() {
 
             <Table
                 columns={columns}
-                data={products}
+                data={filteredProducts}
                 keyExtractor={(p) => p.productResourceId}
                 isLoading={loading}
                 emptyMessage="No products available."

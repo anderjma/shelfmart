@@ -25,6 +25,7 @@ export default function OrdersAdmin() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [updatingOrderId, setUpdatingOrderId] = useState<string | null>(null);
+    const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
         const loadOrders = async () => {
@@ -44,6 +45,11 @@ export default function OrdersAdmin() {
 
         void loadOrders();
     }, []);
+
+    const filteredOrders = orders.filter((o) => {
+        const term = searchTerm.toLowerCase();
+        return o.orderId.toLowerCase().includes(term) || o.customerUsername.toLowerCase().includes(term) || o.status.toLowerCase().includes(term);
+    });
 
     const handleStatusChange = async (orderId: string, status: OrderStatus) => {
         setUpdatingOrderId(orderId);
@@ -70,24 +76,6 @@ export default function OrdersAdmin() {
                     {o.status}
                 </span>
             )
-        },
-        {
-            key: "actions",
-            header: "Update Status",
-            render: (o) => (
-                <select
-                    value={o.status}
-                    disabled={updatingOrderId === o.orderId}
-                    onChange={(e) => handleStatusChange(o.orderId, e.target.value as OrderStatus)}
-                    className="text-sm border border-sand-400 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 disabled:opacity-50"
-                >
-                    {ASSIGNABLE_STATUSES.map((status) => (
-                        <option key={status} value={status}>
-                            {status}
-                        </option>
-                    ))}
-                </select>
-            )
         }
     ];
 
@@ -98,13 +86,23 @@ export default function OrdersAdmin() {
             <h1 className="text-2xl font-bold text-ink-900 mb-4">Orders</h1>
             <AdminNav />
 
+            <div className="mb-6 max-w-md relative">
+                <input
+                    type="text"
+                    placeholder="Search orders..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-4 pr-4 py-2.5 bg-white border border-sand-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
+                />
+            </div>
+
             {error && !loading && (
                 <div className="text-red-700 text-sm text-center bg-red-50 p-3 rounded-xl mb-4">{error}</div>
             )}
 
             <Table
                 columns={columns}
-                data={orders}
+                data={filteredOrders}
                 keyExtractor={(o) => o.orderId}
                 isLoading={loading}
                 emptyMessage="No orders found."
