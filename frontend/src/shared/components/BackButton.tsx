@@ -16,13 +16,7 @@ export default function BackButton({ className }: BackButtonProps) {
     if (HIDDEN_ON.includes(location.pathname)) return null;
 
     const handleBack = () => {
-        // If we arrived via in-app navigation there's history to pop; otherwise (e.g. a
-        // deep link opened directly) fall back to a known safe route instead of leaving the app.
-        if (window.history.state?.idx > 0) {
-            navigate(-1);
-        } else {
-            navigate("/");
-        }
+        navigate(-1);
     };
 
     return (

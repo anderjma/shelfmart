@@ -57,12 +57,18 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowReactFrontend",
         policy =>
         {
-            var originsStr = builder.Configuration["Cors:AllowedOrigins"] ?? builder.Configuration["Cors:AllowedOrigins:0"];
-            var allowedOrigins = string.IsNullOrWhiteSpace(originsStr)
-                ? new[] { "http://localhost:5173" }
-                : originsStr.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-                            .Select(o => o.TrimEnd('/'))
-                            .ToArray();
+            var originsSection = builder.Configuration.GetSection("Cors:AllowedOrigins");
+            var allowedOrigins = originsSection.GetChildren().Select(c => c.Value!).ToArray();
+            
+            if (allowedOrigins.Length == 0)
+            {
+                var originsStr = builder.Configuration["Cors:AllowedOrigins"];
+                allowedOrigins = string.IsNullOrWhiteSpace(originsStr)
+                    ? new[] { "http://localhost:5173" }
+                    : originsStr.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                                .Select(o => o.TrimEnd('/'))
+                                .ToArray();
+            }
                             
             policy.WithOrigins(allowedOrigins)
                   .AllowAnyHeader()
@@ -169,6 +175,9 @@ app.Use(async (context, next) =>
 });
 
 app.UseCors("AllowReactFrontend");
+// Registered after CORS so error responses (401/400/404/500) still carry the CORS headers;
+// otherwise the browser reports every API error as a CORS failure.
+app.UseMiddleware<ShelfMart.Api.Middlewares.ExceptionMiddleware>();
 app.UseRateLimiter();
 
 app.UseAuthentication();

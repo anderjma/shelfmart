@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ShelfMart.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class IdentityAndProducts : Migration
+    public partial class IdentityAndProductsFix : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -61,6 +61,15 @@ namespace ShelfMart.Infrastructure.Migrations
                 defaultValue: "");
 
             migrationBuilder.AlterColumn<string>(
+                name: "Username",
+                table: "AspNetUsers",
+                type: "character varying(256)",
+                maxLength: 256,
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "text");
+
+            migrationBuilder.AlterColumn<string>(
                 name: "PasswordHash",
                 table: "AspNetUsers",
                 type: "text",
@@ -76,13 +85,6 @@ namespace ShelfMart.Infrastructure.Migrations
                 nullable: true,
                 oldClrType: typeof(string),
                 oldType: "text");
-
-            migrationBuilder.AddColumn<Guid>(
-                name: "Id",
-                table: "AspNetUsers",
-                type: "uuid",
-                nullable: false,
-                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
 
             migrationBuilder.AddColumn<int>(
                 name: "AccessFailedCount",
@@ -157,13 +159,6 @@ namespace ShelfMart.Infrastructure.Migrations
                 nullable: false,
                 defaultValue: false);
 
-            migrationBuilder.AddColumn<string>(
-                name: "UserName",
-                table: "AspNetUsers",
-                type: "character varying(256)",
-                maxLength: 256,
-                nullable: true);
-
             migrationBuilder.AlterColumn<string>(
                 name: "Name",
                 table: "AspNetRoles",
@@ -172,13 +167,6 @@ namespace ShelfMart.Infrastructure.Migrations
                 nullable: true,
                 oldClrType: typeof(string),
                 oldType: "text");
-
-            migrationBuilder.AddColumn<Guid>(
-                name: "Id",
-                table: "AspNetRoles",
-                type: "uuid",
-                nullable: false,
-                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
 
             migrationBuilder.AddColumn<string>(
                 name: "ConcurrencyStamp",
@@ -196,7 +184,7 @@ namespace ShelfMart.Infrastructure.Migrations
             migrationBuilder.AddPrimaryKey(
                 name: "PK_AspNetUsers",
                 table: "AspNetUsers",
-                column: "Id");
+                column: "UserId");
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_AspNetUserRoles",
@@ -206,7 +194,7 @@ namespace ShelfMart.Infrastructure.Migrations
             migrationBuilder.AddPrimaryKey(
                 name: "PK_AspNetRoles",
                 table: "AspNetRoles",
-                column: "Id");
+                column: "RoleId");
 
             migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
@@ -225,7 +213,7 @@ namespace ShelfMart.Infrastructure.Migrations
                         name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
-                        principalColumn: "Id",
+                        principalColumn: "RoleId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -246,7 +234,7 @@ namespace ShelfMart.Infrastructure.Migrations
                         name: "FK_AspNetUserClaims_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
+                        principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -266,7 +254,7 @@ namespace ShelfMart.Infrastructure.Migrations
                         name: "FK_AspNetUserLogins_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
+                        principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -286,7 +274,7 @@ namespace ShelfMart.Infrastructure.Migrations
                         name: "FK_AspNetUserTokens_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
+                        principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -327,7 +315,7 @@ namespace ShelfMart.Infrastructure.Migrations
                 table: "AspNetUserRoles",
                 column: "RoleId",
                 principalTable: "AspNetRoles",
-                principalColumn: "Id",
+                principalColumn: "RoleId",
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
@@ -335,7 +323,7 @@ namespace ShelfMart.Infrastructure.Migrations
                 table: "AspNetUserRoles",
                 column: "UserId",
                 principalTable: "AspNetUsers",
-                principalColumn: "Id",
+                principalColumn: "UserId",
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
@@ -343,7 +331,7 @@ namespace ShelfMart.Infrastructure.Migrations
                 table: "Orders",
                 column: "UserResourceId",
                 principalTable: "AspNetUsers",
-                principalColumn: "Id",
+                principalColumn: "UserId",
                 onDelete: ReferentialAction.Cascade);
         }
 
@@ -403,10 +391,6 @@ namespace ShelfMart.Infrastructure.Migrations
                 table: "Products");
 
             migrationBuilder.DropColumn(
-                name: "Id",
-                table: "AspNetUsers");
-
-            migrationBuilder.DropColumn(
                 name: "AccessFailedCount",
                 table: "AspNetUsers");
 
@@ -451,14 +435,6 @@ namespace ShelfMart.Infrastructure.Migrations
                 table: "AspNetUsers");
 
             migrationBuilder.DropColumn(
-                name: "UserName",
-                table: "AspNetUsers");
-
-            migrationBuilder.DropColumn(
-                name: "Id",
-                table: "AspNetRoles");
-
-            migrationBuilder.DropColumn(
                 name: "ConcurrencyStamp",
                 table: "AspNetRoles");
 
@@ -482,6 +458,17 @@ namespace ShelfMart.Infrastructure.Migrations
                 name: "IX_AspNetUserRoles_RoleId",
                 table: "UserRoles",
                 newName: "IX_UserRoles_RoleId");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Username",
+                table: "Users",
+                type: "text",
+                nullable: false,
+                defaultValue: "",
+                oldClrType: typeof(string),
+                oldType: "character varying(256)",
+                oldMaxLength: 256,
+                oldNullable: true);
 
             migrationBuilder.AlterColumn<string>(
                 name: "PasswordHash",

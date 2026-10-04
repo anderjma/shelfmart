@@ -3,13 +3,11 @@ import toast from "react-hot-toast";
 import SEO from "../../../../shared/components/SEO";
 import Table from "../../../../shared/components/Table";
 import type { TableColumn } from "../../../../shared/components/Table";
-import { getAllOrders, updateOrderStatus } from "../api/adminOrderService";
+import { getAllOrders } from "../api/adminOrderService";
 import type { AdminOrder, OrderStatus } from "../api/adminOrderService";
 import { getErrorMessage } from "../../../../lib/http-error";
 import { formatCurrency } from "../../../../shared/utils/formatCurrency";
 import AdminNav from "../../components/AdminNav";
-
-const ASSIGNABLE_STATUSES: OrderStatus[] = ["Pending", "Confirmed", "Shipped", "Delivered", "Cancelled"];
 
 const statusBadgeClasses: Record<OrderStatus, string> = {
     Cart: "bg-cream-200 text-ink-700",
@@ -24,7 +22,6 @@ export default function OrdersAdmin() {
     const [orders, setOrders] = useState<AdminOrder[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [updatingOrderId, setUpdatingOrderId] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
@@ -50,19 +47,6 @@ export default function OrdersAdmin() {
         const term = searchTerm.toLowerCase();
         return o.orderId.toLowerCase().includes(term) || o.customerUsername.toLowerCase().includes(term) || o.status.toLowerCase().includes(term);
     });
-
-    const handleStatusChange = async (orderId: string, status: OrderStatus) => {
-        setUpdatingOrderId(orderId);
-        try {
-            const updated = await updateOrderStatus(orderId, status);
-            setOrders((prev) => prev.map((o) => (o.orderId === orderId ? updated : o)));
-            toast.success("Order status updated.");
-        } catch (err) {
-            toast.error(getErrorMessage(err, "Could not update the order status."));
-        } finally {
-            setUpdatingOrderId(null);
-        }
-    };
 
     const columns: TableColumn<AdminOrder>[] = [
         { key: "orderId", header: "Order", render: (o) => o.orderId.slice(0, 8) },

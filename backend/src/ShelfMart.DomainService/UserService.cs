@@ -52,7 +52,29 @@ public class UserService : IUserService
     public async Task<User?> ValidateUserCredentialsAsync(string username, string plainPassword)
     {
         var user = await _userManager.FindByNameAsync(username);
-        if (user == null || !await _userManager.CheckPasswordAsync(user, plainPassword))
+        if (user == null)
+        {
+            throw new UnauthorizedResponseException("Invalid credentials.");
+        }
+
+        // Accounts created before the Identity migration store BCrypt hashes, which Identity's
+        // PasswordHasher cannot verify. Verify them with BCrypt and transparently upgrade the hash.
+        var isLegacyHash = user.PasswordHash != null && user.PasswordHash.StartsWith("$2");
+        if (isLegacyHash)
+        {
+            bool legacyValid;
+            try { legacyValid = BCrypt.Net.BCrypt.Verify(plainPassword, user.PasswordHash); }
+            catch (Exception) { legacyValid = false; }
+
+            if (!legacyValid)
+            {
+                throw new UnauthorizedResponseException("Invalid credentials.");
+            }
+
+            user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, plainPassword);
+            await _userManager.UpdateAsync(user);
+        }
+        else if (!await _userManager.CheckPasswordAsync(user, plainPassword))
         {
             throw new UnauthorizedResponseException("Invalid credentials.");
         }

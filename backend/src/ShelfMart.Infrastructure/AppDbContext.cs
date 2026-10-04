@@ -25,6 +25,11 @@ public class AppDbContext : IdentityDbContext<User, Role, Guid, IdentityUserClai
     {
         base.OnModelCreating(modelBuilder);
         
+        // Preserve existing column names to avoid dropping data during Identity migration
+        modelBuilder.Entity<User>().Property(u => u.Id).HasColumnName("UserId");
+        modelBuilder.Entity<User>().Property(u => u.UserName).HasColumnName("Username");
+        modelBuilder.Entity<Role>().Property(r => r.Id).HasColumnName("RoleId");
+        
         modelBuilder.Entity<Product>().HasKey(p => p.ProductResourceId);
         modelBuilder.Entity<Product>().Property(p => p.ProductResourceId).ValueGeneratedNever();
 

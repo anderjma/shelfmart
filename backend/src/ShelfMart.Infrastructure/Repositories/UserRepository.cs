@@ -21,7 +21,7 @@ public class UserRepository : IUserRepository
         return await _context.Users
             .Include(u => u.UserRoles)
             .ThenInclude(ur => ur.Role)
-            .FirstOrDefaultAsync(u => u.Username == username);
+            .FirstOrDefaultAsync(u => u.UserName == username);
     }
 
     // This method retrieves a user's complete profile using their unique identifier.
@@ -30,13 +30,13 @@ public class UserRepository : IUserRepository
         return await _context.Users
             .Include(u => u.UserRoles)
             .ThenInclude(ur => ur.Role)
-            .FirstOrDefaultAsync(u => u.UserId == userId);
+            .FirstOrDefaultAsync(u => u.Id == userId);
     }
 
     // This method efficiently checks whether a user with the same registered email or username already exists.
     public async Task<bool> ExistsAsync(string username)
     {
-        return await _context.Users.AnyAsync(u => u.Username == username);
+        return await _context.Users.AnyAsync(u => u.UserName == username);
     }
 
     // This method inserts a new account entity into the database context for later persistence.

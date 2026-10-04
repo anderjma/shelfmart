@@ -11,10 +11,24 @@ public static class AppDbSeeder
     {
         context.Database.Migrate();
 
+        // Rows created before the ASP.NET Core Identity migration have NULL normalized names and stamps,
+        // which makes UserManager.FindByNameAsync / RoleManager.RoleExistsAsync miss them. Backfill once.
+        context.Database.ExecuteSqlRaw("""
+            UPDATE "AspNetUsers" SET "NormalizedUserName" = UPPER("Username"), "NormalizedEmail" = UPPER("Email"),
+                "SecurityStamp" = COALESCE("SecurityStamp", gen_random_uuid()::text),
+                "ConcurrencyStamp" = COALESCE("ConcurrencyStamp", gen_random_uuid()::text)
+            WHERE "NormalizedUserName" IS NULL
+            """);
+        context.Database.ExecuteSqlRaw("""
+            UPDATE "AspNetRoles" SET "NormalizedName" = UPPER("Name"),
+                "ConcurrencyStamp" = COALESCE("ConcurrencyStamp", gen_random_uuid()::text)
+            WHERE "NormalizedName" IS NULL
+            """);
+
         if (!context.Roles.Any())
         {
-            var adminRole = new Role { Name = "Admin" };
-            var customerRole = new Role { Name = "Customer" };
+            var adminRole = new Role { Name = "Admin", NormalizedName = "ADMIN" };
+            var customerRole = new Role { Name = "Customer", NormalizedName = "CUSTOMER" };
             context.Roles.AddRange(adminRole, customerRole);
             context.SaveChanges();
 
@@ -24,9 +38,12 @@ public static class AppDbSeeder
                 {
                     Name = "Administrator",
                     Username = "admin",
+                    NormalizedUserName = "ADMIN",
                     Email = "admin@company.com",
-                    PasswordHash = BCrypt.Net.BCrypt.HashPassword(adminPassword, PasswordWorkFactor)
+                    NormalizedEmail = "ADMIN@COMPANY.COM",
+                    SecurityStamp = Guid.NewGuid().ToString()
                 };
+                adminUser.PasswordHash = new Microsoft.AspNetCore.Identity.PasswordHasher<User>().HashPassword(adminUser, adminPassword);
                 context.Users.Add(adminUser);
                 context.SaveChanges();
 
