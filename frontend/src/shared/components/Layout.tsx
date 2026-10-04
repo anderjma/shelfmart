@@ -6,6 +6,7 @@ import Footer from "./Footer";
 import BackButton from "./BackButton";
 import ErrorBoundary from "./ErrorBoundary";
 import CookieBanner from "./CookieBanner";
+import AcademicNoticeBanner from "./AcademicNoticeBanner";
 
 // This component coordinates the layout of the top navbar, the main content, and the footer.
 export default function Layout() {
@@ -31,6 +32,9 @@ export default function Layout() {
             
             {/* Cookie Banner */}
             <CookieBanner />
+
+            {/* Dismissible Academic Notice Popup Banner */}
+            <AcademicNoticeBanner />
         </div>
     );
 }

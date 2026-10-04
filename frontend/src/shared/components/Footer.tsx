@@ -40,11 +40,6 @@ export default function Footer() {
                     </a>
                 </div>
 
-                {/* Copyright and Warning */}
-                <div className="text-xs text-ink-700/70 w-full text-center mb-2">
-                    <p className="font-semibold text-red-600/80">This project is for academic purposes only.</p>
-                </div>
-
                 <div className="border-t border-sand-300 pt-6 w-full flex flex-col sm:flex-row justify-between items-center text-xs text-ink-700/70 gap-2">
                     <p>
                         &copy; {new Date().getFullYear()} ShelfMart. All rights reserved.
