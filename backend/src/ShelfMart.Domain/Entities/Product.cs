@@ -13,6 +13,7 @@ public class Product
     public decimal Price { get; set; }
     public string? ImageUrl { get; set; }
     public string Category { get; set; } = "General";
+    public string Description { get; set; } = string.Empty;
 
     // New real properties for marketing!
     public decimal DiscountPercentage { get; set; } = 0;
