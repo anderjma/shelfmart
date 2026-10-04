@@ -14,7 +14,7 @@ export default function About() {
 
             <div className="bg-white shadow-sm rounded-2xl border border-sand-300 overflow-hidden">
                 <div className="h-64 bg-cream-200 flex items-center justify-center overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1556761175-4b46a572b786?q=80&w=1600&auto=format&fit=crop" alt="Team" className="w-full h-full object-cover" />
+                    <img src="https://images.unsplash.com/photo-1556761175-4b46a572b786?q=80&w=1600&auto=format&fit=crop" alt="Team" className="w-full h-full object-cover" loading="lazy" />
                 </div>
                 <div className="p-5 sm:p-8 space-y-6">
                     <div>
