@@ -1,8 +1,10 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
+import toast from "react-hot-toast";
 import Modal from "../../../../shared/components/Modal";
 import Button from "../../../../shared/components/Button";
 import type { Product } from "../../../store/types";
+import { createCategory } from "../api/categoryService";
 import type { Category } from "../api/categoryService";
 import type { ProductPayload } from "../api/adminProductService";
 import { getErrorMessage } from "../../../../lib/http-error";
@@ -12,6 +14,7 @@ export interface ProductFormModalProps {
     onClose: () => void;
     onSubmit: (payload: ProductPayload) => Promise<void>;
     categories: Category[];
+    onCategoryCreated?: (newCategory: Category) => void;
     product?: Product | null;
 }
 
@@ -43,10 +46,48 @@ function toFormState(product: Product | null | undefined, categories: Category[]
     };
 }
 
-export default function ProductFormModal({ isOpen, onClose, onSubmit, categories, product }: ProductFormModalProps) {
+export default function ProductFormModal({ isOpen, onClose, onSubmit, categories, onCategoryCreated, product }: ProductFormModalProps) {
+    const [createdCategories, setCreatedCategories] = useState<Category[]>([]);
     const [form, setForm] = useState<ProductPayload>(() => toFormState(product, categories));
     const [error, setError] = useState("");
     const [submitting, setSubmitting] = useState(false);
+
+    // Sub-modal state for creating a new category
+    const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
+    const [newCategoryName, setNewCategoryName] = useState("");
+    const [newCategoryError, setNewCategoryError] = useState("");
+    const [creatingCategory, setCreatingCategory] = useState(false);
+
+    const availableCategories = [
+        ...categories,
+        ...createdCategories.filter((c) => !categories.some((cat) => cat.name.toLowerCase() === c.name.toLowerCase()))
+    ];
+
+    const handleCreateCategory = async (e?: FormEvent) => {
+        if (e) e.preventDefault();
+        const trimmed = newCategoryName.trim();
+        if (!trimmed) {
+            setNewCategoryError("Category name cannot be empty.");
+            return;
+        }
+
+        setCreatingCategory(true);
+        setNewCategoryError("");
+
+        try {
+            const created = await createCategory(trimmed);
+            toast.success(`Category "${created.name}" created successfully.`);
+            setCreatedCategories((prev) => [...prev, created]);
+            onCategoryCreated?.(created);
+            setForm((prev) => ({ ...prev, category: created.name }));
+            setNewCategoryName("");
+            setIsAddCategoryOpen(false);
+        } catch (err) {
+            setNewCategoryError(getErrorMessage(err, "Could not create category."));
+        } finally {
+            setCreatingCategory(false);
+        }
+    };
 
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
@@ -64,6 +105,7 @@ export default function ProductFormModal({ isOpen, onClose, onSubmit, categories
     };
 
     return (
+        <>
         <Modal
             isOpen={isOpen}
             onClose={onClose}
@@ -124,20 +166,34 @@ export default function ProductFormModal({ isOpen, onClose, onSubmit, categories
                 </div>
 
                 <div>
-                    <label htmlFor="product-category" className={labelClasses}>Category</label>
-                    <input
+                    <div className="flex items-center justify-between">
+                        <label htmlFor="product-category" className={labelClasses}>Category</label>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setNewCategoryName("");
+                                setNewCategoryError("");
+                                setIsAddCategoryOpen(true);
+                            }}
+                            className="text-xs font-semibold text-accent-600 hover:text-accent-700 hover:underline focus:outline-none focus:ring-2 focus:ring-accent-500 rounded px-1"
+                        >
+                            + New Category
+                        </button>
+                    </div>
+                    <select
                         id="product-category"
-                        list="categories-list"
                         required
-                        className={inputClasses}
+                        className={`${inputClasses} bg-white`}
                         value={form.category}
                         onChange={(e) => setForm({ ...form, category: e.target.value })}
-                    />
-                    <datalist id="categories-list">
-                        {categories.map((c) => (
-                            <option key={c.categoryId} value={c.name} />
+                    >
+                        <option value="" disabled>Select a category</option>
+                        {availableCategories.map((c) => (
+                            <option key={c.categoryId || c.name} value={c.name}>
+                                {c.name}
+                            </option>
                         ))}
-                    </datalist>
+                    </select>
                 </div>
 
                 <div>
@@ -166,5 +222,62 @@ export default function ProductFormModal({ isOpen, onClose, onSubmit, categories
                 </div>
             </form>
         </Modal>
+
+        {isAddCategoryOpen && (
+            <Modal
+                isOpen={isAddCategoryOpen}
+                onClose={() => {
+                    setIsAddCategoryOpen(false);
+                    setNewCategoryError("");
+                }}
+                title="Add New Category"
+                size="sm"
+                footer={
+                    <>
+                        <Button
+                            type="button"
+                            variant="secondary"
+                            onClick={() => {
+                                setIsAddCategoryOpen(false);
+                                setNewCategoryError("");
+                            }}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            type="button"
+                            onClick={() => void handleCreateCategory()}
+                            isLoading={creatingCategory}
+                        >
+                            Create Category
+                        </Button>
+                    </>
+                }
+            >
+                <form onSubmit={handleCreateCategory} className="space-y-4">
+                    {newCategoryError && (
+                        <div className="text-red-700 text-sm text-center bg-red-50 p-2.5 rounded-xl" role="alert">
+                            {newCategoryError}
+                        </div>
+                    )}
+                    <div>
+                        <label htmlFor="new-category-name" className={labelClasses}>
+                            Category Name
+                        </label>
+                        <input
+                            id="new-category-name"
+                            type="text"
+                            required
+                            placeholder="e.g. Footwear"
+                            className={inputClasses}
+                            value={newCategoryName}
+                            onChange={(e) => setNewCategoryName(e.target.value)}
+                            autoFocus
+                        />
+                    </div>
+                </form>
+            </Modal>
+        )}
+        </>
     );
 }

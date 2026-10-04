@@ -189,6 +189,7 @@ export default function ProductsAdmin() {
                 onClose={() => setIsFormOpen(false)}
                 onSubmit={handleSubmit}
                 categories={categories}
+                onCategoryCreated={(newCat) => setCategories((prev) => [...prev, newCat])}
                 product={editingProduct}
             />
 
