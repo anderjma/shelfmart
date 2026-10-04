@@ -5,6 +5,7 @@ import Navbar from "./Header";
 import Footer from "./Footer";
 import BackButton from "./BackButton";
 import ErrorBoundary from "./ErrorBoundary";
+import CookieBanner from "./CookieBanner";
 
 // This component coordinates the layout of the top navbar, the main content, and the footer.
 export default function Layout() {
@@ -27,6 +28,9 @@ export default function Layout() {
 
             {/* Footer */}
             <Footer />
+            
+            {/* Cookie Banner */}
+            <CookieBanner />
         </div>
     );
 }

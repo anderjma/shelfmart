@@ -24,6 +24,7 @@ export default function Footer() {
                     <Link to="/catalog" className="text-ink-700 hover:text-navy-800 focus:outline-none focus:ring-2 focus:ring-navy-700 rounded-lg px-1">Catalog</Link>
                     <Link to="/about" className="text-ink-700 hover:text-navy-800 focus:outline-none focus:ring-2 focus:ring-navy-700 rounded-lg px-1">About</Link>
                     <Link to="/contact" className="text-ink-700 hover:text-navy-800 focus:outline-none focus:ring-2 focus:ring-navy-700 rounded-lg px-1">Contact</Link>
+                    <Link to="/privacy" className="text-ink-700 hover:text-navy-800 focus:outline-none focus:ring-2 focus:ring-navy-700 rounded-lg px-1">Privacy Policy</Link>
                 </div>
 
                 {/* Social media */}
@@ -39,7 +40,11 @@ export default function Footer() {
                     </a>
                 </div>
 
-                {/* Copyright */}
+                {/* Copyright and Warning */}
+                <div className="text-xs text-ink-700/70 w-full text-center mb-2">
+                    <p className="font-semibold text-red-600/80">This project is for academic purposes only.</p>
+                </div>
+
                 <div className="border-t border-sand-300 pt-6 w-full flex flex-col sm:flex-row justify-between items-center text-xs text-ink-700/70 gap-2">
                     <p>
                         &copy; {new Date().getFullYear()} ShelfMart. All rights reserved.
