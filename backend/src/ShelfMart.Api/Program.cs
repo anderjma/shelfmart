@@ -113,14 +113,27 @@ builder.Services.AddScoped<IAuditService, AuditService>();
 
 builder.Services.AddScoped<IAuthFacade, AuthFacade>();
 
-// Product images are uploaded through the API and stored in a Supabase Storage bucket. The service
-// key stays on the server (Supabase__ServiceKey); the browser never receives it.
+// Product images are uploaded through the API and stored in a Supabase Storage bucket.
+var supabaseUrl = builder.Configuration["Supabase:Url"]
+    ?? builder.Configuration["SUPABASE_URL"]
+    ?? builder.Configuration["Supabase__Url"];
+
+var supabaseKey = builder.Configuration["Supabase:ServiceKey"]
+    ?? builder.Configuration["SUPABASE_SERVICE_KEY"]
+    ?? builder.Configuration["SUPABASE_SERVICE_ROLE_KEY"]
+    ?? builder.Configuration["SUPABASE_KEY"]
+    ?? builder.Configuration["Supabase__ServiceKey"];
+
+var supabaseBucket = builder.Configuration["Supabase:Bucket"]
+    ?? builder.Configuration["SUPABASE_BUCKET"]
+    ?? "product-images";
+
 builder.Services.AddHttpClient<IImageStorageService, SupabaseImageStorageService>((http, _) =>
     new SupabaseImageStorageService(
         http,
-        builder.Configuration["Supabase:Url"],
-        builder.Configuration["Supabase:ServiceKey"],
-        builder.Configuration["Supabase:Bucket"] ?? "product-images"));
+        supabaseUrl,
+        supabaseKey,
+        supabaseBucket));
 builder.Services.AddScoped<IProductImageService, ProductImageService>();
 builder.Services.AddScoped<IProductImageFacade, ProductImageFacade>();
 
