@@ -1,11 +1,13 @@
-import { useState } from "react";
-import type { FormEvent } from "react";
+import { useState, useRef } from "react";
+import type { FormEvent, ChangeEvent } from "react";
 import toast from "react-hot-toast";
+import { ImagePlus, Trash2 } from "lucide-react";
 import Modal from "../../../../shared/components/Modal";
 import Button from "../../../../shared/components/Button";
 import type { Product } from "../../../store/types";
 import { createCategory } from "../api/categoryService";
 import type { Category } from "../api/categoryService";
+import { uploadProductImage } from "../api/adminProductService";
 import type { ProductPayload } from "../api/adminProductService";
 import { getErrorMessage } from "../../../../lib/http-error";
 
@@ -39,8 +41,6 @@ function toFormState(product: Product | null | undefined, categories: Category[]
         stock: 0,
         price: 0,
         imageUrl: "",
-        // Default to the first category from the real catalog instead of a hardcoded name,
-        // since a hardcoded value could stop existing in Categories and break product creation.
         category: categories[0]?.name ?? "",
         discountPercentage: 0
     };
@@ -51,6 +51,77 @@ export default function ProductFormModal({ isOpen, onClose, onSubmit, categories
     const [form, setForm] = useState<ProductPayload>(() => toFormState(product, categories));
     const [error, setError] = useState("");
     const [submitting, setSubmitting] = useState(false);
+
+    // Number field state to avoid "0" getting stuck when typing
+    const [numbers, setNumbers] = useState({
+        stock: product ? String(product.stock) : "0",
+        price: product ? String(product.price) : "0",
+        discount: product ? String(product.discountPercentage) : "0"
+    });
+
+    const setNumber = (field: "stock" | "price" | "discount", rawValue: string) => {
+        let clean = rawValue;
+        // Strip leading zeros if more digits are typed: e.g. "05" -> "5"
+        if (/^0+[1-9]/.test(clean)) {
+            clean = clean.replace(/^0+/, "");
+        } else if (/^0{2,}$/.test(clean)) {
+            clean = "0";
+        }
+        setNumbers((prev) => ({ ...prev, [field]: clean }));
+
+        const num = clean === "" ? 0 : Number(clean);
+        if (!isNaN(num)) {
+            if (field === "stock") setForm((f) => ({ ...f, stock: Math.max(0, Math.floor(num)) }));
+            if (field === "price") setForm((f) => ({ ...f, price: Math.max(0, num) }));
+            if (field === "discount") setForm((f) => ({ ...f, discountPercentage: Math.min(100, Math.max(0, num)) }));
+        }
+    };
+
+    const commitNumber = (field: "stock" | "price" | "discount") => {
+        setNumbers((prev) => {
+            const current = prev[field].trim();
+            if (current === "" || isNaN(Number(current))) {
+                return { ...prev, [field]: "0" };
+            }
+            return { ...prev, [field]: String(Number(current)) };
+        });
+    };
+
+    // Local file upload state for Supabase
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [imagePreview, setImagePreview] = useState<string>(product?.imageUrl ?? "");
+    const [imageError, setImageError] = useState<string>("");
+    const [uploadingImage, setUploadingImage] = useState(false);
+
+    const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setImageError("");
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+            setImageError("Only JPG, PNG or WebP images are supported.");
+            return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            setImageError("The image must be 5 MB or smaller.");
+            return;
+        }
+
+        setSelectedFile(file);
+        setImagePreview(URL.createObjectURL(file));
+    };
+
+    const handleRemoveImage = () => {
+        setSelectedFile(null);
+        setImagePreview("");
+        setImageError("");
+        setForm((prev) => ({ ...prev, imageUrl: "" }));
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
+    };
 
     // Sub-modal state for creating a new category
     const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
@@ -95,12 +166,30 @@ export default function ProductFormModal({ isOpen, onClose, onSubmit, categories
         setSubmitting(true);
 
         try {
-            await onSubmit(form);
+            let finalImageUrl = form.imageUrl;
+            if (selectedFile) {
+                setUploadingImage(true);
+                try {
+                    finalImageUrl = await uploadProductImage(selectedFile);
+                } catch (uploadErr) {
+                    setError(getErrorMessage(uploadErr, "Could not upload image to Supabase."));
+                    setSubmitting(false);
+                    setUploadingImage(false);
+                    return;
+                }
+                setUploadingImage(false);
+            }
+
+            await onSubmit({
+                ...form,
+                imageUrl: finalImageUrl
+            });
             onClose();
         } catch (err) {
             setError(getErrorMessage(err, "Could not save the product."));
         } finally {
             setSubmitting(false);
+            setUploadingImage(false);
         }
     };
 
@@ -116,8 +205,8 @@ export default function ProductFormModal({ isOpen, onClose, onSubmit, categories
                     <Button type="button" variant="secondary" onClick={onClose}>
                         Cancel
                     </Button>
-                    <Button type="submit" form="product-form" isLoading={submitting}>
-                        {product ? "Save Changes" : "Create Product"}
+                    <Button type="submit" form="product-form" isLoading={submitting || uploadingImage}>
+                        {uploadingImage ? "Uploading..." : product ? "Save Changes" : "Create Product"}
                     </Button>
                 </>
             }
@@ -137,30 +226,35 @@ export default function ProductFormModal({ isOpen, onClose, onSubmit, categories
                     />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label htmlFor="product-stock" className={labelClasses}>Stock</label>
                         <input
                             id="product-stock"
-                            type="number"
-                            min={0}
+                            type="text"
+                            inputMode="numeric"
+                            pattern="\d+"
                             required
                             className={inputClasses}
-                            value={form.stock}
-                            onChange={(e) => setForm({ ...form, stock: Number(e.target.value) })}
+                            value={numbers.stock}
+                            onFocus={(e) => e.target.select()}
+                            onChange={(e) => setNumber("stock", e.target.value)}
+                            onBlur={() => commitNumber("stock")}
                         />
                     </div>
                     <div>
                         <label htmlFor="product-price" className={labelClasses}>Price</label>
                         <input
                             id="product-price"
-                            type="number"
-                            min={0}
-                            step="0.01"
+                            type="text"
+                            inputMode="decimal"
+                            pattern="\d+(\.\d{1,2})?"
                             required
                             className={inputClasses}
-                            value={form.price}
-                            onChange={(e) => setForm({ ...form, price: Number(e.target.value) })}
+                            value={numbers.price}
+                            onFocus={(e) => e.target.select()}
+                            onChange={(e) => setNumber("price", e.target.value)}
+                            onBlur={() => commitNumber("price")}
                         />
                     </div>
                 </div>
@@ -197,27 +291,59 @@ export default function ProductFormModal({ isOpen, onClose, onSubmit, categories
                 </div>
 
                 <div>
-                    <label htmlFor="product-image-url" className={labelClasses}>Image URL</label>
-                    <input
-                        id="product-image-url"
-                        type="text"
-                        className={inputClasses}
-                        value={form.imageUrl}
-                        onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
-                    />
+                    <span id="product-image-label" className={labelClasses}>Image</span>
+                    <div className="mt-1 flex flex-col sm:flex-row sm:items-center gap-3">
+                        <div className="w-full sm:w-28 h-40 sm:h-28 shrink-0 rounded-xl border border-dashed border-sand-400 bg-cream-50 flex items-center justify-center overflow-hidden">
+                            {imagePreview ? (
+                                <img src={imagePreview} alt="Selected product preview" className="w-full h-full object-cover" />
+                            ) : (
+                                <ImagePlus className="w-8 h-8 text-sand-400" aria-hidden="true" />
+                            )}
+                        </div>
+                        <div className="flex-1 min-w-0 space-y-2">
+                            <input
+                                ref={fileInputRef}
+                                id="product-image"
+                                type="file"
+                                accept="image/jpeg,image/png,image/webp"
+                                aria-labelledby="product-image-label"
+                                aria-describedby="product-image-hint"
+                                className="sr-only"
+                                onChange={handleImageChange}
+                            />
+                            <div className="flex flex-wrap gap-2">
+                                <Button type="button" variant="secondary" onClick={() => fileInputRef.current?.click()}>
+                                    {imagePreview ? "Change Image" : "Choose Image"}
+                                </Button>
+                                {imagePreview && (
+                                    <Button type="button" variant="secondary" onClick={handleRemoveImage}>
+                                        <Trash2 className="w-4 h-4 mr-1" aria-hidden="true" />
+                                        Remove
+                                    </Button>
+                                )}
+                            </div>
+                            <p id="product-image-hint" className="text-xs text-ink-700/70">
+                                JPEG, PNG or WebP, up to 5 MB.
+                            </p>
+                            {imageError && (
+                                <p className="text-xs text-red-700" role="alert">{imageError}</p>
+                            )}
+                        </div>
+                    </div>
                 </div>
 
                 <div>
                     <label htmlFor="product-discount" className={labelClasses}>Discount Percentage</label>
                     <input
                         id="product-discount"
-                        type="number"
-                        min={0}
-                        max={100}
-                        step="0.01"
+                        type="text"
+                        inputMode="decimal"
+                        pattern="\d{1,3}(\.\d{1,2})?"
                         className={inputClasses}
-                        value={form.discountPercentage}
-                        onChange={(e) => setForm({ ...form, discountPercentage: Number(e.target.value) })}
+                        value={numbers.discount}
+                        onFocus={(e) => e.target.select()}
+                        onChange={(e) => setNumber("discount", e.target.value)}
+                        onBlur={() => commitNumber("discount")}
                     />
                 </div>
             </form>

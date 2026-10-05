@@ -43,6 +43,7 @@ public class ExceptionMiddleware
             BadRequestResponseException => (int)HttpStatusCode.BadRequest,
             UnauthorizedResponseException => (int)HttpStatusCode.Unauthorized,
             NotFoundResponseException or ResourceNotFoundException => (int)HttpStatusCode.NotFound,
+            ServiceUnavailableResponseException => (int)HttpStatusCode.ServiceUnavailable,
             _ => (int)HttpStatusCode.InternalServerError
         };
 

@@ -113,6 +113,17 @@ builder.Services.AddScoped<IAuditService, AuditService>();
 
 builder.Services.AddScoped<IAuthFacade, AuthFacade>();
 
+// Product images are uploaded through the API and stored in a Supabase Storage bucket. The service
+// key stays on the server (Supabase__ServiceKey); the browser never receives it.
+builder.Services.AddHttpClient<IImageStorageService, SupabaseImageStorageService>((http, _) =>
+    new SupabaseImageStorageService(
+        http,
+        builder.Configuration["Supabase:Url"],
+        builder.Configuration["Supabase:ServiceKey"],
+        builder.Configuration["Supabase:Bucket"] ?? "product-images"));
+builder.Services.AddScoped<IProductImageService, ProductImageService>();
+builder.Services.AddScoped<IProductImageFacade, ProductImageFacade>();
+
 builder.Services.AddIdentityCore<ShelfMart.Domain.Entities.User>(options =>
 {
     options.Password.RequireDigit = false;

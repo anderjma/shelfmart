@@ -25,3 +25,13 @@ export async function updateProduct(id: string, payload: ProductPayload): Promis
 export async function deleteProduct(id: string): Promise<void> {
     await axiosClient.delete(`/Products/${id}`);
 }
+
+// Uploads a local image file through the API, which stores it in Supabase Storage and returns its public URL.
+export async function uploadProductImage(file: File): Promise<string> {
+    const formData = new FormData();
+    formData.append("file", file);
+    const response = await axiosClient.post<{ url: string }>("/product-images", formData, {
+        headers: { "Content-Type": "multipart/form-data" }
+    });
+    return response.data.url;
+}
