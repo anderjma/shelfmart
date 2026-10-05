@@ -14,11 +14,11 @@ export default function CookieBanner() {
     if (!isVisible) return null;
 
     return (
-        <div className="fixed bottom-0 left-0 right-0 bg-ink-900 text-white p-4 shadow-lg z-50 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="fixed bottom-0 left-0 right-0 bg-ink-900 text-white p-4 shadow-lg z-50 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
             <p className="text-sm text-sand-200">
                 We use cookies to improve your experience. By continuing to visit this site you agree to our use of cookies.
             </p>
-            <div className="flex items-center gap-3 shrink-0">
+            <div className="flex flex-wrap sm:flex-nowrap items-center justify-end gap-3 shrink-0">
                 <Link
                     to="/privacy"
                     className="border border-sand-500 hover:border-sand-300 text-sand-200 hover:text-white px-3 py-1.5 rounded-lg text-sm font-medium transition-colors whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-accent-500"

@@ -16,7 +16,7 @@ export default function AcademicNoticeBanner() {
     return (
         <aside
             aria-label="Academic project notice"
-            className="fixed top-20 sm:top-24 right-4 sm:right-6 max-w-md w-[calc(100%-2rem)] sm:w-96 bg-white border border-sand-300 rounded-2xl shadow-xl z-40 p-4 transition-all"
+            className="fixed top-18 sm:top-24 right-4 sm:right-6 left-4 sm:left-auto max-w-md sm:w-96 bg-white border border-sand-300 rounded-2xl shadow-xl z-40 p-3.5 sm:p-4 transition-all"
         >
             <div className="flex items-start gap-3">
                 <div className="p-2 rounded-xl bg-accent-50 text-accent-600 shrink-0">
@@ -51,3 +51,4 @@ export default function AcademicNoticeBanner() {
         </aside>
     );
 }
+

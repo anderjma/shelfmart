@@ -90,7 +90,7 @@ export default function Modal({ isOpen, onClose, title, children, footer, size =
                 className={`bg-white rounded-2xl shadow-xl w-full ${sizeClasses[size]} flex flex-col max-h-[85vh] focus:outline-none`}
                 onClick={(event) => event.stopPropagation()}
             >
-                <div className="flex items-center justify-between px-6 py-4 border-b border-sand-300">
+                <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 sm:py-4 border-b border-sand-300">
                     <h2 className="text-lg font-medium text-ink-900">{title}</h2>
                     <button
                         type="button"
@@ -102,10 +102,10 @@ export default function Modal({ isOpen, onClose, title, children, footer, size =
                     </button>
                 </div>
 
-                <div className="px-6 py-4 overflow-y-auto max-h-[70vh]">{children}</div>
+                <div className="px-4 sm:px-6 py-3.5 sm:py-4 overflow-y-auto max-h-[70vh]">{children}</div>
 
                 {footer && (
-                    <div className="flex justify-end gap-2 px-6 py-4 border-t border-sand-300">{footer}</div>
+                    <div className="flex flex-wrap justify-end gap-2 px-4 sm:px-6 py-3.5 sm:py-4 border-t border-sand-300">{footer}</div>
                 )}
             </div>
         </div>

@@ -150,15 +150,15 @@ export default function ProductsAdmin() {
 
             <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
                 <h1 className="text-2xl font-bold text-ink-900">Products</h1>
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
                     <input
                         type="text"
                         placeholder="Search products..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="pl-4 pr-4 py-2 bg-white border border-sand-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
+                        className="w-full sm:w-64 pl-4 pr-4 py-2 bg-white border border-sand-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
                     />
-                    <Button onClick={openCreateForm}>
+                    <Button onClick={openCreateForm} className="justify-center whitespace-nowrap">
                         <Plus className="w-4 h-4" aria-hidden="true" />
                         New Product
                     </Button>
