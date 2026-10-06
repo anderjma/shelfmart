@@ -505,7 +505,7 @@ public static class AppDbSeeder
                 Price = 44.99m,
                 Stock = 35,
                 DiscountPercentage = 20,
-                ImageUrl = "https://images.unsplash.com/photo-1532012164546-f432f2e3777f?auto=format&fit=crop&w=600&q=80",
+                ImageUrl = "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=600&q=80",
                 Category = "Books"
             },
             new Product
@@ -562,7 +562,7 @@ public static class AppDbSeeder
                 Price = 249.00m,
                 Stock = 25,
                 DiscountPercentage = 20,
-                ImageUrl = "https://images.unsplash.com/photo-1580481077194-c36152aae529?auto=format&fit=crop&w=600&q=80",
+                ImageUrl = "https://images.unsplash.com/photo-1505797149-43b0069ec26b?auto=format&fit=crop&w=600&q=80",
                 Category = "Furniture"
             },
             new Product

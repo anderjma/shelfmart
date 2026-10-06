@@ -169,7 +169,16 @@ export default function Store() {
 
                                     <Link to={`/products/${product.productResourceId}`} className="h-48 bg-cream-100 flex items-center justify-center overflow-hidden block" aria-label={`View details for ${product.name}`}>
                                         {product.imageUrl ? (
-                                            <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
+                                            <img
+                                                src={product.imageUrl}
+                                                alt={product.name}
+                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                                loading="lazy"
+                                                onError={(e) => {
+                                                    e.currentTarget.onerror = null;
+                                                    e.currentTarget.src = "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80";
+                                                }}
+                                            />
                                         ) : (
                                             <span className="text-ink-700 text-sm font-medium">No image</span>
                                         )}

@@ -57,17 +57,17 @@ export default function Home() {
         <div className="space-y-12 sm:space-y-16 pb-12 sm:pb-16 bg-cream-100">
             <SEO title="Home" description="Welcome to the advanced commercial platform for real-time inventory and sales management." />
             {/* Hero section */}
-            <div className="bg-ink-900 mx-4 sm:mx-6 lg:mx-8 mt-4 sm:mt-6 rounded-2xl overflow-hidden shadow-sm relative">
-                <div className="absolute inset-0 opacity-25 bg-[url('https://images.unsplash.com/photo-1615529162924-f8605388461d?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center"></div>
-                <div className="absolute inset-0 bg-ink-900/40"></div>
+            <div className="bg-slate-950 mx-4 sm:mx-6 lg:mx-8 mt-4 sm:mt-6 rounded-2xl overflow-hidden shadow-sm relative">
+                <div className="absolute inset-0 opacity-30 bg-[url('https://images.unsplash.com/photo-1615529162924-f8605388461d?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center"></div>
+                <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-[1px]"></div>
                 <div className="relative z-10 px-6 py-14 sm:py-20 md:py-24 text-center max-w-3xl mx-auto">
-                    <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight text-balance">
+                    <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight text-balance drop-shadow-sm">
                         Welcome to ShelfMart!
                     </h1>
-                    <p className="text-sm sm:text-base text-slate-100 mb-7 max-w-lg mx-auto">
+                    <p className="text-sm sm:text-base text-slate-200 mb-7 max-w-lg mx-auto drop-shadow-sm">
                         Thoughtfully sourced pieces for a home that feels considered, not decorated.
                     </p>
-                    <Link to="/catalog" className="inline-block bg-navy-800 text-white px-6 sm:px-7 py-2.5 rounded-xl text-sm font-medium hover:bg-navy-900 transition-colors shadow-sm">
+                    <Link to="/catalog" className="inline-block bg-accent-500 hover:bg-accent-600 text-white px-6 sm:px-7 py-2.5 rounded-xl text-sm font-semibold transition-colors shadow-sm">
                         Explore our catalog
                     </Link>
                 </div>
@@ -128,11 +128,11 @@ export default function Home() {
 const renderBadges = (product: Product, type: 'offer' | 'new' | 'low') => {
     return (
         <>
-            {type === 'new' && <span className="bg-white text-ink-900 text-xs font-semibold px-2 py-0.5 rounded-md border border-sand-300 shadow-xs">New</span>}
+            {type === 'new' && <span className="bg-slate-900 dark:bg-slate-800 text-white text-xs font-semibold px-2 py-0.5 rounded-md shadow-xs">New</span>}
             {(type === 'offer' || product.discountPercentage > 0) && (
-                <span className="bg-navy-800 text-white text-xs font-bold px-2 py-0.5 rounded-md">-{product.discountPercentage}%</span>
+                <span className="bg-accent-500 text-white text-xs font-bold px-2 py-0.5 rounded-md shadow-xs">-{product.discountPercentage}%</span>
             )}
-            {type === 'low' && <span className="bg-ink-900 text-white text-xs uppercase font-semibold px-2 py-0.5 rounded-md">Low stock</span>}
+            {type === 'low' && <span className="bg-amber-600 text-white text-xs uppercase font-semibold px-2 py-0.5 rounded-md shadow-xs">Low stock</span>}
         </>
     );
 };
@@ -145,8 +145,8 @@ const ProductCard = ({ product, type }: { product: Product, type: 'offer' | 'new
     return (
         <Link to={`/products/${product.productResourceId}`} className="bg-white border border-sand-300 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 flex flex-col h-full group">
             <div className="relative h-40 sm:h-48 bg-cream-100 flex items-center justify-center overflow-hidden rounded-t-2xl">
-                <div className="absolute top-2 left-2 right-2 flex justify-between items-start z-10">
-                    <span className="bg-white text-ink-900 border border-sand-300 text-xs uppercase font-semibold px-2 py-0.5 rounded-md shadow-sm">
+                <div className="absolute top-2 left-2 right-2 flex justify-between items-start z-10 pointer-events-none">
+                    <span className="bg-slate-900/85 dark:bg-slate-800/90 text-white text-xs uppercase font-semibold px-2 py-0.5 rounded-md backdrop-blur-xs shadow-xs">
                         {product.category || 'Featured'}
                     </span>
                     <div className="flex flex-col gap-1 items-end">
@@ -154,7 +154,16 @@ const ProductCard = ({ product, type }: { product: Product, type: 'offer' | 'new
                     </div>
                 </div>
                 {product.imageUrl ? (
-                    <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover group-hover:opacity-90 transition-opacity duration-200" loading="lazy" />
+                    <img
+                        src={product.imageUrl}
+                        alt={product.name}
+                        className="w-full h-full object-cover group-hover:opacity-90 transition-opacity duration-200"
+                        loading="lazy"
+                        onError={(e) => {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80";
+                        }}
+                    />
                 ) : (
                     <span className="text-ink-700 text-xs font-medium">No image</span>
                 )}
@@ -163,8 +172,8 @@ const ProductCard = ({ product, type }: { product: Product, type: 'offer' | 'new
             <div className="p-3 sm:p-4 flex-1 flex flex-col justify-between bg-white rounded-b-2xl">
                 <h3 className="font-medium text-ink-900 text-sm sm:text-base line-clamp-2 leading-snug mb-3" title={product.name}>{product.name}</h3>
                 <div className="flex items-center gap-2 mt-auto flex-wrap">
-                    <p className="text-navy-800 font-semibold text-sm sm:text-base">{formatCurrency(finalPrice)}</p>
-                    {product.discountPercentage > 0 && <p className="text-xs text-ink-700/50 line-through">{formatCurrency(product.price)}</p>}
+                    <p className="text-accent-500 font-bold text-sm sm:text-base">{formatCurrency(finalPrice)}</p>
+                    {product.discountPercentage > 0 && <p className="text-xs text-ink-700/60 line-through">{formatCurrency(product.price)}</p>}
                 </div>
             </div>
         </Link>
