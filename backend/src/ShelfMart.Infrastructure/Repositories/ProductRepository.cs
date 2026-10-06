@@ -28,7 +28,7 @@ public class ProductRepository : IProductRepository
             query = query.Where(p => p.IsActive);
         }
 
-        return await query.ToListAsync();
+        return await query.OrderByDescending(p => p.CreatedAt).ToListAsync();
     }
 
     // This method retrieves the available catalog, filtered and paginated at the database level.

@@ -36,14 +36,22 @@ export default function Home() {
         </div>
     );
 
-    const offers = products.filter(p => p.discountPercentage > 0).slice(0, 4);
-    const lowStock = products.filter(p => p.stock > 0 && p.stock <= 5).slice(0, 4);
+    // Sort products by creation date descending so newly registered items are prioritized
+    const sortedByNewest = [...products].sort((a, b) => {
+        const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return timeB - timeA;
+    });
 
-    const newArrivals = products.filter(p => {
+    const offers = sortedByNewest.filter(p => p.discountPercentage > 0).slice(0, 4);
+    const lowStock = sortedByNewest.filter(p => p.stock > 0 && p.stock <= 5).slice(0, 4);
+
+    const recentArrivals = sortedByNewest.filter(p => {
         if (!p.createdAt) return false;
         const diffDays = (new Date().getTime() - new Date(p.createdAt).getTime()) / (1000 * 3600 * 24);
-        return diffDays <= 7;
-    }).slice(0, 4);
+        return diffDays <= 30;
+    });
+    const newArrivals = (recentArrivals.length >= 4 ? recentArrivals : sortedByNewest).slice(0, 4);
 
     return (
         <div className="space-y-12 sm:space-y-16 pb-12 sm:pb-16 bg-cream-100">
@@ -118,10 +126,15 @@ export default function Home() {
 }
 
 const renderBadges = (product: Product, type: 'offer' | 'new' | 'low') => {
-    if (type === 'low') return <span className="bg-ink-900 text-white text-xs uppercase font-semibold px-2 py-0.5 rounded-md">Low stock</span>;
-    if (type === 'offer') return <span className="bg-navy-800 text-white text-xs font-bold px-2 py-0.5 rounded-md">-{product.discountPercentage}%</span>;
-    if (type === 'new') return <span className="bg-cream-100 text-ink-700 text-xs font-medium px-2 py-0.5 rounded-md border border-sand-400">New</span>;
-    return null;
+    return (
+        <>
+            {type === 'new' && <span className="bg-cream-100 text-ink-700 text-xs font-medium px-2 py-0.5 rounded-md border border-sand-400">New</span>}
+            {(type === 'offer' || product.discountPercentage > 0) && (
+                <span className="bg-navy-800 text-white text-xs font-bold px-2 py-0.5 rounded-md">-{product.discountPercentage}%</span>
+            )}
+            {type === 'low' && <span className="bg-ink-900 text-white text-xs uppercase font-semibold px-2 py-0.5 rounded-md">Low stock</span>}
+        </>
+    );
 };
 
 const ProductCard = ({ product, type }: { product: Product, type: 'offer' | 'new' | 'low' }) => {

@@ -443,7 +443,7 @@ public static class AppDbSeeder
                 Description = "Comfortable ergonomic accent armchair with solid walnut wood legs and high-resilience foam cushion.",
                 Price = 289.99m,
                 Stock = 14,
-                DiscountPercentage = 10,
+                DiscountPercentage = 15,
                 ImageUrl = "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&w=600&q=80",
                 Category = "Furniture"
             },
@@ -454,7 +454,7 @@ public static class AppDbSeeder
                 Description = "Handcrafted natural oak coffee table with rounded safety corners and durable matte protective lacquer.",
                 Price = 199.50m,
                 Stock = 18,
-                DiscountPercentage = 0,
+                DiscountPercentage = 10,
                 ImageUrl = "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&w=600&q=80",
                 Category = "Furniture"
             },
@@ -465,7 +465,7 @@ public static class AppDbSeeder
                 Description = "Breathable mesh desk chair with 3D adjustable armrests, lumbar support, and pneumatic seat height adjustment.",
                 Price = 249.00m,
                 Stock = 25,
-                DiscountPercentage = 15,
+                DiscountPercentage = 20,
                 ImageUrl = "https://images.unsplash.com/photo-1580481077194-c36152aae529?auto=format&fit=crop&w=600&q=80",
                 Category = "Furniture"
             },
@@ -476,7 +476,7 @@ public static class AppDbSeeder
                 Description = "Sturdy steel frame open shelving unit with rustic wood grain shelves for living rooms and offices.",
                 Price = 119.00m,
                 Stock = 30,
-                DiscountPercentage = 0,
+                DiscountPercentage = 12,
                 ImageUrl = "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=600&q=80",
                 Category = "Furniture"
             },
@@ -487,17 +487,31 @@ public static class AppDbSeeder
                 Description = "Wall-mounted entertainment center with cable management holes and push-to-open storage compartments.",
                 Price = 179.99m,
                 Stock = 15,
-                DiscountPercentage = 20,
+                DiscountPercentage = 25,
                 ImageUrl = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80",
                 Category = "Furniture"
             }
         };
 
-        var toAdd = catalog.Where(p => !existingNames.Contains(p.Name.ToLower())).ToList();
-        if (toAdd.Count > 0)
+        foreach (var item in catalog)
         {
-            context.Products.AddRange(toAdd);
-            context.SaveChanges();
+            var existing = context.Products.FirstOrDefault(p => p.Name.ToLower() == item.Name.ToLower());
+            if (existing != null)
+            {
+                if (existing.DiscountPercentage != item.DiscountPercentage)
+                {
+                    existing.DiscountPercentage = item.DiscountPercentage;
+                }
+                if (existing.Category != item.Category)
+                {
+                    existing.Category = item.Category;
+                }
+            }
+            else
+            {
+                context.Products.Add(item);
+            }
         }
+        context.SaveChanges();
     }
 }
