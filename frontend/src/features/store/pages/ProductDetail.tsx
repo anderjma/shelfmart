@@ -36,13 +36,12 @@ export default function ProductDetail() {
         if (!id) return;
 
         let isMounted = true;
-        setLoading(true);
-        setQuantity(1);
 
         getProductById(id)
             .then(data => {
                 if (!isMounted) return;
                 setProduct(data);
+                setQuantity(1);
 
                 // Fetch related products from same category
                 getProducts({ category: data.category, pageSize: 5 })
