@@ -64,15 +64,15 @@ export default function Profile() {
                 <h2 className="text-2xl font-bold text-ink-900 mb-4">My Profile</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm text-ink-700">
                     <div>
-                        <p className="font-semibold text-ink-700/70 uppercase tracking-wider text-xs">Full Name</p>
+                        <p className="font-semibold text-ink-700 uppercase tracking-wider text-xs">Full Name</p>
                         <p className="text-lg font-medium text-ink-900 mt-1">{user?.name || "N/A"}</p>
                     </div>
                     <div>
-                        <p className="font-semibold text-ink-700/70 uppercase tracking-wider text-xs">Username</p>
+                        <p className="font-semibold text-ink-700 uppercase tracking-wider text-xs">Username</p>
                         <p className="text-lg font-medium text-ink-900 mt-1">@{user?.username || "N/A"}</p>
                     </div>
                     <div className="sm:col-span-2">
-                        <p className="font-semibold text-ink-700/70 uppercase tracking-wider text-xs">Account Type</p>
+                        <p className="font-semibold text-ink-700 uppercase tracking-wider text-xs">Account Type</p>
                         <p className="text-xs font-semibold mt-1.5 inline-block bg-primary-50 text-accent-500 px-3 py-1 rounded-full border border-primary-100">
                             {user?.role === "Admin" ? "Company Administrator" : "Regular Customer"}
                         </p>
@@ -95,18 +95,18 @@ export default function Profile() {
                         {orders.map((order) => (
                             <div key={order.orderId} className="bg-white p-6 rounded-2xl shadow-sm border border-sand-300 flex flex-col md:flex-row justify-between md:items-center gap-4 transition-all hover:shadow-md">
                                 <div className="space-y-2">
-                                    <p className="text-xs font-bold text-ink-700/70 uppercase tracking-wider">Order ID: #{order.orderId.substring(0, 8).toUpperCase()}</p>
+                                    <p className="text-xs font-bold text-ink-700 uppercase tracking-wider">Order ID: #{order.orderId.substring(0, 8).toUpperCase()}</p>
                                     <ul className="list-disc list-inside text-sm text-ink-700 space-y-1">
                                         {order.items.map((item: CartItem) => (
                                             <li key={item.productId} className="font-medium">
-                                                {item.quantity}x {item.productName} <span className="text-ink-700/70 font-normal">({formatCurrency(item.unitPrice)} each)</span>
+                                                {item.quantity}x {item.productName} <span className="text-ink-700 font-normal">({formatCurrency(item.unitPrice)} each)</span>
                                             </li>
                                         ))}
                                     </ul>
                                 </div>
                                 <div className="text-left md:text-right border-t md:border-t-0 border-sand-300 pt-4 md:pt-0 flex flex-col justify-end gap-2">
                                     <div>
-                                        <p className="text-xs text-ink-700/70 uppercase font-bold tracking-wider">Total Amount</p>
+                                        <p className="text-xs text-ink-700 uppercase font-bold tracking-wider">Total Amount</p>
                                         <p className="text-2xl font-bold text-ink-900 mt-0.5">{formatCurrency(order.totalAmount)}</p>
                                         {order.status && (
                                             <span className={`text-xs border px-2.5 py-0.5 rounded-full font-medium inline-block mt-2 self-start md:self-end ${statusBadgeClasses[order.status] ?? "bg-cream-100 text-ink-700 border-sand-300"}`}>

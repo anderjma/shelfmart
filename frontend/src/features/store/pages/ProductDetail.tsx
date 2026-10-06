@@ -190,7 +190,7 @@ export default function ProductDetail() {
                                 loading="eager"
                             />
                         ) : (
-                            <span className="text-sand-400 text-sm font-medium">No image available</span>
+                            <span className="text-ink-700 text-sm font-medium">No image available</span>
                         )}
                     </div>
                 </div>
@@ -280,7 +280,7 @@ export default function ProductDetail() {
                                         <Plus className="w-4 h-4" />
                                     </button>
                                 </div>
-                                <span className="text-xs text-ink-700/60">
+                                <span className="text-xs text-ink-700 font-medium">
                                     Max {product.stock} per purchase
                                 </span>
                             </div>
@@ -372,7 +372,7 @@ export default function ProductDetail() {
                                                 loading="lazy"
                                             />
                                         ) : (
-                                            <span className="text-sand-400 text-xs font-medium">No image</span>
+                                            <span className="text-ink-700 text-xs font-medium">No image</span>
                                         )}
                                         {rel.discountPercentage > 0 && (
                                             <span className="absolute top-2 right-2 bg-navy-800 text-white text-xs font-bold px-2 py-0.5 rounded-md">

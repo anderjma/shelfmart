@@ -323,7 +323,7 @@ export default function ProductFormModal({ isOpen, onClose, onSubmit, categories
                                     </Button>
                                 )}
                             </div>
-                            <p id="product-image-hint" className="text-xs text-ink-700/70">
+                            <p id="product-image-hint" className="text-xs text-ink-700 font-medium">
                                 JPEG, PNG or WebP, up to 5 MB.
                             </p>
                             {imageError && (

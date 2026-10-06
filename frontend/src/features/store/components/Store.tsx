@@ -171,7 +171,7 @@ export default function Store() {
                                         {product.imageUrl ? (
                                             <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
                                         ) : (
-                                            <span className="text-sand-400 text-sm font-medium">No image</span>
+                                            <span className="text-ink-700 text-sm font-medium">No image</span>
                                         )}
                                     </Link>
 

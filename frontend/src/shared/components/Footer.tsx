@@ -29,18 +29,18 @@ export default function Footer() {
 
                 {/* Social media */}
                 <div className="flex space-x-6 justify-center">
-                    <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-ink-700/60 hover:text-accent-500 transition-colors p-1 focus:outline-none focus:ring-2 focus:ring-accent-500 rounded-lg" aria-label="Facebook">
+                    <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-ink-700 hover:text-accent-500 transition-colors p-1 focus:outline-none focus:ring-2 focus:ring-accent-500 rounded-lg" aria-label="Facebook">
                         <SiFacebook className="h-5 w-5" aria-hidden="true" />
                     </a>
-                    <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-ink-700/60 hover:text-accent-500 transition-colors p-1 focus:outline-none focus:ring-2 focus:ring-accent-500 rounded-lg" aria-label="Instagram">
+                    <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-ink-700 hover:text-accent-500 transition-colors p-1 focus:outline-none focus:ring-2 focus:ring-accent-500 rounded-lg" aria-label="Instagram">
                         <SiInstagram className="h-5 w-5" aria-hidden="true" />
                     </a>
-                    <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer" className="text-ink-700/60 hover:text-accent-500 transition-colors p-1 focus:outline-none focus:ring-2 focus:ring-accent-500 rounded-lg" aria-label="TikTok">
+                    <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer" className="text-ink-700 hover:text-accent-500 transition-colors p-1 focus:outline-none focus:ring-2 focus:ring-accent-500 rounded-lg" aria-label="TikTok">
                         <SiTiktok className="h-5 w-5" aria-hidden="true" />
                     </a>
                 </div>
 
-                <div className="border-t border-sand-300 pt-6 w-full flex flex-col sm:flex-row justify-between items-center text-xs text-ink-700/70 gap-2">
+                <div className="border-t border-sand-300 pt-6 w-full flex flex-col sm:flex-row justify-between items-center text-xs text-ink-700 gap-2">
                     <p>
                         &copy; {new Date().getFullYear()} ShelfMart. All rights reserved.
                     </p>

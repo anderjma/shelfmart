@@ -26,7 +26,7 @@ export default function AcademicNoticeBanner() {
                     <h3 className="text-sm font-semibold text-ink-900">
                         Academic Project Notice
                     </h3>
-                    <p className="mt-1 text-xs text-ink-600 leading-relaxed">
+                    <p className="mt-1 text-xs text-ink-700 leading-relaxed">
                         This store is a portfolio and academic demonstration project. Orders, transactions, and inventory are simulated.
                     </p>
                     <div className="mt-3 flex items-center justify-end">
@@ -43,7 +43,7 @@ export default function AcademicNoticeBanner() {
                     type="button"
                     onClick={handleDismiss}
                     aria-label="Dismiss academic notice"
-                    className="text-ink-400 hover:text-ink-700 p-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500"
+                    className="text-ink-700 hover:text-ink-900 p-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500"
                 >
                     <X className="w-4 h-4" aria-hidden="true" />
                 </button>

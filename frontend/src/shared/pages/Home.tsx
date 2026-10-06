@@ -64,7 +64,7 @@ export default function Home() {
                     <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight text-balance">
                         Welcome to ShelfMart!
                     </h1>
-                    <p className="text-sm sm:text-base text-cream-100/85 mb-7 max-w-lg mx-auto">
+                    <p className="text-sm sm:text-base text-slate-100 mb-7 max-w-lg mx-auto">
                         Thoughtfully sourced pieces for a home that feels considered, not decorated.
                     </p>
                     <Link to="/catalog" className="inline-block bg-navy-800 text-white px-6 sm:px-7 py-2.5 rounded-xl text-sm font-medium hover:bg-navy-900 transition-colors shadow-sm">
@@ -128,7 +128,7 @@ export default function Home() {
 const renderBadges = (product: Product, type: 'offer' | 'new' | 'low') => {
     return (
         <>
-            {type === 'new' && <span className="bg-cream-100 text-ink-700 text-xs font-medium px-2 py-0.5 rounded-md border border-sand-400">New</span>}
+            {type === 'new' && <span className="bg-white text-ink-900 text-xs font-semibold px-2 py-0.5 rounded-md border border-sand-300 shadow-xs">New</span>}
             {(type === 'offer' || product.discountPercentage > 0) && (
                 <span className="bg-navy-800 text-white text-xs font-bold px-2 py-0.5 rounded-md">-{product.discountPercentage}%</span>
             )}
@@ -146,7 +146,7 @@ const ProductCard = ({ product, type }: { product: Product, type: 'offer' | 'new
         <Link to={`/products/${product.productResourceId}`} className="bg-white border border-sand-300 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 flex flex-col h-full group">
             <div className="relative h-40 sm:h-48 bg-cream-100 flex items-center justify-center overflow-hidden rounded-t-2xl">
                 <div className="absolute top-2 left-2 right-2 flex justify-between items-start z-10">
-                    <span className="bg-white/90 text-ink-700 text-xs uppercase font-medium px-1.5 py-0.5 rounded-md shadow-sm">
+                    <span className="bg-white text-ink-900 border border-sand-300 text-xs uppercase font-semibold px-2 py-0.5 rounded-md shadow-sm">
                         {product.category || 'Featured'}
                     </span>
                     <div className="flex flex-col gap-1 items-end">
@@ -156,7 +156,7 @@ const ProductCard = ({ product, type }: { product: Product, type: 'offer' | 'new
                 {product.imageUrl ? (
                     <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover group-hover:opacity-90 transition-opacity duration-200" loading="lazy" />
                 ) : (
-                    <span className="text-sand-400 text-xs font-medium">No image</span>
+                    <span className="text-ink-700 text-xs font-medium">No image</span>
                 )}
             </div>
 

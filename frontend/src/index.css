@@ -14,15 +14,14 @@
   --color-text: #101828;
   --color-page: #efefef;
 
-  /* Tints derived from the exact four colors — used for borders, hover
-     backgrounds, and disabled states instead of introducing new hues. */
-  --color-ink-700: color-mix(in srgb, var(--color-text) 78%, transparent);
+  /* Tints derived from the exact four colors — calibrated for WCAG AA compliance (4.5:1+) */
+  --color-ink-700: #334155;
   --color-ink-900: var(--color-text);
   --color-cream-50: var(--color-chrome);
   --color-cream-100: var(--color-page);
   --color-cream-200: color-mix(in srgb, var(--color-text) 8%, var(--color-page));
   --color-sand-300: color-mix(in srgb, var(--color-text) 16%, var(--color-page));
-  --color-sand-400: color-mix(in srgb, var(--color-text) 26%, var(--color-page));
+  --color-sand-400: #64748b;
 
   /* Primary brand accent. */
   --color-primary-50: color-mix(in srgb, var(--color-accent-500) 6%, white);
@@ -97,6 +96,18 @@ html.dark .bg-cream-200 {
   color: #f8fafc;
 }
 
+/* Ensure minimum 4.5:1 WCAG contrast for secondary and muted text in light mode */
+[class*="text-ink-700/50"],
+[class*="text-ink-700/60"],
+[class*="text-ink-700/70"] {
+  color: #475569 !important;
+}
+
+.text-ink-600,
+.text-ink-400 {
+  color: #475569 !important;
+}
+
 html.dark .text-ink-900 {
   color: #ffffff !important;
 }
@@ -105,7 +116,9 @@ html.dark .text-ink-700 {
   color: #e2e8f0 !important;
 }
 
-html.dark [class*="text-ink-700/"] {
+html.dark [class*="text-ink-700/"],
+html.dark .text-ink-600,
+html.dark .text-ink-400 {
   color: #cbd5e1 !important;
 }
 
