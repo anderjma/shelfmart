@@ -57,40 +57,371 @@ public static class AppDbSeeder
             }
         }
 
-        if (!context.Categories.Any())
+        var defaultCategories = new[]
         {
-            context.Categories.AddRange(
-                new Category { Name = "General" },
-                new Category { Name = "Electronics" },
-                new Category { Name = "Groceries" },
-                new Category { Name = "Home" },
-                new Category { Name = "Clothing" }
-            );
-            context.SaveChanges();
+            "General",
+            "Electronics",
+            "Clothing",
+            "Groceries",
+            "Home",
+            "Sports",
+            "Beauty",
+            "Books"
+        };
+
+        foreach (var catName in defaultCategories)
+        {
+            if (!context.Categories.Any(c => c.Name.ToLower() == catName.ToLower()))
+            {
+                context.Categories.Add(new Category { Name = catName });
+            }
         }
+        context.SaveChanges();
 
-        if (!context.Products.Any())
+        var existingNames = context.Products
+            .Select(p => p.Name.ToLower())
+            .ToHashSet();
+
+        var catalog = new List<Product>
         {
-            context.Products.AddRange(
-                new Product { ProductResourceId = Guid.NewGuid(), Name = "Wireless Mouse", Description = "Ergonomic wireless mouse", Price = 29.99m, Stock = 100, ImageUrl = "https://picsum.photos/seed/mouse/200", Category = "Electronics" },
-                new Product { ProductResourceId = Guid.NewGuid(), Name = "Mechanical Keyboard", Description = "RGB mechanical keyboard", Price = 89.99m, Stock = 50, ImageUrl = "https://picsum.photos/seed/keyboard/200", Category = "Electronics" },
-                new Product { ProductResourceId = Guid.NewGuid(), Name = "Noise-Cancelling Headphones", Description = "Over-ear headphones", Price = 199.99m, Stock = 30, ImageUrl = "https://picsum.photos/seed/headphones/200", Category = "Electronics" },
-                new Product { ProductResourceId = Guid.NewGuid(), Name = "4K Monitor", Description = "27 inch 4K display", Price = 349.99m, Stock = 20, ImageUrl = "https://picsum.photos/seed/monitor/200", Category = "Electronics" },
-                new Product { ProductResourceId = Guid.NewGuid(), Name = "Smartwatch", Description = "Waterproof smartwatch", Price = 149.99m, Stock = 60, ImageUrl = "https://picsum.photos/seed/smartwatch/200", Category = "Electronics" },
-                
-                new Product { ProductResourceId = Guid.NewGuid(), Name = "Cotton T-Shirt", Description = "100% cotton casual tee", Price = 19.99m, Stock = 200, ImageUrl = "https://picsum.photos/seed/tshirt/200", Category = "Clothing" },
-                new Product { ProductResourceId = Guid.NewGuid(), Name = "Denim Jeans", Description = "Classic fit denim jeans", Price = 49.99m, Stock = 150, ImageUrl = "https://picsum.photos/seed/jeans/200", Category = "Clothing" },
-                new Product { ProductResourceId = Guid.NewGuid(), Name = "Running Shoes", Description = "Lightweight running sneakers", Price = 79.99m, Stock = 80, ImageUrl = "https://picsum.photos/seed/shoes/200", Category = "Clothing" },
-                new Product { ProductResourceId = Guid.NewGuid(), Name = "Winter Jacket", Description = "Warm winter coat", Price = 129.99m, Stock = 40, ImageUrl = "https://picsum.photos/seed/jacket/200", Category = "Clothing" },
-                new Product { ProductResourceId = Guid.NewGuid(), Name = "Sunglasses", Description = "UV400 protection", Price = 24.99m, Stock = 100, ImageUrl = "https://picsum.photos/seed/sunglasses/200", Category = "Clothing" },
+            // Electronics
+            new Product
+            {
+                ProductResourceId = Guid.NewGuid(),
+                Name = "Sony WH-1000XM5 Wireless Headphones",
+                Description = "Industry-leading noise canceling wireless over-ear headphones with 30-hour battery life.",
+                Price = 399.99m,
+                Stock = 24,
+                DiscountPercentage = 15,
+                ImageUrl = "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80",
+                Category = "Electronics"
+            },
+            new Product
+            {
+                ProductResourceId = Guid.NewGuid(),
+                Name = "Logitech MX Master 3S Mouse",
+                Description = "Performance wireless ergonomic mouse with Quiet Clicks and 8K DPI track-on-glass sensor.",
+                Price = 99.99m,
+                Stock = 45,
+                DiscountPercentage = 10,
+                ImageUrl = "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=600&q=80",
+                Category = "Electronics"
+            },
+            new Product
+            {
+                ProductResourceId = Guid.NewGuid(),
+                Name = "Keychron K2 Mechanical Keyboard",
+                Description = "Compact 75% wireless mechanical keyboard with hot-swappable Gateron G Pro switches and RGB backlight.",
+                Price = 89.99m,
+                Stock = 30,
+                DiscountPercentage = 0,
+                ImageUrl = "https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=600&q=80",
+                Category = "Electronics"
+            },
+            new Product
+            {
+                ProductResourceId = Guid.NewGuid(),
+                Name = "Dell UltraSharp 27-inch 4K Monitor",
+                Description = "IPS Black technology 4K UHD monitor with 98% DCI-P3 wide color gamut and USB-C hub.",
+                Price = 529.99m,
+                Stock = 12,
+                DiscountPercentage = 5,
+                ImageUrl = "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=600&q=80",
+                Category = "Electronics"
+            },
+            new Product
+            {
+                ProductResourceId = Guid.NewGuid(),
+                Name = "Apple Watch Series 9 GPS 45mm",
+                Description = "Advanced health sensors, Crash Detection, and bright Always-On Retina display with water resistance.",
+                Price = 429.00m,
+                Stock = 18,
+                DiscountPercentage = 0,
+                ImageUrl = "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80",
+                Category = "Electronics"
+            },
+            new Product
+            {
+                ProductResourceId = Guid.NewGuid(),
+                Name = "Anker 737 Fast Power Bank 24,000mAh",
+                Description = "Ultra-powerful two-way charging power bank with smart digital display and 140W total output.",
+                Price = 149.99m,
+                Stock = 35,
+                DiscountPercentage = 20,
+                ImageUrl = "https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?auto=format&fit=crop&w=600&q=80",
+                Category = "Electronics"
+            },
 
-                new Product { ProductResourceId = Guid.NewGuid(), Name = "Organic Coffee Beans", Description = "1lb dark roast coffee", Price = 14.99m, Stock = 300, ImageUrl = "https://picsum.photos/seed/coffee/200", Category = "Groceries" },
-                new Product { ProductResourceId = Guid.NewGuid(), Name = "Green Tea", Description = "Box of 50 green tea bags", Price = 8.99m, Stock = 250, ImageUrl = "https://picsum.photos/seed/tea/200", Category = "Groceries" },
-                new Product { ProductResourceId = Guid.NewGuid(), Name = "Olive Oil", Description = "Extra virgin olive oil", Price = 12.99m, Stock = 120, ImageUrl = "https://picsum.photos/seed/oliveoil/200", Category = "Groceries" },
+            // Clothing & Apparel
+            new Product
+            {
+                ProductResourceId = Guid.NewGuid(),
+                Name = "Classic Heavyweight Cotton T-Shirt",
+                Description = "Premium 220 GSM combed organic cotton t-shirt with durable reinforced crew neck and relaxed fit.",
+                Price = 28.00m,
+                Stock = 120,
+                DiscountPercentage = 0,
+                ImageUrl = "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=600&q=80",
+                Category = "Clothing"
+            },
+            new Product
+            {
+                ProductResourceId = Guid.NewGuid(),
+                Name = "Levi's 511 Slim Fit Stretch Jeans",
+                Description = "Modern slim-cut denim jeans with added stretch for all-day comfort and mobility.",
+                Price = 69.50m,
+                Stock = 85,
+                DiscountPercentage = 15,
+                ImageUrl = "https://images.unsplash.com/photo-1542272604-787c3835535d?auto=format&fit=crop&w=600&q=80",
+                Category = "Clothing"
+            },
+            new Product
+            {
+                ProductResourceId = Guid.NewGuid(),
+                Name = "Nike Air Zoom Pegasus 40",
+                Description = "Responsive everyday road running shoes featuring dual Zoom Air units and engineered mesh.",
+                Price = 130.00m,
+                Stock = 40,
+                DiscountPercentage = 10,
+                ImageUrl = "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80",
+                Category = "Clothing"
+            },
+            new Product
+            {
+                ProductResourceId = Guid.NewGuid(),
+                Name = "Patagonia Torrentshell 3L Rain Jacket",
+                Description = "Durable waterproof and breathable 3-layer shell jacket designed for harsh outdoor weather.",
+                Price = 179.00m,
+                Stock = 22,
+                DiscountPercentage = 0,
+                ImageUrl = "https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=600&q=80",
+                Category = "Clothing"
+            },
+            new Product
+            {
+                ProductResourceId = Guid.NewGuid(),
+                Name = "Ray-Ban Classic Aviator Sunglasses",
+                Description = "Timeless gold metal frame sunglasses with green polarized crystal G-15 lenses.",
+                Price = 163.00m,
+                Stock = 30,
+                DiscountPercentage = 25,
+                ImageUrl = "https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=600&q=80",
+                Category = "Clothing"
+            },
+            new Product
+            {
+                ProductResourceId = Guid.NewGuid(),
+                Name = "The North Face Borealis Backpack 28L",
+                Description = "Versatile commuter and trail backpack with dedicated 15-inch laptop sleeve and FlexVent suspension.",
+                Price = 99.00m,
+                Stock = 50,
+                DiscountPercentage = 0,
+                ImageUrl = "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=600&q=80",
+                Category = "Clothing"
+            },
 
-                new Product { ProductResourceId = Guid.NewGuid(), Name = "Ceramic Mug", Description = "Handcrafted coffee mug", Price = 11.99m, Stock = 100, ImageUrl = "https://picsum.photos/seed/mug/200", Category = "Home" },
-                new Product { ProductResourceId = Guid.NewGuid(), Name = "Throw Blanket", Description = "Soft fleece throw", Price = 34.99m, Stock = 70, ImageUrl = "https://picsum.photos/seed/blanket/200", Category = "Home" }
-            );
+            // Groceries & Gourmet
+            new Product
+            {
+                ProductResourceId = Guid.NewGuid(),
+                Name = "Specialty Ethiopian Whole Bean Coffee (12oz)",
+                Description = "Single-origin washed Arabica coffee beans with vibrant notes of bergamot, peach, and floral jasmine.",
+                Price = 18.50m,
+                Stock = 90,
+                DiscountPercentage = 0,
+                ImageUrl = "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?auto=format&fit=crop&w=600&q=80",
+                Category = "Groceries"
+            },
+            new Product
+            {
+                ProductResourceId = Guid.NewGuid(),
+                Name = "Ceremonial Grade Uji Matcha (100g)",
+                Description = "First-harvest stone-ground Japanese green tea powder with rich umami flavor and vibrant jade color.",
+                Price = 32.00m,
+                Stock = 65,
+                DiscountPercentage = 10,
+                ImageUrl = "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=600&q=80",
+                Category = "Groceries"
+            },
+            new Product
+            {
+                ProductResourceId = Guid.NewGuid(),
+                Name = "Organic Extra Virgin Olive Oil (500ml)",
+                Description = "Cold-pressed extra virgin olive oil from single-estate Koroneiki olives with robust peppery finish.",
+                Price = 24.99m,
+                Stock = 45,
+                DiscountPercentage = 0,
+                ImageUrl = "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=600&q=80",
+                Category = "Groceries"
+            },
+            new Product
+            {
+                ProductResourceId = Guid.NewGuid(),
+                Name = "Raw Wildflower Honey (16oz)",
+                Description = "Unfiltered and unheated pure wildflower honey harvested sustainably from pesticide-free apiaries.",
+                Price = 14.50m,
+                Stock = 75,
+                DiscountPercentage = 0,
+                ImageUrl = "https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=600&q=80",
+                Category = "Groceries"
+            },
+            new Product
+            {
+                ProductResourceId = Guid.NewGuid(),
+                Name = "Artisanal Single-Origin Dark Chocolate 85%",
+                Description = "Handcrafted organic dark chocolate bar made from fine aroma cacao beans with notes of dried plum.",
+                Price = 6.99m,
+                Stock = 140,
+                DiscountPercentage = 15,
+                ImageUrl = "https://images.unsplash.com/photo-1548907040-4baa42d10919?auto=format&fit=crop&w=600&q=80",
+                Category = "Groceries"
+            },
+
+            // Home & Living
+            new Product
+            {
+                ProductResourceId = Guid.NewGuid(),
+                Name = "Handcrafted Matte Ceramic Mug (12oz)",
+                Description = "Stoneware ceramic coffee mug with textured satin finish, comfortable ergonomic handle, and heat retention.",
+                Price = 16.00m,
+                Stock = 55,
+                DiscountPercentage = 0,
+                ImageUrl = "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=600&q=80",
+                Category = "Home"
+            },
+            new Product
+            {
+                ProductResourceId = Guid.NewGuid(),
+                Name = "Chunky Knit Merino Wool Throw Blanket",
+                Description = "Ultra-soft 100% merino wool knit throw blanket for living rooms and cozy bedroom decor (50x60 in).",
+                Price = 89.00m,
+                Stock = 15,
+                DiscountPercentage = 20,
+                ImageUrl = "https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?auto=format&fit=crop&w=600&q=80",
+                Category = "Home"
+            },
+            new Product
+            {
+                ProductResourceId = Guid.NewGuid(),
+                Name = "Ultrasonic Essential Oil Aromatherapy Diffuser",
+                Description = "Whisper-quiet cool mist aroma humidifier with warm ambient LED light and auto shut-off (300ml).",
+                Price = 38.50m,
+                Stock = 40,
+                DiscountPercentage = 10,
+                ImageUrl = "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=600&q=80",
+                Category = "Home"
+            },
+            new Product
+            {
+                ProductResourceId = Guid.NewGuid(),
+                Name = "Stainless Steel Insulated Water Bottle (32oz)",
+                Description = "Double-wall vacuum insulated canteen keeps drinks cold for 24 hours or hot for 12 hours.",
+                Price = 29.99m,
+                Stock = 110,
+                DiscountPercentage = 0,
+                ImageUrl = "https://images.unsplash.com/photo-1602143407151-7111542de6e8?auto=format&fit=crop&w=600&q=80",
+                Category = "Home"
+            },
+
+            // Sports & Fitness
+            new Product
+            {
+                ProductResourceId = Guid.NewGuid(),
+                Name = "Manduka PRO High-Density Yoga Mat 6mm",
+                Description = "Professional non-slip yoga mat with dense joint cushioning and lifetime durability guarantee.",
+                Price = 120.00m,
+                Stock = 25,
+                DiscountPercentage = 10,
+                ImageUrl = "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?auto=format&fit=crop&w=600&q=80",
+                Category = "Sports"
+            },
+            new Product
+            {
+                ProductResourceId = Guid.NewGuid(),
+                Name = "Bowflex SelectTech 552 Adjustable Dumbbells",
+                Description = "Rapid dial-adjust dumbbells that replace 15 sets of weights from 5 to 52.5 lbs per hand.",
+                Price = 429.00m,
+                Stock = 8,
+                DiscountPercentage = 15,
+                ImageUrl = "https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&w=600&q=80",
+                Category = "Sports"
+            },
+            new Product
+            {
+                ProductResourceId = Guid.NewGuid(),
+                Name = "Theragun Mini 2.0 Percussive Massage Gun",
+                Description = "Ultra-portable compact massage device with quiet brushless motor and 3 scientifically calibrated speeds.",
+                Price = 199.00m,
+                Stock = 16,
+                DiscountPercentage = 0,
+                ImageUrl = "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=600&q=80",
+                Category = "Sports"
+            },
+
+            // Beauty & Personal Care
+            new Product
+            {
+                ProductResourceId = Guid.NewGuid(),
+                Name = "CeraVe Hydrating Facial Cleanser (16 fl oz)",
+                Description = "Non-foaming daily face wash formulated with essential ceramides and hyaluronic acid for normal to dry skin.",
+                Price = 15.49m,
+                Stock = 120,
+                DiscountPercentage = 0,
+                ImageUrl = "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=80",
+                Category = "Beauty"
+            },
+            new Product
+            {
+                ProductResourceId = Guid.NewGuid(),
+                Name = "La Roche-Posay Anthelios Mineral Sunscreen SPF 50",
+                Description = "Ultra-light tinted face mineral sunscreen fluid with antioxidant protection and matte finish.",
+                Price = 36.99m,
+                Stock = 60,
+                DiscountPercentage = 10,
+                ImageUrl = "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=600&q=80",
+                Category = "Beauty"
+            },
+
+            // Books & Knowledge
+            new Product
+            {
+                ProductResourceId = Guid.NewGuid(),
+                Name = "Clean Code: A Handbook of Agile Software Craftsmanship",
+                Description = "Classic programming guide by Robert C. Martin detailing principles, patterns, and practices of writing clean code.",
+                Price = 44.99m,
+                Stock = 35,
+                DiscountPercentage = 20,
+                ImageUrl = "https://images.unsplash.com/photo-1532012164546-f432f2e3777f?auto=format&fit=crop&w=600&q=80",
+                Category = "Books"
+            },
+            new Product
+            {
+                ProductResourceId = Guid.NewGuid(),
+                Name = "Atomic Habits: Tiny Changes, Remarkable Results",
+                Description = "New York Times bestselling book by James Clear on building good habits and breaking bad ones.",
+                Price = 22.00m,
+                Stock = 80,
+                DiscountPercentage = 15,
+                ImageUrl = "https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=600&q=80",
+                Category = "Books"
+            },
+            new Product
+            {
+                ProductResourceId = Guid.NewGuid(),
+                Name = "Amazon Kindle Paperwhite (16 GB) 6.8-inch",
+                Description = "Waterproof e-reader with 300 ppi glare-free display, adjustable warm light, and weeks of battery life.",
+                Price = 149.99m,
+                Stock = 25,
+                DiscountPercentage = 0,
+                ImageUrl = "https://images.unsplash.com/photo-1592496431122-2349e0fbc666?auto=format&fit=crop&w=600&q=80",
+                Category = "Books"
+            }
+        };
+
+        var toAdd = catalog.Where(p => !existingNames.Contains(p.Name.ToLower())).ToList();
+        if (toAdd.Count > 0)
+        {
+            context.Products.AddRange(toAdd);
             context.SaveChanges();
         }
     }
