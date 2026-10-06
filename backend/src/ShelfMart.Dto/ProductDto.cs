@@ -11,6 +11,7 @@ public class ProductDto
     public decimal Price { get; set; }
     public string? ImageUrl { get; set; }
     public required string Category { get; set; }
+    public string Description { get; set; } = string.Empty;
     public decimal DiscountPercentage { get; set; }
     public DateTime CreatedAt { get; set; }
 }

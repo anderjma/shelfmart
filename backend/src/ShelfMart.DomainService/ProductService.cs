@@ -81,6 +81,7 @@ public class ProductService : IProductService
             Stock = dto.Stock,
             Price = dto.Price,
             ImageUrl = dto.ImageUrl,
+            Description = dto.Description ?? string.Empty,
             DiscountPercentage = dto.DiscountPercentage,
             CreatedAt = DateTime.UtcNow // This value records the exact server date and time.
         };
@@ -102,6 +103,11 @@ public class ProductService : IProductService
         product.Price = dto.Price;
         product.DiscountPercentage = dto.DiscountPercentage;
         product.Category = await ResolveCategoryAsync(dto.Category);
+
+        if (dto.Description != null)
+        {
+            product.Description = dto.Description;
+        }
 
         if (!string.IsNullOrEmpty(dto.ImageUrl))
         {
@@ -148,6 +154,7 @@ public class ProductService : IProductService
             ProductResourceId = product.ProductResourceId,
             Name = product.Name,
             Category = product.Category,
+            Description = product.Description,
             Stock = product.Stock,
             Price = product.Price,
             ImageUrl = product.ImageUrl,

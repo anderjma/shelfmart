@@ -143,7 +143,7 @@ const ProductCard = ({ product, type }: { product: Product, type: 'offer' | 'new
         : product.price;
 
     return (
-        <Link to="/catalog" className="bg-white border border-sand-300 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 flex flex-col h-full group">
+        <Link to={`/products/${product.productResourceId}`} className="bg-white border border-sand-300 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 flex flex-col h-full group">
             <div className="relative h-40 sm:h-48 bg-cream-100 flex items-center justify-center overflow-hidden rounded-t-2xl">
                 <div className="absolute top-2 left-2 right-2 flex justify-between items-start z-10">
                     <span className="bg-white/90 text-ink-700 text-xs uppercase font-medium px-1.5 py-0.5 rounded-md shadow-sm">

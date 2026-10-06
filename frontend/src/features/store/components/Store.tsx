@@ -1,5 +1,5 @@
-// This file renders the virtual storefront where customers can browse the item catalog.
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { getProducts } from "../api/productService";
 import { getCategories } from "../../admin/products/api/categoryService";
 import { addToCart } from "../../cart/api/orderService";
@@ -167,16 +167,18 @@ export default function Store() {
                                         </div>
                                     </div>
 
-                                    <div className="h-48 bg-cream-100 flex items-center justify-center overflow-hidden">
+                                    <Link to={`/products/${product.productResourceId}`} className="h-48 bg-cream-100 flex items-center justify-center overflow-hidden block" aria-label={`View details for ${product.name}`}>
                                         {product.imageUrl ? (
                                             <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
                                         ) : (
                                             <span className="text-sand-400 text-sm font-medium">No image</span>
                                         )}
-                                    </div>
+                                    </Link>
 
                                     <div className="p-5 flex-1 flex flex-col">
-                                        <h3 className="font-bold text-ink-900 text-lg mb-1 line-clamp-1" title={product.name}>{product.name}</h3>
+                                        <Link to={`/products/${product.productResourceId}`} className="block">
+                                            <h3 className="font-bold text-ink-900 text-lg mb-1 line-clamp-1 hover:text-navy-800 transition-colors" title={product.name}>{product.name}</h3>
+                                        </Link>
                                         <div className="flex items-baseline gap-2 mb-4">
                                             <p className="text-2xl font-bold text-accent-500">{formatCurrency(finalPrice)}</p>
                                             {product.discountPercentage > 0 && <p className="text-sm text-ink-700/50 line-through">{formatCurrency(product.price)}</p>}

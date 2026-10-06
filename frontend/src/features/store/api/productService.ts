@@ -42,3 +42,13 @@ export async function getProducts(params?: {
     }));
 }
 
+// Retrieves a single product by its unique identifier.
+export async function getProductById(id: string): Promise<Product> {
+    const response = await axiosClient.get(`/Products/${id}`);
+    const product = response.data as Product;
+    return {
+        ...product,
+        imageUrl: sanitizeImageUrl(product.imageUrl),
+    };
+}
+

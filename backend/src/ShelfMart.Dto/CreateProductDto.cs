@@ -16,6 +16,7 @@ public class CreateProductDto
 
     public string? ImageUrl { get; set; }
     public required string Category { get; set; }
+    public string? Description { get; set; }
 
     [Range(0, 100, ErrorMessage = "Discount percentage must be between 0 and 100.")]
     public decimal DiscountPercentage { get; set; }

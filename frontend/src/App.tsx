@@ -13,6 +13,7 @@ const Login = lazy(() => import("./features/auth/components/Login"));
 const Register = lazy(() => import("./features/auth/components/Register"));
 const Home = lazy(() => import("./shared/pages/Home"));
 const Store = lazy(() => import("./features/store/components/Store"));
+const ProductDetail = lazy(() => import("./features/store/pages/ProductDetail"));
 const Contact = lazy(() => import("./shared/pages/Contact"));
 const About = lazy(() => import("./shared/pages/About"));
 const Profile = lazy(() => import("./features/profile/components/Profile"));
@@ -70,6 +71,7 @@ function App() {
                         {/* Public */}
                         <Route path="/" element={<Home />} />
                         <Route path="/catalog" element={<Store />} />
+                        <Route path="/products/:id" element={<ProductDetail />} />
                         <Route path="/contact" element={<Contact />} />
                         <Route path="/about" element={<About />} />
                         <Route path="/privacy" element={<PrivacyPolicy />} />
