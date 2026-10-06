@@ -57,13 +57,31 @@ public static class AppDbSeeder
             }
         }
 
+        // Remove 'General' category and reassign any products that were using it
+        var generalCategories = context.Categories
+            .Where(c => c.Name.ToLower() == "general")
+            .ToList();
+        if (generalCategories.Count > 0)
+        {
+            context.Categories.RemoveRange(generalCategories);
+        }
+
+        var generalProducts = context.Products
+            .Where(p => p.Category.ToLower() == "general")
+            .ToList();
+        foreach (var p in generalProducts)
+        {
+            p.Category = "Home";
+        }
+        context.SaveChanges();
+
         var defaultCategories = new[]
         {
-            "General",
             "Electronics",
             "Clothing",
             "Groceries",
             "Home",
+            "Furniture",
             "Sports",
             "Beauty",
             "Books"
@@ -415,6 +433,63 @@ public static class AppDbSeeder
                 DiscountPercentage = 0,
                 ImageUrl = "https://images.unsplash.com/photo-1592496431122-2349e0fbc666?auto=format&fit=crop&w=600&q=80",
                 Category = "Books"
+            },
+
+            // Furniture
+            new Product
+            {
+                ProductResourceId = Guid.NewGuid(),
+                Name = "Mid-Century Modern Upholstered Armchair",
+                Description = "Comfortable ergonomic accent armchair with solid walnut wood legs and high-resilience foam cushion.",
+                Price = 289.99m,
+                Stock = 14,
+                DiscountPercentage = 10,
+                ImageUrl = "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&w=600&q=80",
+                Category = "Furniture"
+            },
+            new Product
+            {
+                ProductResourceId = Guid.NewGuid(),
+                Name = "Solid Oak Minimalist Coffee Table",
+                Description = "Handcrafted natural oak coffee table with rounded safety corners and durable matte protective lacquer.",
+                Price = 199.50m,
+                Stock = 18,
+                DiscountPercentage = 0,
+                ImageUrl = "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&w=600&q=80",
+                Category = "Furniture"
+            },
+            new Product
+            {
+                ProductResourceId = Guid.NewGuid(),
+                Name = "Ergonomic High-Back Mesh Executive Office Chair",
+                Description = "Breathable mesh desk chair with 3D adjustable armrests, lumbar support, and pneumatic seat height adjustment.",
+                Price = 249.00m,
+                Stock = 25,
+                DiscountPercentage = 15,
+                ImageUrl = "https://images.unsplash.com/photo-1580481077194-c36152aae529?auto=format&fit=crop&w=600&q=80",
+                Category = "Furniture"
+            },
+            new Product
+            {
+                ProductResourceId = Guid.NewGuid(),
+                Name = "Modern 5-Tier Industrial Ladder Bookshelf",
+                Description = "Sturdy steel frame open shelving unit with rustic wood grain shelves for living rooms and offices.",
+                Price = 119.00m,
+                Stock = 30,
+                DiscountPercentage = 0,
+                ImageUrl = "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=600&q=80",
+                Category = "Furniture"
+            },
+            new Product
+            {
+                ProductResourceId = Guid.NewGuid(),
+                Name = "Minimalist Floating TV Stand & Media Console",
+                Description = "Wall-mounted entertainment center with cable management holes and push-to-open storage compartments.",
+                Price = 179.99m,
+                Stock = 15,
+                DiscountPercentage = 20,
+                ImageUrl = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80",
+                Category = "Furniture"
             }
         };
 

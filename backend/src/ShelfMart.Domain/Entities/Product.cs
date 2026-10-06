@@ -12,7 +12,7 @@ public class Product
     public int Stock { get; set; }
     public decimal Price { get; set; }
     public string? ImageUrl { get; set; }
-    public string Category { get; set; } = "General";
+    public string Category { get; set; } = "Electronics";
     public string Description { get; set; } = string.Empty;
 
     // New real properties for marketing!

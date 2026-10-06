@@ -44,7 +44,7 @@ export default function Footer() {
                     <p>
                         &copy; {new Date().getFullYear()} ShelfMart. All rights reserved.
                     </p>
-                    <p className="font-semibold tracking-wide uppercase bg-cream-200 text-ink-700 px-2 py-1 rounded-lg border border-sand-300 text-[10px]">
+                    <p className="font-semibold tracking-wide uppercase bg-cream-200 text-ink-700 px-2 py-1 rounded-lg border border-sand-300 text-xs">
                         Anderson Jesús Monge Alvarado
                     </p>
                 </div>

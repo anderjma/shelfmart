@@ -82,10 +82,10 @@ export default function Store() {
     const renderBadges = (product: Product) => {
         const isNew = product.createdAt && (new Date().getTime() - new Date(product.createdAt).getTime()) / (1000 * 3600 * 24) <= 7;
 
-        if (product.stock === 0) return <span className="bg-ink-900 text-white text-[10px] uppercase font-bold px-2 py-1 rounded-md shadow-sm">Sold Out</span>;
-        if (product.stock > 0 && product.stock <= 5) return <span className="bg-ink-900 text-white text-[10px] uppercase font-bold px-2 py-1 rounded-md shadow-sm">Only {product.stock} left!</span>;
-        if (product.discountPercentage > 0) return <span className="bg-accent-500 text-white text-[10px] uppercase font-bold px-2 py-1 rounded-md shadow-sm">-{product.discountPercentage}% OFF</span>;
-        if (isNew) return <span className="bg-white text-accent-500 border border-accent-500 text-[10px] uppercase font-bold px-2 py-1 rounded-md shadow-sm">New</span>;
+        if (product.stock === 0) return <span className="bg-ink-900 text-white text-xs uppercase font-bold px-2 py-1 rounded-md shadow-sm">Sold Out</span>;
+        if (product.stock > 0 && product.stock <= 5) return <span className="bg-ink-900 text-white text-xs uppercase font-bold px-2 py-1 rounded-md shadow-sm">Only {product.stock} left!</span>;
+        if (product.discountPercentage > 0) return <span className="bg-accent-500 text-white text-xs uppercase font-bold px-2 py-1 rounded-md shadow-sm">-{product.discountPercentage}% OFF</span>;
+        if (isNew) return <span className="bg-white text-accent-500 border border-accent-500 text-xs uppercase font-bold px-2 py-1 rounded-md shadow-sm">New</span>;
         return null;
     };
 
@@ -159,8 +159,8 @@ export default function Store() {
                             return (
                                 <div key={product.productResourceId} className="bg-white border border-sand-300 rounded-2xl shadow-sm overflow-hidden flex flex-col transition-transform hover:-translate-y-1 hover:shadow-md relative group">
                                     <div className="absolute top-2 left-2 right-2 flex justify-between items-start z-10 pointer-events-none">
-                                        <span className="bg-ink-900/75 text-white text-[10px] uppercase font-bold px-2 py-1 rounded-md backdrop-blur-sm">
-                                            {product.category || 'General'}
+                                        <span className="bg-ink-900/75 text-white text-xs uppercase font-bold px-2 py-1 rounded-md backdrop-blur-sm">
+                                            {product.category || 'Featured'}
                                         </span>
                                         <div className="flex flex-col gap-1 items-end">
                                             {renderBadges(product)}
