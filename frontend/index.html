@@ -19,9 +19,25 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="ShelfMart" />
     <meta name="twitter:description" content="Complete inventory and sales system with a real-time administrative panel." />
-    
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    
+    <link id="favicon" rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate icon" type="image/x-icon" href="/favicon.ico" />
+    <script>
+      (function() {
+        const updateFavicon = () => {
+          const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const favicon = document.getElementById('favicon');
+          if (favicon) {
+            favicon.href = isDark ? '/favicon-dark.svg' : '/favicon-light.svg';
+          }
+        };
+        try {
+          updateFavicon();
+          if (window.matchMedia) {
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateFavicon);
+          }
+        } catch (e) {}
+      })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
