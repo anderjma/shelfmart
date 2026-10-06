@@ -172,7 +172,8 @@ export default function ProductFormModal({ isOpen, onClose, onSubmit, categories
                 try {
                     finalImageUrl = await uploadProductImage(selectedFile);
                 } catch (uploadErr) {
-                    setError(getErrorMessage(uploadErr, "Could not upload image to Supabase."));
+                    const msg = uploadErr instanceof Error ? uploadErr.message : getErrorMessage(uploadErr, "Could not upload image to Supabase.");
+                    setError(msg);
                     setSubmitting(false);
                     setUploadingImage(false);
                     return;

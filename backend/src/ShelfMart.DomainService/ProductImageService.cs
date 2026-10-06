@@ -17,7 +17,7 @@ public class ProductImageService : IProductImageService
     {
         if (!_storage.IsConfigured)
         {
-            throw new ShelfMart.Exceptions.ServiceUnavailableResponseException("Image storage is not configured on the server.");
+            throw new ShelfMart.Exceptions.ServiceUnavailableResponseException("Image storage is not configured on the server. Please set SUPABASE_URL and SUPABASE_SERVICE_KEY in Northflank or VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in Vercel.");
         }
 
         var header = new byte[ImageFileValidator.HeaderLength];
