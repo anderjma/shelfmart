@@ -50,7 +50,7 @@ describe("Cart", () => {
         renderCart();
 
         expect((await screen.findAllByText("Widget"))[0]).toBeInTheDocument();
-        expect(screen.getAllByText(/200,00/)[0]).toBeInTheDocument();
+        expect(screen.getAllByText(/\$200\.00/)[0]).toBeInTheDocument();
     });
 
     it("shows the empty state when the cart has no items", async () => {

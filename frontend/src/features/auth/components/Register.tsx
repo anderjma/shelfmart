@@ -5,6 +5,7 @@ import { registerCustomer } from "../api/authService";
 import toast from "react-hot-toast";
 import BackButton from "../../../shared/components/BackButton";
 import { getErrorMessage } from "../../../lib/http-error";
+import { Store } from "lucide-react";
 
 // This component validates the registration fields and sends the initial credentials to the server.
 export default function Register() {
@@ -44,7 +45,13 @@ export default function Register() {
             <div className="absolute inset-0 bg-ink-900/45" aria-hidden="true" />
 
             <div className="relative z-10 w-full max-w-md">
-                <BackButton className="text-cream-100 hover:text-white" />
+                <div className="flex items-center justify-between mb-4 px-1">
+                    <BackButton className="text-cream-100 hover:text-white" />
+                    <Link to="/" className="flex items-center gap-2 text-white hover:opacity-90 transition-opacity">
+                        <Store className="w-6 h-6 text-white" aria-hidden="true" />
+                        <span className="font-bold text-xl tracking-tight text-white">ShelfMart</span>
+                    </Link>
+                </div>
                 <div className="bg-cream-100/85 backdrop-blur-md rounded-2xl shadow-xl border border-white/50 p-8 sm:p-10">
                     <h1 className="text-2xl sm:text-3xl font-bold text-center text-ink-900 mb-1">Create Account</h1>
                     <p className="text-center text-sm text-ink-700 mb-8">

@@ -52,13 +52,13 @@ html.dark {
   --color-text: #f8fafc;
   --color-page: #0f172a;
 
-  --color-ink-700: #cbd5e1;
-  --color-ink-900: #f8fafc;
+  --color-ink-700: #e2e8f0;
+  --color-ink-900: #ffffff;
   --color-cream-50: #1e293b;
   --color-cream-100: #0f172a;
   --color-cream-200: #334155;
   --color-sand-300: #475569;
-  --color-sand-400: #64748b;
+  --color-sand-400: #94a3b8;
 
   --color-accent-500: #38bdf8;
   --color-accent-600: #0ea5e9;
@@ -74,8 +74,55 @@ html.dark {
   --color-navy-900: #0ea5e9;
 }
 
+html.dark body {
+  background-color: var(--color-page);
+  color: var(--color-text);
+}
+
 html.dark .bg-white {
+  background-color: var(--color-chrome) !important;
+  color: var(--color-text);
+}
+
+html.dark .bg-cream-50 {
   background-color: var(--color-chrome);
+}
+
+html.dark .bg-cream-100 {
+  background-color: var(--color-page);
+}
+
+html.dark .bg-cream-200 {
+  background-color: #334155;
+  color: #f8fafc;
+}
+
+html.dark .text-ink-900 {
+  color: #ffffff !important;
+}
+
+html.dark .text-ink-700 {
+  color: #e2e8f0 !important;
+}
+
+html.dark [class*="text-ink-700/"] {
+  color: #cbd5e1 !important;
+}
+
+html.dark [class*="text-ink-900/"] {
+  color: #f1f5f9 !important;
+}
+
+html.dark .text-sand-400 {
+  color: #94a3b8 !important;
+}
+
+html.dark .border-sand-300 {
+  border-color: #334155;
+}
+
+html.dark .border-sand-400 {
+  border-color: #475569;
 }
 
 html.dark input:not([type="checkbox"]):not([type="radio"]),

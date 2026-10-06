@@ -112,3 +112,4 @@ describe("ProductDetail component", () => {
         expect(screen.getByRole("link", { name: /Return to Catalog/i })).toBeInTheDocument();
     });
 });
+

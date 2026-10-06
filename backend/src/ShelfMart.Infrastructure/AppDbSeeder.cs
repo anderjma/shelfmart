@@ -57,22 +57,118 @@ public static class AppDbSeeder
             }
         }
 
-        // Remove 'General' category and reassign any products that were using it
-        var generalCategories = context.Categories
-            .Where(c => c.Name.ToLower() == "general")
-            .ToList();
-        if (generalCategories.Count > 0)
+        // Remove 'General' and all redundant categories, reassigning products to standard categories
+        var redundantCategoryNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
-            context.Categories.RemoveRange(generalCategories);
+            "General",
+            "General Clothing",
+            "Footwear",
+            "Kitchen",
+            "Men's Clothing",
+            "Women's Clothing"
+        };
+
+        var redundantCategories = context.Categories
+            .Where(c => redundantCategoryNames.Contains(c.Name))
+            .ToList();
+        if (redundantCategories.Count > 0)
+        {
+            context.Categories.RemoveRange(redundantCategories);
         }
 
-        var generalProducts = context.Products
-            .Where(p => p.Category.ToLower() == "general")
+        var redundantProducts = context.Products
+            .Where(p => redundantCategoryNames.Contains(p.Category))
             .ToList();
-        foreach (var p in generalProducts)
+        foreach (var p in redundantProducts)
         {
-            p.Category = "Home";
+            var lower = p.Category.ToLower();
+            p.Category = (lower.Contains("clothing") || lower == "footwear") ? "Clothing" : "Home";
         }
+
+        // Clean up legacy test products with raw colon prices and placeholder names
+        var legacyNameFixes = new Dictionary<string, (string NewName, string Category, decimal Price, string ImageUrl, string Description)>
+        {
+            ["microwave"] = (
+                "Stainless Steel Countertop Microwave Oven",
+                "Home",
+                89.99m,
+                "https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?auto=format&fit=crop&w=600&q=80",
+                "Compact 900W stainless steel microwave with digital display, express cooking presets, and easy-to-clean enamel interior."
+            ),
+            ["lamp"] = (
+                "Modern Ceramic Bedside Table Lamp",
+                "Home",
+                39.99m,
+                "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=600&q=80",
+                "Minimalist ceramic table lamp with linen drum shade and warm diffused ambient illumination for bedside or living room."
+            ),
+            ["socks"] = (
+                "Merino Wool Breathable Crew Socks (3-Pack)",
+                "Clothing",
+                16.50m,
+                "https://images.unsplash.com/photo-1586350977771-b3b0abd50c82?auto=format&fit=crop&w=600&q=80",
+                "Cushioned moisture-wicking merino wool blend crew socks with seamless toe closure for daily wear and hiking."
+            ),
+            ["silver spoon set"] = (
+                "Mirror Polish Stainless Steel Cutlery Set (24-Piece)",
+                "Home",
+                42.00m,
+                "https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?auto=format&fit=crop&w=600&q=80",
+                "Food-grade 18/10 stainless steel flatware silverware set with mirror finish and ergonomic handles for 6 place settings."
+            ),
+            ["nike sports sneakers"] = (
+                "Nike Revolution 6 Next Nature Running Shoes",
+                "Clothing",
+                69.99m,
+                "https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?auto=format&fit=crop&w=600&q=80",
+                "Breathable road running shoes made with recycled materials and soft foam cushioning for an effortless stride."
+            ),
+            ["skirt"] = (
+                "Pleated High-Waisted A-Line Midi Skirt",
+                "Clothing",
+                38.00m,
+                "https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?auto=format&fit=crop&w=600&q=80",
+                "Flowy pleated A-line midi skirt with elasticized waistband and breathable woven fabric for all seasons."
+            ),
+            ["shirt"] = (
+                "Tailored Oxford Button-Down Long Sleeve Shirt",
+                "Clothing",
+                45.00m,
+                "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=600&q=80",
+                "Classic fit 100% combed cotton Oxford shirt with button-down collar and durable pearlized buttons."
+            )
+        };
+
+        var allProducts = context.Products.ToList();
+        Console.WriteLine($"[Seeder] Total products loaded: {allProducts.Count}");
+        foreach (var kvp in legacyNameFixes)
+        {
+            var p = allProducts.FirstOrDefault(prod => prod.Name.Trim().Equals(kvp.Key, StringComparison.OrdinalIgnoreCase) 
+                                                    || prod.Name.Trim().Equals(kvp.Value.NewName, StringComparison.OrdinalIgnoreCase)
+                                                    || (kvp.Key == "microwave" && prod.ProductResourceId == Guid.Parse("a720f997-f94e-43a4-b86b-4f5709e05f60")));
+            if (p != null)
+            {
+                Console.WriteLine($"[Seeder] Updating legacy item '{p.Name}' to '{kvp.Value.NewName}' (${kvp.Value.Price})");
+                p.Name = kvp.Value.NewName;
+                p.Category = kvp.Value.Category;
+                p.Price = kvp.Value.Price;
+                p.ImageUrl = kvp.Value.ImageUrl;
+                p.Description = kvp.Value.Description;
+                if (p.DiscountPercentage == 0) p.DiscountPercentage = 10;
+            }
+            else
+            {
+                Console.WriteLine($"[Seeder] Could not match legacy item '{kvp.Key}'");
+            }
+        }
+
+        // Convert any leftover colon prices (>= 1000) to USD
+        var colonProducts = context.Products.Where(prod => prod.Price >= 1000m).ToList();
+        foreach (var cp in colonProducts)
+        {
+            cp.Price = Math.Round(cp.Price / 500m, 2);
+        }
+
         context.SaveChanges();
 
         var defaultCategories = new[]
@@ -498,14 +594,12 @@ public static class AppDbSeeder
             var existing = context.Products.FirstOrDefault(p => p.Name.ToLower() == item.Name.ToLower());
             if (existing != null)
             {
-                if (existing.DiscountPercentage != item.DiscountPercentage)
-                {
-                    existing.DiscountPercentage = item.DiscountPercentage;
-                }
-                if (existing.Category != item.Category)
-                {
-                    existing.Category = item.Category;
-                }
+                existing.Price = item.Price;
+                existing.ImageUrl = item.ImageUrl;
+                existing.Description = item.Description;
+                existing.Category = item.Category;
+                existing.DiscountPercentage = item.DiscountPercentage;
+                if (existing.Stock <= 0) existing.Stock = item.Stock;
             }
             else
             {
