@@ -24,12 +24,32 @@
     <script>
       (function() {
         const updateFavicon = () => {
-          const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-          const favicon = document.getElementById('favicon');
-          if (favicon) {
-            favicon.href = isDark ? '/favicon-dark.svg' : '/favicon-light.svg';
+          let isDark = false;
+          try {
+            const saved = localStorage.getItem('shelfmart_theme');
+            if (saved === 'dark') isDark = true;
+            else if (saved === 'light') isDark = false;
+            else isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          } catch (e) {
+            isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
           }
+
+          if (isDark) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+
+          const faviconSvg = isDark ? '/favicon-dark.svg' : '/favicon-light.svg';
+          const iconLinks = document.querySelectorAll("link[rel*='icon']");
+          iconLinks.forEach(link => {
+            link.href = faviconSvg + '?v=' + (isDark ? 'dark' : 'light');
+            if (link.type !== 'image/svg+xml') {
+              link.type = 'image/svg+xml';
+            }
+          });
         };
+
         try {
           updateFavicon();
           if (window.matchMedia) {

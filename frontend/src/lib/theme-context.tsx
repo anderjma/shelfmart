@@ -32,10 +32,14 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         localStorage.setItem(THEME_STORAGE_KEY, theme);
 
         // Sync favicon with theme
-        const favicon = document.getElementById("favicon") as HTMLLinkElement | null;
-        if (favicon) {
-            favicon.href = theme === "dark" ? "/favicon-dark.svg" : "/favicon-light.svg";
-        }
+        const faviconSvg = theme === "dark" ? "/favicon-dark.svg" : "/favicon-light.svg";
+        const iconLinks = document.querySelectorAll<HTMLLinkElement>("link[rel*='icon']");
+        iconLinks.forEach(link => {
+            link.href = `${faviconSvg}?v=${theme}`;
+            if (link.type !== "image/svg+xml") {
+                link.type = "image/svg+xml";
+            }
+        });
     }, [theme]);
 
     const toggleTheme = () => {
