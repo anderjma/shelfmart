@@ -34,13 +34,51 @@ public class SupabaseImageStorageService : IImageStorageService
         request.Content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
 
         using var response = await _http.SendAsync(request, cancellationToken);
-        if (!response.IsSuccessStatusCode)
+        if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+        {
+            await EnsureBucketExistsAsync(cancellationToken);
+
+            content.Position = 0;
+            using var retry = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/storage/v1/object/{_bucket}/{objectPath}");
+            retry.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _serviceKey);
+            retry.Headers.Add("apikey", _serviceKey);
+            retry.Headers.Add("x-upsert", "false");
+            retry.Content = new StreamContent(content);
+            retry.Content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
+
+            using var retryResponse = await _http.SendAsync(retry, cancellationToken);
+            if (!retryResponse.IsSuccessStatusCode)
+            {
+                var body = await retryResponse.Content.ReadAsStringAsync(cancellationToken);
+                throw new InvalidOperationException($"Image upload failed ({(int)retryResponse.StatusCode}): {body}");
+            }
+        }
+        else if (!response.IsSuccessStatusCode)
         {
             var body = await response.Content.ReadAsStringAsync(cancellationToken);
             throw new InvalidOperationException($"Image upload failed ({(int)response.StatusCode}): {body}");
         }
 
         return $"{_baseUrl}/storage/v1/object/public/{_bucket}/{objectPath}";
+    }
+
+    private async Task EnsureBucketExistsAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            using var req = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/storage/v1/bucket");
+            req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _serviceKey);
+            req.Headers.Add("apikey", _serviceKey);
+            req.Content = new StringContent(
+                $"{{\"id\":\"{_bucket}\",\"name\":\"{_bucket}\",\"public\":true}}",
+                System.Text.Encoding.UTF8,
+                "application/json");
+            await _http.SendAsync(req, cancellationToken);
+        }
+        catch
+        {
+            // Ignore if creation fails or already exists
+        }
     }
 }
 

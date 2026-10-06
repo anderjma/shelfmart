@@ -118,6 +118,29 @@ var supabaseUrl = builder.Configuration["Supabase:Url"]
     ?? builder.Configuration["SUPABASE_URL"]
     ?? builder.Configuration["Supabase__Url"];
 
+// If not explicitly set, auto-infer from DefaultConnection if pointing to Supabase
+if (string.IsNullOrWhiteSpace(supabaseUrl))
+{
+    var conn = builder.Configuration.GetConnectionString("DefaultConnection") 
+        ?? builder.Configuration["DATABASE_URL"];
+    if (!string.IsNullOrWhiteSpace(conn))
+    {
+        var userMatch = System.Text.RegularExpressions.Regex.Match(conn, @"Username=postgres\.([a-zA-Z0-9]+)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+        if (userMatch.Success)
+        {
+            supabaseUrl = $"https://{userMatch.Groups[1].Value}.supabase.co";
+        }
+        else
+        {
+            var hostMatch = System.Text.RegularExpressions.Regex.Match(conn, @"(?:Host=|@)db\.([a-zA-Z0-9]+)\.supabase\.co", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            if (hostMatch.Success)
+            {
+                supabaseUrl = $"https://{hostMatch.Groups[1].Value}.supabase.co";
+            }
+        }
+    }
+}
+
 var supabaseKey = builder.Configuration["Supabase:ServiceKey"]
     ?? builder.Configuration["SUPABASE_SERVICE_KEY"]
     ?? builder.Configuration["SUPABASE_SERVICE_ROLE_KEY"]
