@@ -4,6 +4,7 @@ import { lazy, Suspense } from "react";
 import Layout from "./shared/components/Layout";
 import ErrorBoundary from "./shared/components/ErrorBoundary";
 import { AuthProvider, useAuth } from "./lib/auth-context";
+import { ThemeProvider } from "./lib/theme-context";
 import type { JSX } from "react";
 import { Toaster } from "react-hot-toast";
 
@@ -54,8 +55,9 @@ const AdminRoute = ({ children }: { children: JSX.Element }) => {
 // This component links the different pages and restricts access via specific roles.
 function App() {
     return (
-        <AuthProvider>
-            <BrowserRouter>
+        <ThemeProvider>
+            <AuthProvider>
+                <BrowserRouter>
                 <Toaster position="bottom-right" />
                 <Suspense fallback={<PageLoader />}>
                 <Routes>
@@ -94,6 +96,7 @@ function App() {
             </Suspense>
         </BrowserRouter>
     </AuthProvider>
+    </ThemeProvider>
     );
 }
 

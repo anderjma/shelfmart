@@ -46,6 +46,51 @@ html {
   scroll-behavior: smooth;
 }
 
+html.dark {
+  color-scheme: dark;
+  --color-chrome: #1e293b;
+  --color-text: #f8fafc;
+  --color-page: #0f172a;
+
+  --color-ink-700: #cbd5e1;
+  --color-ink-900: #f8fafc;
+  --color-cream-50: #1e293b;
+  --color-cream-100: #0f172a;
+  --color-cream-200: #334155;
+  --color-sand-300: #475569;
+  --color-sand-400: #64748b;
+
+  --color-accent-500: #38bdf8;
+  --color-accent-600: #0ea5e9;
+  --color-accent-700: #0284c7;
+
+  --color-primary-500: #38bdf8;
+  --color-primary-600: #0ea5e9;
+  --color-primary-700: #0284c7;
+
+  --color-navy-600: #38bdf8;
+  --color-navy-700: #0ea5e9;
+  --color-navy-800: #38bdf8;
+  --color-navy-900: #0ea5e9;
+}
+
+html.dark .bg-white {
+  background-color: var(--color-chrome);
+}
+
+html.dark input:not([type="checkbox"]):not([type="radio"]),
+html.dark select,
+html.dark textarea {
+  background-color: var(--color-chrome);
+  color: var(--color-text);
+  border-color: var(--color-sand-300);
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #94a3b8;
+}
+
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

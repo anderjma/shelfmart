@@ -2,12 +2,14 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../lib/auth-context";
+import { useTheme } from "../../lib/theme-context";
 // This component provides the dynamic navigation links depending on the user's role.
-import { User, LogOut, LogIn, ShoppingCart, Store, Menu, X } from "lucide-react";
+import { User, LogOut, LogIn, ShoppingCart, Store, Menu, X, Sun, Moon } from "lucide-react";
 
 export default function Navbar() {
     const navigate = useNavigate();
     const { user, logout, isCustomer, isAdmin } = useAuth();
+    const { theme, toggleTheme } = useTheme();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const handleLogout = () => {
@@ -40,15 +42,20 @@ export default function Navbar() {
                     </div>
 
                     {/* User actions */}
-                    <div className="hidden md:flex items-center space-x-5">
-                        {isCustomer && (
-                            <Link to="/cart" className="text-ink-700 hover:text-navy-800 transition-colors relative" aria-label="View cart">
+                    <div className="hidden md:flex items-center space-x-4">
+                        {(!user || isCustomer) && (
+                            <Link
+                                to={user ? "/cart" : "/login"}
+                                className="text-ink-700 hover:text-navy-800 transition-colors relative p-1.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-700"
+                                aria-label="View cart"
+                                title={user ? "View cart" : "Sign in to view cart"}
+                            >
                                 <ShoppingCart className="w-5 h-5" aria-hidden="true" />
                             </Link>
                         )}
 
                         {user ? (
-                            <div className="flex items-center space-x-3 border-l border-sand-300 pl-5">
+                            <div className="flex items-center space-x-3 border-l border-sand-300 pl-4">
                                 <Link to="/perfil" className="text-sm font-medium text-ink-700 hover:text-navy-800 transition-colors flex items-center gap-1.5">
                                     <User className="w-4 h-4" aria-hidden="true" /> {user.name}
                                 </Link>
@@ -57,7 +64,7 @@ export default function Navbar() {
                                 </button>
                             </div>
                         ) : (
-                            <div className="flex items-center space-x-3 border-l border-sand-300 pl-5">
+                            <div className="flex items-center space-x-3 border-l border-sand-300 pl-4">
                                 <Link to="/login" className="text-sm font-medium text-ink-700 hover:text-navy-800 transition-colors flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-navy-700 rounded-lg px-2 py-1">
                                     <LogIn className="w-4 h-4" aria-hidden="true" /> Sign In
                                 </Link>
@@ -66,10 +73,46 @@ export default function Navbar() {
                                 </Link>
                             </div>
                         )}
+
+                        {/* Theme Toggle (Light / Dark) */}
+                        <button
+                            onClick={toggleTheme}
+                            className="text-ink-700 hover:text-navy-800 transition-colors p-2 rounded-lg hover:bg-cream-200 focus:outline-none focus:ring-2 focus:ring-navy-700"
+                            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+                            title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+                        >
+                            {theme === "dark" ? (
+                                <Sun className="w-5 h-5 text-amber-400" aria-hidden="true" />
+                            ) : (
+                                <Moon className="w-5 h-5 text-ink-700" aria-hidden="true" />
+                            )}
+                        </button>
                     </div>
 
-                    {/* Mobile hamburger menu */}
-                    <div className="md:hidden flex items-center">
+                    {/* Mobile menu and actions */}
+                    <div className="md:hidden flex items-center space-x-1">
+                        {(!user || isCustomer) && (
+                            <Link
+                                to={user ? "/cart" : "/login"}
+                                className="text-ink-700 hover:text-navy-800 p-2 transition-colors relative"
+                                aria-label="View cart"
+                                title={user ? "View cart" : "Sign in to view cart"}
+                            >
+                                <ShoppingCart className="w-5 h-5" aria-hidden="true" />
+                            </Link>
+                        )}
+                        <button
+                            onClick={toggleTheme}
+                            className="text-ink-700 hover:text-navy-800 p-2 transition-colors rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-700"
+                            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+                            title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+                        >
+                            {theme === "dark" ? (
+                                <Sun className="w-5 h-5 text-amber-400" aria-hidden="true" />
+                            ) : (
+                                <Moon className="w-5 h-5 text-ink-700" aria-hidden="true" />
+                            )}
+                        </button>
                         <button onClick={toggleMenu} className="text-ink-700 hover:text-ink-900 p-2 focus:outline-none focus:ring-2 focus:ring-navy-700 rounded-lg" aria-expanded={isMenuOpen} aria-controls="mobile-menu" aria-label={isMenuOpen ? "Close main menu" : "Open main menu"}>
                             {isMenuOpen ? <X className="w-5 h-5" aria-hidden="true" /> : <Menu className="w-5 h-5" aria-hidden="true" />}
                         </button>
@@ -92,17 +135,26 @@ export default function Navbar() {
 
                         {user ? (
                             <>
-                                <Link to="/perfil" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-ink-700 hover:bg-cream-200 rounded-lg">My Profile</Link>
+                                <Link to="/perfil" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-ink-700 hover:bg-cream-200 rounded-lg flex items-center gap-2">
+                                    <User className="w-4 h-4" aria-hidden="true" /> My Profile
+                                </Link>
                                 {isCustomer && (
-                                    <Link to="/cart" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-ink-700 hover:bg-cream-200 rounded-lg">My Cart</Link>
+                                    <Link to="/cart" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-ink-700 hover:bg-cream-200 rounded-lg flex items-center gap-2">
+                                        <ShoppingCart className="w-4 h-4" aria-hidden="true" /> My Cart
+                                    </Link>
                                 )}
-                                <button onClick={() => { handleLogout(); toggleMenu(); }} className="block w-full text-left px-3 py-2 text-sm font-medium text-red-700 hover:bg-red-50 rounded-lg">
-                                    Log Out
+                                <button onClick={() => { handleLogout(); toggleMenu(); }} className="block w-full text-left px-3 py-2 text-sm font-medium text-red-700 hover:bg-red-50 rounded-lg flex items-center gap-2">
+                                    <LogOut className="w-4 h-4" aria-hidden="true" /> Log Out
                                 </button>
                             </>
                         ) : (
                             <>
-                                <Link to="/login" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-ink-700 hover:bg-cream-200 rounded-lg">Sign In</Link>
+                                <Link to="/cart" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-ink-700 hover:bg-cream-200 rounded-lg flex items-center gap-2">
+                                    <ShoppingCart className="w-4 h-4" aria-hidden="true" /> My Cart
+                                </Link>
+                                <Link to="/login" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-ink-700 hover:bg-cream-200 rounded-lg flex items-center gap-2">
+                                    <LogIn className="w-4 h-4" aria-hidden="true" /> Sign In
+                                </Link>
                                 <Link to="/register" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-navy-800 hover:bg-cream-200 rounded-lg">Create Account</Link>
                             </>
                         )}
