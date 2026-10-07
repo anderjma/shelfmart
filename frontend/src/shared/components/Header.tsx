@@ -23,14 +23,14 @@ export default function Navbar() {
 
     return (
         <header role="banner" className="bg-cream-50 shadow-sm border-b border-sand-300 sticky top-0 z-50">
-            <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Main navigation">
+            <nav className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8" aria-label="Main navigation">
                 <div className="flex justify-between h-16 items-center">
 
                     {/* Brand and catalog */}
                     <div className="flex items-center space-x-6">
-                        <Link to="/" className="flex items-center gap-2 text-navy-800 focus:outline-none focus:ring-2 focus:ring-navy-700 rounded-lg p-1">
-                            <Store className="w-5 h-5" aria-hidden="true" />
-                            <span className="font-semibold text-xl tracking-tight">ShelfMart</span>
+                        <Link to="/" className="flex items-center gap-2 text-navy-800 dark:text-accent-400 focus:outline-none focus:ring-2 focus:ring-navy-700 rounded-lg p-1">
+                            <Store className="w-5 h-5 shrink-0" aria-hidden="true" />
+                            <span className="font-semibold text-lg sm:text-xl tracking-tight">ShelfMart</span>
                         </Link>
 
                         <div className="hidden md:flex items-center space-x-5">
@@ -95,11 +95,11 @@ export default function Navbar() {
                     </div>
 
                     {/* Mobile menu and actions */}
-                    <div className="md:hidden flex items-center space-x-1">
+                    <div className="md:hidden flex items-center space-x-0.5 sm:space-x-1">
                         {(!user || isCustomer) && (
                             <Link
                                 to={user ? "/cart" : "/login"}
-                                className="text-ink-700 hover:text-navy-800 p-2.5 transition-colors relative min-h-[44px] min-w-[44px] flex items-center justify-center"
+                                className="text-ink-700 dark:text-slate-200 hover:text-navy-800 dark:hover:text-white p-2 transition-colors relative min-h-[44px] min-w-[44px] flex items-center justify-center"
                                 aria-label="View cart"
                                 title={user ? "View cart" : "Sign in to view cart"}
                             >
@@ -109,7 +109,7 @@ export default function Navbar() {
                         <LanguageDropdown />
                         <button
                             onClick={toggleTheme}
-                            className="text-ink-700 hover:text-navy-800 p-2 transition-colors rounded-xl focus:outline-none focus:ring-2 focus:ring-navy-700 min-h-[44px] min-w-[44px] flex items-center justify-center"
+                            className="text-ink-700 dark:text-slate-200 hover:text-navy-800 dark:hover:text-white p-2 transition-colors rounded-xl focus:outline-none focus:ring-2 focus:ring-navy-700 min-h-[44px] min-w-[44px] flex items-center justify-center"
                             aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
                             title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
                         >
@@ -121,7 +121,7 @@ export default function Navbar() {
                         </button>
                         <button
                             onClick={toggleMenu}
-                            className="text-ink-700 hover:text-ink-900 p-2 focus:outline-none focus:ring-2 focus:ring-navy-700 rounded-xl min-h-[44px] min-w-[44px] flex items-center justify-center"
+                            className="text-ink-700 dark:text-slate-200 hover:text-ink-900 dark:hover:text-white p-2 focus:outline-none focus:ring-2 focus:ring-navy-700 rounded-xl min-h-[44px] min-w-[44px] flex items-center justify-center"
                             aria-expanded={isMenuOpen}
                             aria-controls="mobile-menu"
                             aria-label={isMenuOpen ? "Close main menu" : "Open main menu"}
@@ -133,40 +133,40 @@ export default function Navbar() {
 
             {/* Mobile dropdown */}
             {isMenuOpen && (
-                <div className="md:hidden bg-cream-50 border-t border-sand-300 shadow-lg absolute w-full z-40" id="mobile-menu">
-                    <div className="px-4 py-3 space-y-2">
-                        <Link to="/catalog" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-ink-700 hover:bg-cream-200 hover:text-navy-800 rounded-lg">{t("nav.catalog", "Catalog")}</Link>
-                        <Link to="/about" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-ink-700 hover:bg-cream-200 hover:text-navy-800 rounded-lg">{t("nav.about", "About")}</Link>
-                        <Link to="/contact" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-ink-700 hover:bg-cream-200 hover:text-navy-800 rounded-lg">{t("nav.contact", "Contact")}</Link>
+                <div className="md:hidden bg-cream-50 dark:bg-slate-900 border-t border-sand-300 dark:border-slate-800 shadow-lg absolute left-0 right-0 w-full z-40" id="mobile-menu">
+                    <div className="px-4 py-3 space-y-1">
+                        <Link to="/catalog" onClick={toggleMenu} className="flex items-center px-3 py-2.5 text-sm font-medium text-ink-700 dark:text-slate-200 hover:bg-cream-200 dark:hover:bg-slate-800 hover:text-navy-800 dark:hover:text-white rounded-lg min-h-[44px]">{t("nav.catalog", "Catalog")}</Link>
+                        <Link to="/about" onClick={toggleMenu} className="flex items-center px-3 py-2.5 text-sm font-medium text-ink-700 dark:text-slate-200 hover:bg-cream-200 dark:hover:bg-slate-800 hover:text-navy-800 dark:hover:text-white rounded-lg min-h-[44px]">{t("nav.about", "About")}</Link>
+                        <Link to="/contact" onClick={toggleMenu} className="flex items-center px-3 py-2.5 text-sm font-medium text-ink-700 dark:text-slate-200 hover:bg-cream-200 dark:hover:bg-slate-800 hover:text-navy-800 dark:hover:text-white rounded-lg min-h-[44px]">{t("nav.contact", "Contact")}</Link>
                         {isAdmin && (
-                            <Link to="/admin" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-ink-700 hover:bg-cream-200 hover:text-navy-800 rounded-lg">{t("nav.admin", "Admin")}</Link>
+                            <Link to="/admin" onClick={toggleMenu} className="flex items-center px-3 py-2.5 text-sm font-medium text-ink-700 dark:text-slate-200 hover:bg-cream-200 dark:hover:bg-slate-800 hover:text-navy-800 dark:hover:text-white rounded-lg min-h-[44px]">{t("nav.admin", "Admin")}</Link>
                         )}
 
-                        <div className="border-t border-sand-300 my-2"></div>
+                        <div className="border-t border-sand-300 dark:border-slate-800 my-2"></div>
 
                         {user ? (
                             <>
-                                <Link to="/perfil" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-ink-700 hover:bg-cream-200 rounded-lg flex items-center gap-2">
+                                <Link to="/perfil" onClick={toggleMenu} className="flex items-center gap-2 px-3 py-2.5 text-sm font-medium text-ink-700 dark:text-slate-200 hover:bg-cream-200 dark:hover:bg-slate-800 rounded-lg min-h-[44px]">
                                     <User className="w-4 h-4" aria-hidden="true" /> {t("nav.myProfile", "My Profile")}
                                 </Link>
                                 {isCustomer && (
-                                    <Link to="/cart" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-ink-700 hover:bg-cream-200 rounded-lg flex items-center gap-2">
+                                    <Link to="/cart" onClick={toggleMenu} className="flex items-center gap-2 px-3 py-2.5 text-sm font-medium text-ink-700 dark:text-slate-200 hover:bg-cream-200 dark:hover:bg-slate-800 rounded-lg min-h-[44px]">
                                         <ShoppingCart className="w-4 h-4" aria-hidden="true" /> {t("nav.myCart", "My Cart")}
                                     </Link>
                                 )}
-                                <button onClick={() => { handleLogout(); toggleMenu(); }} className="block w-full text-left px-3 py-2 text-sm font-medium text-red-700 hover:bg-red-50 rounded-lg flex items-center gap-2">
+                                <button onClick={() => { handleLogout(); toggleMenu(); }} className="flex items-center gap-2 w-full text-left px-3 py-2.5 text-sm font-medium text-red-700 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-lg min-h-[44px]">
                                     <LogOut className="w-4 h-4" aria-hidden="true" /> {t("nav.logOut", "Log Out")}
                                 </button>
                             </>
                         ) : (
                             <>
-                                <Link to="/cart" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-ink-700 hover:bg-cream-200 rounded-lg flex items-center gap-2">
+                                <Link to="/cart" onClick={toggleMenu} className="flex items-center gap-2 px-3 py-2.5 text-sm font-medium text-ink-700 dark:text-slate-200 hover:bg-cream-200 dark:hover:bg-slate-800 rounded-lg min-h-[44px]">
                                     <ShoppingCart className="w-4 h-4" aria-hidden="true" /> {t("nav.myCart", "My Cart")}
                                 </Link>
-                                <Link to="/login" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-ink-700 hover:bg-cream-200 rounded-lg flex items-center gap-2">
+                                <Link to="/login" onClick={toggleMenu} className="flex items-center gap-2 px-3 py-2.5 text-sm font-medium text-ink-700 dark:text-slate-200 hover:bg-cream-200 dark:hover:bg-slate-800 rounded-lg min-h-[44px]">
                                     <LogIn className="w-4 h-4" aria-hidden="true" /> {t("nav.signIn", "Sign In")}
                                 </Link>
-                                <Link to="/register" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-navy-800 hover:bg-cream-200 rounded-lg">{t("nav.createAccount", "Create Account")}</Link>
+                                <Link to="/register" onClick={toggleMenu} className="flex items-center px-3 py-2.5 text-sm font-medium text-navy-800 dark:text-accent-400 hover:bg-cream-200 dark:hover:bg-slate-800 rounded-lg min-h-[44px]">{t("nav.createAccount", "Create Account")}</Link>
                             </>
                         )}
                     </div>

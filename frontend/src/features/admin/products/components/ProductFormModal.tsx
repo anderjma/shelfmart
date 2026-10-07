@@ -202,14 +202,14 @@ export default function ProductFormModal({ isOpen, onClose, onSubmit, categories
             title={product ? "Edit Product" : "New Product"}
             size="md"
             footer={
-                <>
-                    <Button type="button" variant="secondary" onClick={onClose}>
+                <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 w-full">
+                    <Button type="button" variant="secondary" onClick={onClose} className="w-full sm:w-auto">
                         Cancel
                     </Button>
-                    <Button type="submit" form="product-form" isLoading={submitting || uploadingImage}>
+                    <Button type="submit" form="product-form" isLoading={submitting || uploadingImage} className="w-full sm:w-auto">
                         {uploadingImage ? "Uploading..." : product ? "Save Changes" : "Create Product"}
                     </Button>
-                </>
+                </div>
             }
         >
             <form id="product-form" onSubmit={handleSubmit} className="space-y-4">
@@ -360,7 +360,7 @@ export default function ProductFormModal({ isOpen, onClose, onSubmit, categories
                 title="Add New Category"
                 size="sm"
                 footer={
-                    <>
+                    <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 w-full">
                         <Button
                             type="button"
                             variant="secondary"
@@ -368,6 +368,7 @@ export default function ProductFormModal({ isOpen, onClose, onSubmit, categories
                                 setIsAddCategoryOpen(false);
                                 setNewCategoryError("");
                             }}
+                            className="w-full sm:w-auto"
                         >
                             Cancel
                         </Button>
@@ -375,10 +376,11 @@ export default function ProductFormModal({ isOpen, onClose, onSubmit, categories
                             type="button"
                             onClick={() => void handleCreateCategory()}
                             isLoading={creatingCategory}
+                            className="w-full sm:w-auto"
                         >
                             Create Category
                         </Button>
-                    </>
+                    </div>
                 }
             >
                 <form onSubmit={handleCreateCategory} className="space-y-4">

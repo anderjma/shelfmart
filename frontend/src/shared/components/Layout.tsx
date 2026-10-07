@@ -25,11 +25,13 @@ export default function Layout() {
             {/* Central container main landmark */}
             <main
                 role="main"
-                className="flex-grow w-full max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 focus:outline-none"
+                className="flex-grow w-full max-w-7xl mx-auto py-4 sm:py-6 focus:outline-none"
                 id="main-content"
                 tabIndex={-1}
             >
-                <BackButton />
+                <div className="px-4 sm:px-6 lg:px-8">
+                    <BackButton />
+                </div>
                 <ErrorBoundary>
                     <Outlet />
                 </ErrorBoundary>

@@ -207,7 +207,7 @@ export default function ProductDetail() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
                 
                 {/* Product Image Stage */}
-                <div className="bg-white border border-sand-300 rounded-3xl p-6 sm:p-8 flex items-center justify-center relative overflow-hidden shadow-sm group">
+                <div className="bg-white border border-sand-300 rounded-3xl p-4 sm:p-6 lg:p-8 flex items-center justify-center relative overflow-hidden shadow-sm group">
                     <div className="absolute top-4 left-4 flex flex-col gap-1.5 z-10 pointer-events-none">
                         <span className="bg-slate-900/85 dark:bg-slate-950/85 text-white text-xs uppercase font-bold px-3 py-1 rounded-md backdrop-blur-sm border border-white/10 shadow-xs">
                             {t(`cat.${product.category}`, product.category)}
@@ -224,7 +224,7 @@ export default function ProductDetail() {
                         )}
                     </div>
 
-                    <div className="w-full h-80 sm:h-96 lg:h-[450px] flex items-center justify-center overflow-hidden rounded-2xl bg-cream-100">
+                    <div className="w-full h-64 sm:h-96 lg:h-[450px] flex items-center justify-center overflow-hidden rounded-2xl bg-cream-100">
                         {product.imageUrl ? (
                             <img
                                 src={product.imageUrl}
@@ -302,7 +302,7 @@ export default function ProductDetail() {
                     {product.stock > 0 ? (
                         <div className="space-y-4 pt-4 border-t border-sand-300 dark:border-slate-700">
                             {/* Quantity Selector */}
-                            <div className="flex items-center gap-4">
+                            <div className="flex flex-wrap items-center gap-3 sm:gap-4">
                                 <span className="text-sm font-semibold text-ink-900 dark:text-white">{t("product.quantity", "Quantity:")}</span>
                                 <div className="flex items-center border border-sand-300 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 overflow-hidden shadow-xs">
                                     <button

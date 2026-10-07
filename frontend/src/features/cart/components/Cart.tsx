@@ -204,7 +204,7 @@ export default function Cart() {
             </div>
 
             {/* Cart summary */}
-            <div className="bg-white dark:bg-slate-900 px-4 sm:px-6 py-5 sm:rounded-2xl sm:shadow-xs sm:border sm:border-sand-300 dark:sm:border-slate-700 border-y border-sand-300 dark:border-slate-700 sm:border-y-0">
+            <div className="bg-white dark:bg-slate-900 px-4 sm:px-6 py-5 rounded-2xl shadow-xs border border-sand-300 dark:border-slate-700 mx-4 sm:mx-0">
                 <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
                     <div className="w-full sm:w-auto flex justify-between items-center sm:block">
                         <span className="text-ink-700 dark:text-slate-300 font-medium sm:hidden">{t("cart.totalDue", "Total due:")}</span>

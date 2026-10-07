@@ -173,6 +173,15 @@ html.dark textarea::placeholder {
   color: #94a3b8;
 }
 
+/* Prevent iOS automatic zoom on focus by ensuring font-size is at least 16px on mobile viewports */
+@media (max-width: 639px) {
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

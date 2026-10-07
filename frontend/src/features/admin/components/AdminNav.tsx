@@ -14,7 +14,7 @@ export default function AdminNav() {
     ];
 
     return (
-        <nav className="mb-6 border-b border-sand-300 dark:border-slate-700 overflow-x-auto" aria-label="Admin sections">
+        <nav className="mb-6 border-b border-sand-300 dark:border-slate-700 overflow-x-auto [touch-action:pan-x] pb-0.5" aria-label="Admin sections">
             <div className="flex gap-1 min-w-max">
                 {adminLinks.map((link) => (
                     <NavLink
@@ -22,7 +22,7 @@ export default function AdminNav() {
                         to={link.to}
                         end={link.end}
                         className={({ isActive }) =>
-                            `px-3 py-2.5 text-sm font-medium border-b-2 transition-colors focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-1 rounded-t-lg ${
+                            `px-3.5 py-2.5 text-sm font-medium border-b-2 min-h-[44px] flex items-center transition-colors focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-1 rounded-t-lg ${
                                 isActive
                                     ? "border-accent-500 text-accent-500 dark:text-accent-400"
                                     : "border-transparent text-ink-700 dark:text-slate-300 hover:text-ink-900 dark:hover:text-white hover:border-sand-400 dark:hover:border-slate-600"

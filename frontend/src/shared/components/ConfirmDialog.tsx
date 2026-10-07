@@ -47,14 +47,14 @@ export default function ConfirmDialog({
             title={title}
             size={size}
             footer={
-                <>
-                    <Button variant="secondary" onClick={onCancel} disabled={submitting}>
+                <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 w-full">
+                    <Button variant="secondary" onClick={onCancel} disabled={submitting} className="w-full sm:w-auto">
                         {cancelLabel}
                     </Button>
-                    <Button variant={confirmVariant} isLoading={submitting} onClick={handleConfirm}>
+                    <Button variant={confirmVariant} isLoading={submitting} onClick={handleConfirm} className="w-full sm:w-auto">
                         {confirmLabel}
                     </Button>
-                </>
+                </div>
             }
         >
             <p className="text-sm text-ink-700">{message}</p>
