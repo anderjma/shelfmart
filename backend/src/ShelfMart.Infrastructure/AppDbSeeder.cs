@@ -89,53 +89,53 @@ public static class AppDbSeeder
         var legacyNameFixes = new Dictionary<string, (string NewName, string Category, decimal Price, string ImageUrl, string Description)>
         {
             ["microwave"] = (
-                "Stainless Steel Countertop Microwave Oven",
+                "Black+Decker Countertop Toaster Oven & Broiler",
                 "Home",
-                89.99m,
+                69.99m,
                 "https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?auto=format&fit=crop&w=600&q=80",
-                "Compact 900W stainless steel microwave with digital display, express cooking presets, and easy-to-clean enamel interior."
+                "Stainless steel countertop convection toaster oven and broiler with precision temperature dials and baking pan."
             ),
             ["lamp"] = (
-                "Modern Ceramic Bedside Table Lamp",
+                "Industrial Matte Charcoal Steel Floor Reading Lamp",
                 "Home",
-                39.99m,
+                49.99m,
                 "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=600&q=80",
-                "Minimalist ceramic table lamp with linen drum shade and warm diffused ambient illumination for bedside or living room."
+                "Architectural matte charcoal powder-coated steel floor standing lamp with adjustable dome shade for reading or living rooms."
             ),
             ["socks"] = (
-                "Merino Wool Breathable Crew Socks (3-Pack)",
+                "Pop Art Lips Printed Cotton Crew Socks",
                 "Clothing",
-                16.50m,
+                12.50m,
                 "https://images.unsplash.com/photo-1586350977771-b3b0abd50c82?auto=format&fit=crop&w=600&q=80",
-                "Cushioned moisture-wicking merino wool blend crew socks with seamless toe closure for daily wear and hiking."
+                "Fun vibrant pop-art kiss lips pattern ribbed knit cotton blend crew socks with reinforced heel and elastic cuff."
             ),
             ["silver spoon set"] = (
-                "Mirror Polish Stainless Steel Cutlery Set (24-Piece)",
-                "Home",
-                42.00m,
+                "Gourmet Vegetable Stir-Fry Rice Skillet",
+                "Groceries",
+                14.00m,
                 "https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?auto=format&fit=crop&w=600&q=80",
-                "Food-grade 18/10 stainless steel flatware silverware set with mirror finish and ergonomic handles for 6 place settings."
+                "Fresh seasoned long-grain rice skillet with sweet corn, shredded carrots, green herbs, and extra virgin olive oil."
             ),
             ["nike sports sneakers"] = (
-                "Nike Revolution 6 Next Nature Running Shoes",
+                "Nike Air Max 1 White & Tangerine Orange Sneakers",
                 "Clothing",
-                69.99m,
+                129.99m,
                 "https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?auto=format&fit=crop&w=600&q=80",
-                "Breathable road running shoes made with recycled materials and soft foam cushioning for an effortless stride."
+                "Iconic white perforated leather lifestyle sneakers featuring signature visible Max Air cushioning and vibrant orange mudguard."
             ),
             ["skirt"] = (
-                "Pleated High-Waisted A-Line Midi Skirt",
+                "High-Waisted Pleated Black Mini Skirt",
                 "Clothing",
-                38.00m,
+                34.00m,
                 "https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?auto=format&fit=crop&w=600&q=80",
-                "Flowy pleated A-line midi skirt with elasticized waistband and breathable woven fabric for all seasons."
+                "Structured box-pleated high-waisted black mini skater skirt tailored with comfortable stretch woven fabric."
             ),
             ["shirt"] = (
-                "Tailored Oxford Button-Down Long Sleeve Shirt",
+                "Chambray Dot-Print Button-Up 3/4 Sleeve Shirt",
                 "Clothing",
-                45.00m,
+                42.00m,
                 "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=600&q=80",
-                "Classic fit 100% combed cotton Oxford shirt with button-down collar and durable pearlized buttons."
+                "Casual blue cotton chambray button-down shirt with subtle micro dot print, classic collar, and 3/4 sleeves."
             )
         };
 
@@ -213,7 +213,7 @@ public static class AppDbSeeder
             new Product
             {
                 ProductResourceId = Guid.NewGuid(),
-                Name = "Logitech MX Master 3S Mouse",
+                Name = "Logitech MX Master 3S Wireless Mouse",
                 Description = "Performance wireless ergonomic mouse with Quiet Clicks and 8K DPI track-on-glass sensor.",
                 Price = 99.99m,
                 Stock = 45,
@@ -224,9 +224,9 @@ public static class AppDbSeeder
             new Product
             {
                 ProductResourceId = Guid.NewGuid(),
-                Name = "Keychron K2 Mechanical Keyboard",
-                Description = "Compact 75% wireless mechanical keyboard with hot-swappable Gateron G Pro switches and RGB backlight.",
-                Price = 89.99m,
+                Name = "Apple Magic Wireless Keyboard",
+                Description = "Ultra-slim wireless rechargeable keyboard with comfortable scissor mechanism and macOS layout.",
+                Price = 99.00m,
                 Stock = 30,
                 DiscountPercentage = 0,
                 ImageUrl = "https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=600&q=80",
@@ -235,9 +235,9 @@ public static class AppDbSeeder
             new Product
             {
                 ProductResourceId = Guid.NewGuid(),
-                Name = "Dell UltraSharp 27-inch 4K Monitor",
-                Description = "IPS Black technology 4K UHD monitor with 98% DCI-P3 wide color gamut and USB-C hub.",
-                Price = 529.99m,
+                Name = "Apple iMac 27-inch 5K Retina All-in-One Desktop",
+                Description = "All-in-one desktop computer with stunning 5K Retina display, Magic Keyboard, and Magic Trackpad.",
+                Price = 1299.00m,
                 Stock = 12,
                 DiscountPercentage = 5,
                 ImageUrl = "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=600&q=80",
@@ -246,9 +246,9 @@ public static class AppDbSeeder
             new Product
             {
                 ProductResourceId = Guid.NewGuid(),
-                Name = "Apple Watch Series 9 GPS 45mm",
-                Description = "Advanced health sensors, Crash Detection, and bright Always-On Retina display with water resistance.",
-                Price = 429.00m,
+                Name = "Minimalist Matte White Smartwatch with Silicone Band",
+                Description = "Sleek circular digital smartwatch with white sport silicone strap and fitness tracking sensors.",
+                Price = 189.00m,
                 Stock = 18,
                 DiscountPercentage = 0,
                 ImageUrl = "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80",
@@ -257,9 +257,9 @@ public static class AppDbSeeder
             new Product
             {
                 ProductResourceId = Guid.NewGuid(),
-                Name = "Anker 737 Fast Power Bank 24,000mAh",
-                Description = "Ultra-powerful two-way charging power bank with smart digital display and 140W total output.",
-                Price = 149.99m,
+                Name = "Xiaomi Mi 20,800mAh Fast Charging Power Bank",
+                Description = "High-capacity anodized aluminum portable power bank with dual USB ports and rapid mobile charging.",
+                Price = 45.99m,
                 Stock = 35,
                 DiscountPercentage = 20,
                 ImageUrl = "https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?auto=format&fit=crop&w=600&q=80",
@@ -270,19 +270,19 @@ public static class AppDbSeeder
             new Product
             {
                 ProductResourceId = Guid.NewGuid(),
-                Name = "Classic Heavyweight Cotton T-Shirt",
-                Description = "Premium 220 GSM combed organic cotton t-shirt with durable reinforced crew neck and relaxed fit.",
+                Name = "Graphic Print Beige Cotton Crewneck T-Shirt",
+                Description = "Premium 100% combed cotton beige graphic crewneck t-shirt with Japanese Lucky Cat art print.",
                 Price = 28.00m,
                 Stock = 120,
                 DiscountPercentage = 0,
-                ImageUrl = "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=600&q=80",
+                ImageUrl = "https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=600&q=80",
                 Category = "Clothing"
             },
             new Product
             {
                 ProductResourceId = Guid.NewGuid(),
-                Name = "Levi's 511 Slim Fit Stretch Jeans",
-                Description = "Modern slim-cut denim jeans with added stretch for all-day comfort and mobility.",
+                Name = "Levi's 511 Slim Fit Stretch Denim Jeans (Trio)",
+                Description = "Classic authentic Levi's denim jeans in light blue, dark indigo, and solid black washes.",
                 Price = 69.50m,
                 Stock = 85,
                 DiscountPercentage = 15,
@@ -292,9 +292,9 @@ public static class AppDbSeeder
             new Product
             {
                 ProductResourceId = Guid.NewGuid(),
-                Name = "Nike Air Zoom Pegasus 40",
-                Description = "Responsive everyday road running shoes featuring dual Zoom Air units and engineered mesh.",
-                Price = 130.00m,
+                Name = "Nike Free RN Flyknit Crimson Running Shoes",
+                Description = "Featherlight breathable road running sneakers with flexible Flyknit upper and dynamic sole cushioning.",
+                Price = 120.00m,
                 Stock = 40,
                 DiscountPercentage = 10,
                 ImageUrl = "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80",
@@ -303,9 +303,9 @@ public static class AppDbSeeder
             new Product
             {
                 ProductResourceId = Guid.NewGuid(),
-                Name = "Patagonia Torrentshell 3L Rain Jacket",
-                Description = "Durable waterproof and breathable 3-layer shell jacket designed for harsh outdoor weather.",
-                Price = 179.00m,
+                Name = "Zara Faux Leather Biker Moto Jacket",
+                Description = "Classic asymmetrical zip biker jacket crafted from supple faux leather with silver-tone hardware.",
+                Price = 89.00m,
                 Stock = 22,
                 DiscountPercentage = 0,
                 ImageUrl = "https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=600&q=80",
@@ -314,9 +314,9 @@ public static class AppDbSeeder
             new Product
             {
                 ProductResourceId = Guid.NewGuid(),
-                Name = "Ray-Ban Classic Aviator Sunglasses",
-                Description = "Timeless gold metal frame sunglasses with green polarized crystal G-15 lenses.",
-                Price = 163.00m,
+                Name = "Round Gold Metal Frame Polarized Sunglasses",
+                Description = "Vintage-inspired round sunglasses with polished gold metal wireframe and dark green UV-protective lenses.",
+                Price = 45.00m,
                 Stock = 30,
                 DiscountPercentage = 25,
                 ImageUrl = "https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=600&q=80",
@@ -325,9 +325,9 @@ public static class AppDbSeeder
             new Product
             {
                 ProductResourceId = Guid.NewGuid(),
-                Name = "The North Face Borealis Backpack 28L",
-                Description = "Versatile commuter and trail backpack with dedicated 15-inch laptop sleeve and FlexVent suspension.",
-                Price = 99.00m,
+                Name = "Urban Commuter Minimalist Laptop Backpack 25L",
+                Description = "Sleek water-resistant black everyday carry backpack with padded laptop compartment and luggage pass-through.",
+                Price = 65.00m,
                 Stock = 50,
                 DiscountPercentage = 0,
                 ImageUrl = "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=600&q=80",
@@ -349,9 +349,9 @@ public static class AppDbSeeder
             new Product
             {
                 ProductResourceId = Guid.NewGuid(),
-                Name = "Ceremonial Grade Uji Matcha (100g)",
-                Description = "First-harvest stone-ground Japanese green tea powder with rich umami flavor and vibrant jade color.",
-                Price = 32.00m,
+                Name = "Organic Herbal Pyramid Tea Bags (Gift Box)",
+                Description = "Artisanal loose-leaf herbal tea encased in biodegradable pyramid infusers for smooth aromatic brewing.",
+                Price = 16.00m,
                 Stock = 65,
                 DiscountPercentage = 10,
                 ImageUrl = "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=600&q=80",
@@ -371,9 +371,9 @@ public static class AppDbSeeder
             new Product
             {
                 ProductResourceId = Guid.NewGuid(),
-                Name = "Raw Wildflower Honey (16oz)",
-                Description = "Unfiltered and unheated pure wildflower honey harvested sustainably from pesticide-free apiaries.",
-                Price = 14.50m,
+                Name = "Fresh Organic Whole Seedless Watermelon",
+                Description = "Crisp, sweet, and highly hydrating whole seedless watermelon sourced directly from organic orchards.",
+                Price = 7.99m,
                 Stock = 75,
                 DiscountPercentage = 0,
                 ImageUrl = "https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=600&q=80",
@@ -382,8 +382,8 @@ public static class AppDbSeeder
             new Product
             {
                 ProductResourceId = Guid.NewGuid(),
-                Name = "Artisanal Single-Origin Dark Chocolate 85%",
-                Description = "Handcrafted organic dark chocolate bar made from fine aroma cacao beans with notes of dried plum.",
+                Name = "Artisanal White Chocolate Bar with Roasted Almonds",
+                Description = "Smooth Swiss-style creamy white chocolate stacked with whole premium roasted crunchy almonds.",
                 Price = 6.99m,
                 Stock = 140,
                 DiscountPercentage = 15,
@@ -395,21 +395,21 @@ public static class AppDbSeeder
             new Product
             {
                 ProductResourceId = Guid.NewGuid(),
-                Name = "Handcrafted Matte Ceramic Mug (12oz)",
-                Description = "Stoneware ceramic coffee mug with textured satin finish, comfortable ergonomic handle, and heat retention.",
-                Price = 16.00m,
+                Name = "Dark Roast Fresh Espresso Coffee with Crema",
+                Description = "Rich full-bodied espresso shot served in a white ceramic mug with thick golden crema atop.",
+                Price = 4.50m,
                 Stock = 55,
                 DiscountPercentage = 0,
                 ImageUrl = "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=600&q=80",
-                Category = "Home"
+                Category = "Groceries"
             },
             new Product
             {
                 ProductResourceId = Guid.NewGuid(),
-                Name = "Chunky Knit Merino Wool Throw Blanket",
-                Description = "Ultra-soft 100% merino wool knit throw blanket for living rooms and cozy bedroom decor (50x60 in).",
-                Price = 89.00m,
-                Stock = 15,
+                Name = "Ultra-Plush Hotel Down Alternative Sleeping Pillow",
+                Description = "Hypoallergenic medium-firm bed pillow with breathable pure cotton shell for restorative sleep.",
+                Price = 34.00m,
+                Stock = 45,
                 DiscountPercentage = 20,
                 ImageUrl = "https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?auto=format&fit=crop&w=600&q=80",
                 Category = "Home"
@@ -417,9 +417,9 @@ public static class AppDbSeeder
             new Product
             {
                 ProductResourceId = Guid.NewGuid(),
-                Name = "Ultrasonic Essential Oil Aromatherapy Diffuser",
-                Description = "Whisper-quiet cool mist aroma humidifier with warm ambient LED light and auto shut-off (300ml).",
-                Price = 38.50m,
+                Name = "Botanical Amber Glass Dropper Bottle (50ml)",
+                Description = "UV-protective amber glass apothecary bottle with glass pipette dropper for serums and essential oils.",
+                Price = 12.50m,
                 Stock = 40,
                 DiscountPercentage = 10,
                 ImageUrl = "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=600&q=80",
@@ -428,9 +428,9 @@ public static class AppDbSeeder
             new Product
             {
                 ProductResourceId = Guid.NewGuid(),
-                Name = "Stainless Steel Insulated Water Bottle (32oz)",
-                Description = "Double-wall vacuum insulated canteen keeps drinks cold for 24 hours or hot for 12 hours.",
-                Price = 29.99m,
+                Name = "Matte Olive Green Insulated Thermos Bottle (24oz)",
+                Description = "Double-wall stainless steel vacuum canteen that maintains beverage temperatures all day.",
+                Price = 28.00m,
                 Stock = 110,
                 DiscountPercentage = 0,
                 ImageUrl = "https://images.unsplash.com/photo-1602143407151-7111542de6e8?auto=format&fit=crop&w=600&q=80",
@@ -441,9 +441,9 @@ public static class AppDbSeeder
             new Product
             {
                 ProductResourceId = Guid.NewGuid(),
-                Name = "Manduka PRO High-Density Yoga Mat 6mm",
-                Description = "Professional non-slip yoga mat with dense joint cushioning and lifetime durability guarantee.",
-                Price = 120.00m,
+                Name = "Manduka Studio High-Density Yoga Mat Roll",
+                Description = "Professional non-slip textured yoga mat with high joint cushioning for studio and home practice.",
+                Price = 75.00m,
                 Stock = 25,
                 DiscountPercentage = 10,
                 ImageUrl = "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?auto=format&fit=crop&w=600&q=80",
@@ -452,9 +452,9 @@ public static class AppDbSeeder
             new Product
             {
                 ProductResourceId = Guid.NewGuid(),
-                Name = "Bowflex SelectTech 552 Adjustable Dumbbells",
-                Description = "Rapid dial-adjust dumbbells that replace 15 sets of weights from 5 to 52.5 lbs per hand.",
-                Price = 429.00m,
+                Name = "Commercial Grade Heavy Hex Dumbbells Rack Set",
+                Description = "Ergonomic cast-iron rubber-encased hexagonal dumbbells for strength and progressive overload training.",
+                Price = 299.00m,
                 Stock = 8,
                 DiscountPercentage = 15,
                 ImageUrl = "https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&w=600&q=80",
@@ -463,10 +463,10 @@ public static class AppDbSeeder
             new Product
             {
                 ProductResourceId = Guid.NewGuid(),
-                Name = "Theragun Mini 2.0 Percussive Massage Gun",
-                Description = "Ultra-portable compact massage device with quiet brushless motor and 3 scientifically calibrated speeds.",
-                Price = 199.00m,
-                Stock = 16,
+                Name = "Morning Sunrise Outdoor Yoga Fitness Session",
+                Description = "Guided outdoor vinyasa yoga and flexibility training program pass overlooking coastal sunrise.",
+                Price = 25.00m,
+                Stock = 30,
                 DiscountPercentage = 0,
                 ImageUrl = "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=600&q=80",
                 Category = "Sports"
@@ -476,9 +476,9 @@ public static class AppDbSeeder
             new Product
             {
                 ProductResourceId = Guid.NewGuid(),
-                Name = "CeraVe Hydrating Facial Cleanser (16 fl oz)",
-                Description = "Non-foaming daily face wash formulated with essential ceramides and hyaluronic acid for normal to dry skin.",
-                Price = 15.49m,
+                Name = "Curology Gentle Daily Cleanser (80ml)",
+                Description = "Dermatologist-formulated non-comedogenic foaming face cleanser that deeply purifies without drying.",
+                Price = 16.00m,
                 Stock = 120,
                 DiscountPercentage = 0,
                 ImageUrl = "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=80",
@@ -487,9 +487,9 @@ public static class AppDbSeeder
             new Product
             {
                 ProductResourceId = Guid.NewGuid(),
-                Name = "La Roche-Posay Anthelios Mineral Sunscreen SPF 50",
-                Description = "Ultra-light tinted face mineral sunscreen fluid with antioxidant protection and matte finish.",
-                Price = 36.99m,
+                Name = "Luxury Botanical Skincare & Jade Roller Routine Set",
+                Description = "Complete daily glow collection featuring facial wash, energizing creams, lip tint, and natural jade roller.",
+                Price = 85.00m,
                 Stock = 60,
                 DiscountPercentage = 10,
                 ImageUrl = "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=600&q=80",
@@ -500,20 +500,20 @@ public static class AppDbSeeder
             new Product
             {
                 ProductResourceId = Guid.NewGuid(),
-                Name = "Clean Code: A Handbook of Agile Software Craftsmanship",
-                Description = "Classic programming guide by Robert C. Martin detailing principles, patterns, and practices of writing clean code.",
-                Price = 44.99m,
+                Name = "Reading Essentials: Open Paperback Book & Coffee Set",
+                Description = "Inspirational hardcover reading journal and lifestyle set for mindful reflection, study, and cozy mornings.",
+                Price = 19.99m,
                 Stock = 35,
-                DiscountPercentage = 20,
+                DiscountPercentage = 10,
                 ImageUrl = "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=600&q=80",
                 Category = "Books"
             },
             new Product
             {
                 ProductResourceId = Guid.NewGuid(),
-                Name = "Atomic Habits: Tiny Changes, Remarkable Results",
-                Description = "New York Times bestselling book by James Clear on building good habits and breaking bad ones.",
-                Price = 22.00m,
+                Name = "Milk and Honey by Rupi Kaur (Hardcover Edition)",
+                Description = "The #1 New York Times bestselling poetry and prose collection by Rupi Kaur on love, loss, trauma, and healing.",
+                Price = 18.70m,
                 Stock = 80,
                 DiscountPercentage = 15,
                 ImageUrl = "https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=600&q=80",
@@ -522,10 +522,10 @@ public static class AppDbSeeder
             new Product
             {
                 ProductResourceId = Guid.NewGuid(),
-                Name = "Amazon Kindle Paperwhite (16 GB) 6.8-inch",
-                Description = "Waterproof e-reader with 300 ppi glare-free display, adjustable warm light, and weeks of battery life.",
-                Price = 149.99m,
-                Stock = 25,
+                Name = "The Psychology of Money by Morgan Housel",
+                Description = "Timeless lessons on wealth, greed, and happiness by Morgan Housel exploring behavioral psychology in finance.",
+                Price = 19.99m,
+                Stock = 60,
                 DiscountPercentage = 0,
                 ImageUrl = "https://images.unsplash.com/photo-1592496431122-2349e0fbc666?auto=format&fit=crop&w=600&q=80",
                 Category = "Books"
@@ -535,8 +535,8 @@ public static class AppDbSeeder
             new Product
             {
                 ProductResourceId = Guid.NewGuid(),
-                Name = "Mid-Century Modern Upholstered Armchair",
-                Description = "Comfortable ergonomic accent armchair with solid walnut wood legs and high-resilience foam cushion.",
+                Name = "French Provincial Button-Tufted Cream Accent Chair",
+                Description = "Elegant carved wooden-leg armchair featuring deep diamond tufting and plush cream velvet upholstery.",
                 Price = 289.99m,
                 Stock = 14,
                 DiscountPercentage = 15,
@@ -546,9 +546,9 @@ public static class AppDbSeeder
             new Product
             {
                 ProductResourceId = Guid.NewGuid(),
-                Name = "Solid Oak Minimalist Coffee Table",
-                Description = "Handcrafted natural oak coffee table with rounded safety corners and durable matte protective lacquer.",
-                Price = 199.50m,
+                Name = "Scandinavian Minimalist Wall Clock & Ceramic Planter Set",
+                Description = "Natural round wood grain wall clock paired with a modern matte white desk lamp and ceramic plant pot.",
+                Price = 59.99m,
                 Stock = 18,
                 DiscountPercentage = 10,
                 ImageUrl = "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&w=600&q=80",
@@ -568,32 +568,37 @@ public static class AppDbSeeder
             new Product
             {
                 ProductResourceId = Guid.NewGuid(),
-                Name = "Modern 5-Tier Industrial Ladder Bookshelf",
-                Description = "Sturdy steel frame open shelving unit with rustic wood grain shelves for living rooms and offices.",
-                Price = 119.00m,
-                Stock = 30,
+                Name = "Bespoke Three-Piece Plaid Wool Suit (Navy Blue)",
+                Description = "Tailored 3-piece formal suit featuring a windowpane plaid pattern blazer, matching vest, and pleated trousers.",
+                Price = 349.00m,
+                Stock = 20,
                 DiscountPercentage = 12,
                 ImageUrl = "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=600&q=80",
-                Category = "Furniture"
+                Category = "Clothing"
             },
             new Product
             {
                 ProductResourceId = Guid.NewGuid(),
-                Name = "Minimalist Floating TV Stand & Media Console",
-                Description = "Wall-mounted entertainment center with cable management holes and push-to-open storage compartments.",
-                Price = 179.99m,
-                Stock = 15,
-                DiscountPercentage = 25,
+                Name = "Architectural Modern Residence Architecture Plan Blueprint",
+                Description = "Award-winning open-concept two-story contemporary pavilion architectural blueprint and consultation.",
+                Price = 450.00m,
+                Stock = 5,
+                DiscountPercentage = 0,
                 ImageUrl = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80",
-                Category = "Furniture"
+                Category = "Home"
             }
         };
 
         foreach (var item in catalog)
         {
-            var existing = context.Products.FirstOrDefault(p => p.Name.ToLower() == item.Name.ToLower());
+            var existing = context.Products.FirstOrDefault(p => 
+                p.ImageUrl == item.ImageUrl || 
+                p.Name.ToLower() == item.Name.ToLower()
+            );
+
             if (existing != null)
             {
+                existing.Name = item.Name;
                 existing.Price = item.Price;
                 existing.ImageUrl = item.ImageUrl;
                 existing.Description = item.Description;
