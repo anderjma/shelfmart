@@ -209,7 +209,7 @@ export default function ProductDetail() {
                 {/* Product Image Stage */}
                 <div className="bg-white border border-sand-300 rounded-3xl p-6 sm:p-8 flex items-center justify-center relative overflow-hidden shadow-sm group">
                     <div className="absolute top-4 left-4 flex flex-col gap-1.5 z-10 pointer-events-none">
-                        <span className="bg-ink-900/80 text-white text-xs uppercase font-bold px-3 py-1 rounded-md backdrop-blur-sm shadow-sm">
+                        <span className="bg-slate-900/85 dark:bg-slate-950/85 text-white text-xs uppercase font-bold px-3 py-1 rounded-md backdrop-blur-sm border border-white/10 shadow-xs">
                             {t(`cat.${product.category}`, product.category)}
                         </span>
                         {product.discountPercentage > 0 && (
@@ -218,7 +218,7 @@ export default function ProductDetail() {
                             </span>
                         )}
                         {isNew && (
-                            <span className="bg-white text-navy-800 border border-sand-300 text-xs uppercase font-bold px-3 py-1 rounded-md shadow-sm">
+                            <span className="bg-white dark:bg-slate-800 text-navy-800 dark:text-accent-400 border border-sand-300 dark:border-slate-700 text-xs uppercase font-bold px-3 py-1 rounded-md shadow-sm">
                                 {t("product.newArrival", "New Arrival")}
                             </span>
                         )}
@@ -273,17 +273,17 @@ export default function ProductDetail() {
                     {/* Stock Status */}
                     <div className="flex items-center gap-2 text-xs sm:text-sm">
                         {product.stock > 5 ? (
-                            <span className="inline-flex items-center gap-1.5 text-emerald-700 font-medium">
+                            <span className="inline-flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400 font-medium">
                                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
                                 {t("product.inStock", `In Stock (${product.stock} units available)`).replace("{count}", String(product.stock))}
                             </span>
                         ) : product.stock > 0 ? (
-                            <span className="inline-flex items-center gap-1.5 text-amber-700 font-medium">
+                            <span className="inline-flex items-center gap-1.5 text-amber-700 dark:text-amber-400 font-medium">
                                 <span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
                                 {t("product.lowStock", `Low Stock: Only ${product.stock} left!`).replace("{count}", String(product.stock))}
                             </span>
                         ) : (
-                            <span className="inline-flex items-center gap-1.5 text-rose-700 font-medium">
+                            <span className="inline-flex items-center gap-1.5 text-rose-700 dark:text-rose-400 font-medium">
                                 <span className="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
                                 {t("store.soldOut", "Sold Out")}
                             </span>
@@ -368,17 +368,17 @@ export default function ProductDetail() {
                     )}
 
                     {/* Value Proposition Highlights */}
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 border-t border-sand-300 text-xs text-ink-700">
-                        <div className="flex items-center gap-2 p-2 rounded-lg bg-cream-50 border border-sand-300/50">
-                            <Truck className="w-4 h-4 text-navy-800 flex-shrink-0" />
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 border-t border-sand-300 dark:border-slate-700 text-xs text-ink-700 dark:text-slate-300">
+                        <div className="flex items-center gap-2 p-2 rounded-lg bg-cream-50 dark:bg-slate-800/60 border border-sand-300/50 dark:border-slate-700">
+                            <Truck className="w-4 h-4 text-navy-800 dark:text-accent-400 flex-shrink-0" />
                             <span>{t("product.fastDelivery", "Fast & secure delivery")}</span>
                         </div>
-                        <div className="flex items-center gap-2 p-2 rounded-lg bg-cream-50 border border-sand-300/50">
-                            <ShieldCheck className="w-4 h-4 text-navy-800 flex-shrink-0" />
+                        <div className="flex items-center gap-2 p-2 rounded-lg bg-cream-50 dark:bg-slate-800/60 border border-sand-300/50 dark:border-slate-700">
+                            <ShieldCheck className="w-4 h-4 text-navy-800 dark:text-accent-400 flex-shrink-0" />
                             <span>{t("product.genuine", "100% Genuine product")}</span>
                         </div>
-                        <div className="flex items-center gap-2 p-2 rounded-lg bg-cream-50 border border-sand-300/50">
-                            <RotateCcw className="w-4 h-4 text-navy-800 flex-shrink-0" />
+                        <div className="flex items-center gap-2 p-2 rounded-lg bg-cream-50 dark:bg-slate-800/60 border border-sand-300/50 dark:border-slate-700">
+                            <RotateCcw className="w-4 h-4 text-navy-800 dark:text-accent-400 flex-shrink-0" />
                             <span>{t("product.returnPolicy", "30-Day return policy")}</span>
                         </div>
                     </div>
@@ -387,14 +387,14 @@ export default function ProductDetail() {
 
             {/* Related Products Recommendation */}
             {relatedProducts.length > 0 && (
-                <section className="space-y-6 pt-8 border-t border-sand-300">
+                <section className="space-y-6 pt-8 border-t border-sand-300 dark:border-slate-700">
                     <div className="flex items-center justify-between">
-                        <h2 className="text-xl sm:text-2xl font-bold text-ink-900">
+                        <h2 className="text-xl sm:text-2xl font-bold text-ink-900 dark:text-white">
                             {t("product.moreIn", `More in ${product.category}`).replace("{category}", t(`cat.${product.category}`, product.category))}
                         </h2>
                         <Link
                             to="/catalog"
-                            className="text-sm font-semibold text-navy-800 hover:text-navy-900 transition-colors flex items-center gap-1"
+                            className="text-sm font-semibold text-navy-800 dark:text-accent-400 hover:text-navy-900 dark:hover:text-accent-300 transition-colors flex items-center gap-1"
                         >
                             {t("product.viewAll", "View all")} <ArrowLeft className="w-4 h-4 rotate-180" />
                         </Link>
@@ -411,9 +411,9 @@ export default function ProductDetail() {
                                 <Link
                                     key={rel.productResourceId}
                                     to={`/products/${rel.productResourceId}`}
-                                    className="bg-white border border-sand-300 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 flex flex-col group overflow-hidden"
+                                    className="bg-white dark:bg-slate-900 border border-sand-300 dark:border-slate-700 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 flex flex-col group overflow-hidden"
                                 >
-                                    <div className="h-40 sm:h-48 bg-cream-100 relative overflow-hidden flex items-center justify-center">
+                                    <div className="h-40 sm:h-48 bg-cream-100 dark:bg-slate-950 relative overflow-hidden flex items-center justify-center">
                                         {rel.imageUrl ? (
                                             <img
                                                 src={rel.imageUrl}
@@ -426,24 +426,24 @@ export default function ProductDetail() {
                                                 }}
                                             />
                                         ) : (
-                                            <span className="text-ink-700 text-xs font-medium">{t("product.noImage", "No image")}</span>
+                                            <span className="text-ink-700 dark:text-slate-400 text-xs font-medium">{t("product.noImage", "No image")}</span>
                                         )}
                                         {rel.discountPercentage > 0 && (
-                                            <span className="absolute top-2 right-2 bg-navy-800 text-white text-xs font-bold px-2 py-0.5 rounded-md">
+                                            <span className="absolute top-2 right-2 bg-navy-800 dark:bg-accent-600 text-white text-xs font-bold px-2 py-0.5 rounded-md">
                                                 -{rel.discountPercentage}%
                                             </span>
                                         )}
                                     </div>
                                     <div className="p-4 flex-1 flex flex-col justify-between">
-                                        <h3 className="font-medium text-ink-900 text-sm line-clamp-2 mb-2" title={relDisplay.name}>
+                                        <h3 className="font-medium text-ink-900 dark:text-white text-sm line-clamp-2 mb-2" title={relDisplay.name}>
                                             {relDisplay.name}
                                         </h3>
                                         <div className="flex items-baseline gap-2 mt-auto">
-                                            <span className="text-sm sm:text-base font-bold text-navy-800">
+                                            <span className="text-sm sm:text-base font-bold text-navy-800 dark:text-accent-400">
                                                 {formatCurrency(relFinalPrice)}
                                             </span>
                                             {rel.discountPercentage > 0 && (
-                                                <span className="text-xs text-ink-700/50 line-through">
+                                                <span className="text-xs text-ink-700/50 dark:text-slate-400 line-through">
                                                     {formatCurrency(rel.price)}
                                                 </span>
                                             )}

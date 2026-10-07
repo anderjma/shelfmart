@@ -85,10 +85,10 @@ export default function Store() {
     const renderBadges = (product: Product) => {
         const isNew = product.createdAt && (new Date().getTime() - new Date(product.createdAt).getTime()) / (1000 * 3600 * 24) <= 7;
 
-        if (product.stock === 0) return <span className="bg-ink-900 text-white text-xs uppercase font-bold px-2 py-1 rounded-md shadow-sm">{t("store.soldOut", "Sold Out")}</span>;
-        if (product.stock > 0 && product.stock <= 5) return <span className="bg-ink-900 text-white text-xs uppercase font-bold px-2 py-1 rounded-md shadow-sm">{t("store.onlyLeft", `Only ${product.stock} left!`).replace("{count}", String(product.stock))}</span>;
+        if (product.stock === 0) return <span className="bg-slate-900/90 dark:bg-slate-950/90 text-white text-xs uppercase font-bold px-2 py-1 rounded-md shadow-sm border border-white/10">{t("store.soldOut", "Sold Out")}</span>;
+        if (product.stock > 0 && product.stock <= 5) return <span className="bg-amber-600 text-white text-xs uppercase font-bold px-2 py-1 rounded-md shadow-sm">{t("store.onlyLeft", `Only ${product.stock} left!`).replace("{count}", String(product.stock))}</span>;
         if (product.discountPercentage > 0) return <span className="bg-accent-500 text-white text-xs uppercase font-bold px-2 py-1 rounded-md shadow-sm">{t("store.discountOff", `-${product.discountPercentage}% OFF`).replace("{pct}", String(product.discountPercentage))}</span>;
-        if (isNew) return <span className="bg-white text-accent-500 border border-accent-500 text-xs uppercase font-bold px-2 py-1 rounded-md shadow-sm">{t("store.new", "New")}</span>;
+        if (isNew) return <span className="bg-white dark:bg-slate-800 text-accent-500 dark:text-accent-400 border border-accent-500/40 dark:border-accent-400/40 text-xs uppercase font-bold px-2 py-1 rounded-md shadow-sm">{t("store.new", "New")}</span>;
         return null;
     };
 
@@ -168,7 +168,7 @@ export default function Store() {
                             return (
                                 <div key={product.productResourceId} className="bg-white border border-sand-300 rounded-2xl shadow-sm overflow-hidden flex flex-col transition-transform hover:-translate-y-1 hover:shadow-md relative group">
                                     <div className="absolute top-2 left-2 right-2 flex justify-between items-start z-10 pointer-events-none">
-                                        <span className="bg-ink-900/75 text-white text-xs uppercase font-bold px-2 py-1 rounded-md backdrop-blur-sm">
+                                        <span className="bg-slate-900/85 dark:bg-slate-950/85 text-white text-xs uppercase font-bold px-2.5 py-1 rounded-md backdrop-blur-sm border border-white/10 shadow-xs">
                                             {t(`cat.${product.category}`, product.category || 'Featured')}
                                         </span>
                                         <div className="flex flex-col gap-1 items-end">

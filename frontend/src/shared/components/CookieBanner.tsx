@@ -19,7 +19,7 @@ export default function CookieBanner() {
         <section
             role="region"
             aria-label={t("cookie.privacy", "Cookie consent banner")}
-            className="fixed bottom-0 left-0 right-0 bg-ink-900 text-white p-4 shadow-lg z-50 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 border-t border-slate-700"
+            className="fixed bottom-0 left-0 right-0 bg-slate-900 dark:bg-slate-950 text-white p-4 shadow-lg z-50 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 border-t border-slate-700 dark:border-slate-800"
         >
             <p className="text-sm text-slate-100 leading-relaxed">
                 {t("cookie.text", "We use cookies to improve your experience. By continuing to visit this site you agree to our use of cookies.")}

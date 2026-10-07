@@ -37,14 +37,14 @@ export default function Register() {
     };
 
     return (
-        <div className="relative min-h-screen flex items-center justify-center px-4 py-8 overflow-hidden bg-ink-900">
+        <div className="relative min-h-screen flex items-center justify-center px-4 py-8 overflow-hidden bg-slate-950">
             {/* Editorial background photo, muted so the glass card stays legible */}
             <div
                 className="absolute inset-0 bg-cover bg-center"
                 style={{ backgroundImage: "url('https://images.unsplash.com/photo-1615529162924-f8605388461d?q=80&w=2000&auto=format&fit=crop')" }}
                 aria-hidden="true"
             />
-            <div className="absolute inset-0 bg-ink-900/45" aria-hidden="true" />
+            <div className="absolute inset-0 bg-slate-950/60" aria-hidden="true" />
 
             <div className="relative z-10 w-full max-w-md">
                 <div className="flex items-center justify-between mb-4 px-1">

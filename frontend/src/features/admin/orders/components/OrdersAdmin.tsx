@@ -10,12 +10,12 @@ import { formatCurrency } from "../../../../shared/utils/formatCurrency";
 import AdminNav from "../../components/AdminNav";
 
 const statusBadgeClasses: Record<OrderStatus, string> = {
-    Cart: "bg-cream-200 text-ink-700",
-    Pending: "bg-amber-100 text-amber-800",
-    Confirmed: "bg-blue-100 text-blue-800",
-    Shipped: "bg-indigo-100 text-indigo-800",
-    Delivered: "bg-emerald-100 text-emerald-800",
-    Cancelled: "bg-red-100 text-red-700"
+    Cart: "bg-cream-200 dark:bg-slate-800 text-ink-700 dark:text-slate-300",
+    Pending: "bg-amber-100 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800",
+    Confirmed: "bg-blue-100 dark:bg-blue-950/40 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800",
+    Shipped: "bg-indigo-100 dark:bg-indigo-950/40 text-indigo-800 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800",
+    Delivered: "bg-emerald-100 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800",
+    Cancelled: "bg-red-100 dark:bg-red-950/40 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800"
 };
 
 export default function OrdersAdmin() {
@@ -76,7 +76,7 @@ export default function OrdersAdmin() {
                     placeholder="Search orders..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-4 pr-4 py-2.5 bg-white border border-sand-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
+                    className="w-full pl-4 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-sand-300 dark:border-slate-700 text-ink-900 dark:text-white rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
                 />
             </div>
 

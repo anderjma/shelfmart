@@ -60,9 +60,9 @@ export default function UsersAdmin() {
                     placeholder="Search users..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 bg-white border border-sand-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
+                    className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-sand-300 dark:border-slate-700 text-ink-900 dark:text-white rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
                 />
-                <Search className="w-5 h-5 text-ink-700/40 absolute left-3 top-3" />
+                <Search className="w-5 h-5 text-ink-700/40 dark:text-slate-400 absolute left-3 top-3" />
             </div>
 
             {error && !loading && (

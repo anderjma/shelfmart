@@ -156,7 +156,7 @@ export default function ProductsAdmin() {
                         placeholder="Search products..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full sm:w-64 pl-4 pr-4 py-2 bg-white border border-sand-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
+                        className="w-full sm:w-64 pl-4 pr-4 py-2 bg-white dark:bg-slate-900 border border-sand-300 dark:border-slate-700 text-ink-900 dark:text-white rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
                     />
                     <Button onClick={openCreateForm} className="justify-center whitespace-nowrap">
                         <Plus className="w-4 h-4" aria-hidden="true" />

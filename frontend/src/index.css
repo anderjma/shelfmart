@@ -67,9 +67,12 @@ html.dark {
   --color-accent-600: #2563eb;
   --color-accent-700: #1d4ed8;
 
+  --color-primary-50: #142338;
+  --color-primary-100: #1b314e;
   --color-primary-500: #3b82f6;
   --color-primary-600: #2563eb;
   --color-primary-700: #1d4ed8;
+  --color-primary-900: #1e3a8a;
 
   --color-navy-600: #3b82f6;
   --color-navy-700: #2563eb;
@@ -98,6 +101,21 @@ html.dark .bg-cream-100 {
 html.dark .bg-cream-200 {
   background-color: #192b45;
   color: #f8fafc;
+}
+
+/* Ensure background dark pills with white text never invert to light white */
+html.dark .bg-ink-900 {
+  background-color: #0f172a !important;
+  color: #ffffff;
+}
+
+html.dark [class*="bg-ink-900/75"],
+html.dark [class*="bg-ink-900/80"] {
+  background-color: rgba(15, 23, 42, 0.85) !important;
+}
+
+html.dark [class*="bg-ink-900/45"] {
+  background-color: rgba(15, 23, 42, 0.55) !important;
 }
 
 /* Ensure minimum 4.5:1 WCAG contrast for secondary and muted text in light mode */

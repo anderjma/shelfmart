@@ -14,18 +14,18 @@ export default function About() {
                 <p className="text-lg sm:text-xl text-ink-700">{t("about.subtitle", "Get to know the story behind ShelfMart")}</p>
             </div>
 
-            <div className="bg-white shadow-sm rounded-2xl border border-sand-300 overflow-hidden">
-                <div className="h-64 bg-cream-200 flex items-center justify-center overflow-hidden">
+            <div className="bg-white dark:bg-slate-900 shadow-sm rounded-2xl border border-sand-300 dark:border-slate-700 overflow-hidden">
+                <div className="h-64 bg-cream-200 dark:bg-slate-800 flex items-center justify-center overflow-hidden">
                     <img src="https://images.unsplash.com/photo-1556761175-4b46a572b786?q=80&w=1600&auto=format&fit=crop" alt="Team" className="w-full h-full object-cover" loading="lazy" />
                 </div>
                 <div className="p-5 sm:p-8 space-y-6">
                     <div>
-                        <h2 className="text-2xl font-bold text-ink-900 mb-3">{t("about.historyTitle", "Our History")}</h2>
-                        <p className="text-ink-700 leading-relaxed">
+                        <h2 className="text-2xl font-bold text-ink-900 dark:text-white mb-3">{t("about.historyTitle", "Our History")}</h2>
+                        <p className="text-ink-700 dark:text-slate-300 leading-relaxed">
                             {t("about.historyText", "We were born out of the need to offer high-quality products accessible to everyone. What started as a small university project has now grown into a complete platform that seeks to connect the best brands with our customers nationwide.")}
                         </p>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6 border-t border-sand-300">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6 border-t border-sand-300 dark:border-slate-700">
                         <div>
                             <h3 className="text-xl font-bold text-ink-900 mb-2">{t("about.missionTitle", "Our Mission")}</h3>
                             <p className="text-ink-700">{t("about.missionText", "To provide a fast, secure, and intuitive shopping experience, always ensuring the best product catalog for our community.")}</p>
