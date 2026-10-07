@@ -5,9 +5,11 @@ import { getProducts } from "../../features/store/api/productService";
 import type { Product } from "../../features/store/types";
 import SEO from "../components/SEO";
 import { formatCurrency } from "../utils/formatCurrency";
+import { useLanguage } from "../../lib/i18n-context";
 
 // This component presents the value proposition and the store's main calls to action.
 export default function Home() {
+    const { t } = useLanguage();
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -55,20 +57,20 @@ export default function Home() {
 
     return (
         <div className="space-y-12 sm:space-y-16 pb-12 sm:pb-16 bg-cream-100">
-            <SEO title="Home" description="Welcome to the advanced commercial platform for real-time inventory and sales management." />
+            <SEO title={t("home.heroTitle", "Welcome to ShelfMart!")} description={t("home.heroSubtitle", "Thoughtfully sourced pieces for a home that feels considered, not decorated.")} />
             {/* Hero section */}
             <div className="bg-slate-950 mx-4 sm:mx-6 lg:mx-8 mt-4 sm:mt-6 rounded-2xl overflow-hidden shadow-sm relative">
                 <div className="absolute inset-0 opacity-30 bg-[url('https://images.unsplash.com/photo-1615529162924-f8605388461d?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center"></div>
                 <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-[1px]"></div>
                 <div className="relative z-10 px-6 py-14 sm:py-20 md:py-24 text-center max-w-3xl mx-auto">
                     <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight text-balance drop-shadow-sm">
-                        Welcome to ShelfMart!
+                        {t("home.heroTitle", "Welcome to ShelfMart!")}
                     </h1>
                     <p className="text-sm sm:text-base text-slate-200 mb-7 max-w-lg mx-auto drop-shadow-sm">
-                        Thoughtfully sourced pieces for a home that feels considered, not decorated.
+                        {t("home.heroSubtitle", "Thoughtfully sourced pieces for a home that feels considered, not decorated.")}
                     </p>
                     <Link to="/catalog" className="inline-block bg-accent-500 hover:bg-accent-600 text-white px-6 sm:px-7 py-2.5 rounded-xl text-sm font-semibold transition-colors shadow-sm">
-                        Explore our catalog
+                        {t("home.exploreCatalog", "Explore our catalog")}
                     </Link>
                 </div>
             </div>
@@ -78,13 +80,13 @@ export default function Home() {
                 {loading ? (
                     <>
                         <section>
-                            <SectionHeader title="Featured Deals" />
+                            <SectionHeader title={t("home.featuredDeals", "Featured Deals")} />
                             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
                                 {[...Array(4)].map((_, i) => <ProductSkeleton key={`skel-offer-${i}`} />)}
                             </div>
                         </section>
                         <section>
-                            <SectionHeader title="New Arrivals" />
+                            <SectionHeader title={t("home.newArrivals", "New Arrivals")} />
                             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
                                 {[...Array(4)].map((_, i) => <ProductSkeleton key={`skel-new-${i}`} />)}
                             </div>
@@ -94,27 +96,27 @@ export default function Home() {
                     <>
                         {offers.length > 0 && (
                             <section>
-                                <SectionHeader title="Featured Deals" />
+                                <SectionHeader title={t("home.featuredDeals", "Featured Deals")} />
                                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
-                                    {offers.map(product => <ProductCard key={`offer-${product.productResourceId}`} product={product} type="offer" />)}
+                                    {offers.map(product => <ProductCard key={`offer-${product.productResourceId}`} product={product} type="offer" t={t} />)}
                                 </div>
                             </section>
                         )}
 
                         {newArrivals.length > 0 && (
                             <section>
-                                <SectionHeader title="New Arrivals" />
+                                <SectionHeader title={t("home.newArrivals", "New Arrivals")} />
                                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
-                                    {newArrivals.map(product => <ProductCard key={`new-${product.productResourceId}`} product={product} type="new" />)}
+                                    {newArrivals.map(product => <ProductCard key={`new-${product.productResourceId}`} product={product} type="new" t={t} />)}
                                 </div>
                             </section>
                         )}
 
                         {lowStock.length > 0 && (
                             <section>
-                                <SectionHeader title="Limited Stock" />
+                                <SectionHeader title={t("home.limitedStock", "Limited Stock")} />
                                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
-                                    {lowStock.map(product => <ProductCard key={`low-${product.productResourceId}`} product={product} type="low" />)}
+                                    {lowStock.map(product => <ProductCard key={`low-${product.productResourceId}`} product={product} type="low" t={t} />)}
                                 </div>
                             </section>
                         )}
@@ -125,19 +127,19 @@ export default function Home() {
     );
 }
 
-const renderBadges = (product: Product, type: 'offer' | 'new' | 'low') => {
+const renderBadges = (product: Product, type: 'offer' | 'new' | 'low', t: (k: string, f?: string) => string) => {
     return (
         <>
-            {type === 'new' && <span className="bg-slate-900 dark:bg-slate-800 text-white text-xs font-semibold px-2 py-0.5 rounded-md shadow-xs">New</span>}
+            {type === 'new' && <span className="bg-slate-900 dark:bg-slate-800 text-white text-xs font-semibold px-2 py-0.5 rounded-md shadow-xs">{t("store.new", "New")}</span>}
             {(type === 'offer' || product.discountPercentage > 0) && (
                 <span className="bg-accent-500 text-white text-xs font-bold px-2 py-0.5 rounded-md shadow-xs">-{product.discountPercentage}%</span>
             )}
-            {type === 'low' && <span className="bg-amber-600 text-white text-xs uppercase font-semibold px-2 py-0.5 rounded-md shadow-xs">Low stock</span>}
+            {type === 'low' && <span className="bg-amber-600 text-white text-xs uppercase font-semibold px-2 py-0.5 rounded-md shadow-xs">{t("home.lowStockBadge", "Low stock")}</span>}
         </>
     );
 };
 
-const ProductCard = ({ product, type }: { product: Product, type: 'offer' | 'new' | 'low' }) => {
+const ProductCard = ({ product, type, t }: { product: Product, type: 'offer' | 'new' | 'low', t: (k: string, f?: string) => string }) => {
     const finalPrice = product.discountPercentage > 0
         ? product.price - (product.price * (product.discountPercentage / 100))
         : product.price;
@@ -147,10 +149,10 @@ const ProductCard = ({ product, type }: { product: Product, type: 'offer' | 'new
             <div className="relative h-40 sm:h-48 bg-cream-100 flex items-center justify-center overflow-hidden rounded-t-2xl">
                 <div className="absolute top-2 left-2 right-2 flex justify-between items-start z-10 pointer-events-none">
                     <span className="bg-slate-900/85 dark:bg-slate-800/90 text-white text-xs uppercase font-semibold px-2 py-0.5 rounded-md backdrop-blur-xs shadow-xs">
-                        {product.category || 'Featured'}
+                        {t(`cat.${product.category}`, product.category || 'Featured')}
                     </span>
                     <div className="flex flex-col gap-1 items-end">
-                        {renderBadges(product, type)}
+                        {renderBadges(product, type, t)}
                     </div>
                 </div>
                 {product.imageUrl ? (
@@ -182,6 +184,6 @@ const ProductCard = ({ product, type }: { product: Product, type: 'offer' | 'new
 
 const SectionHeader = ({ title }: { title: string }) => (
     <div className="flex items-center justify-between border-b border-sand-300 pb-3 mb-6">
-        <h2 className="text-lg sm:text-xl font-semibold text-ink-900">{title}</h2>
+        <h2 className="text-lg sm:xl font-semibold text-ink-900">{title}</h2>
     </div>
 );

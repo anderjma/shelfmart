@@ -9,9 +9,11 @@ import SEO from "../../../shared/components/SEO";
 import ConfirmDialog from "../../../shared/components/ConfirmDialog";
 import { getErrorMessage } from "../../../lib/http-error";
 import { formatCurrency } from "../../../shared/utils/formatCurrency";
+import { useLanguage } from "../../../lib/i18n-context";
 
 // This component lists the selected items, calculates totals, and initiates the checkout process.
 export default function Cart() {
+    const { t } = useLanguage();
     const [cart, setCart] = useState<CartType | null>(null);
     const [loading, setLoading] = useState(true);
     const [processing, setProcessing] = useState(false);
@@ -77,16 +79,16 @@ export default function Cart() {
         }
     };
 
-    if (loading) return <div className="text-center p-8 text-ink-700">Loading cart...</div>;
+    if (loading) return <div className="text-center p-8 text-ink-700">{t("cart.loading", "Loading cart...")}</div>;
     if (error) return <div className="text-center p-8 text-red-600" role="alert">{error}</div>;
 
     if (!cart || !cart.items || cart.items.length === 0) {
         return (
             <div className="text-center py-16 mx-4 sm:mx-0 bg-white rounded-2xl shadow-sm border border-sand-300">
-                <SEO title="My Cart" description="Your shopping cart is empty." />
-                <h2 className="text-2xl font-bold text-ink-900 mb-4">Your cart is empty</h2>
+                <SEO title={t("cart.title", "My Cart")} description={t("cart.empty", "Your cart is empty")} />
+                <h2 className="text-2xl font-bold text-ink-900 mb-4">{t("cart.empty", "Your cart is empty")}</h2>
                 <button onClick={() => navigate("/")} className="text-accent-500 font-medium hover:underline">
-                    Back to catalog
+                    {t("cart.backToCatalog", "Back to catalog")}
                 </button>
             </div>
         );
@@ -94,9 +96,9 @@ export default function Cart() {
 
     return (
         <div className="max-w-7xl mx-auto space-y-6">
-            <SEO title="My Cart" description="Review your selected products and complete your purchase securely." />
+            <SEO title={t("cart.title", "My Cart")} description="Review your selected products and complete your purchase securely." />
             <div className="px-4 sm:px-0">
-                <h2 className="text-2xl font-bold text-ink-900">My Shopping Cart</h2>
+                <h2 className="text-2xl font-bold text-ink-900">{t("cart.myCart", "My Shopping Cart")}</h2>
             </div>
 
             {/* Desktop table */}
@@ -105,11 +107,11 @@ export default function Cart() {
                     <table className="min-w-full divide-y divide-sand-300 dark:divide-slate-700" aria-label="Shopping cart contents">
                         <thead className="bg-cream-100 dark:bg-slate-800">
                             <tr>
-                                <th scope="col" className="px-6 py-3.5 text-left text-xs font-semibold text-ink-700 dark:text-slate-300 uppercase tracking-wider">Product</th>
-                                <th scope="col" className="px-6 py-3.5 text-left text-xs font-semibold text-ink-700 dark:text-slate-300 uppercase tracking-wider">Unit Price</th>
-                                <th scope="col" className="px-6 py-3.5 text-left text-xs font-semibold text-ink-700 dark:text-slate-300 uppercase tracking-wider">Quantity</th>
-                                <th scope="col" className="px-6 py-3.5 text-left text-xs font-semibold text-ink-700 dark:text-slate-300 uppercase tracking-wider">Subtotal</th>
-                                <th scope="col" className="px-6 py-3.5 text-right text-xs font-semibold text-ink-700 dark:text-slate-300 uppercase tracking-wider">Actions</th>
+                                <th scope="col" className="px-6 py-3.5 text-left text-xs font-semibold text-ink-700 dark:text-slate-300 uppercase tracking-wider">{t("cart.product", "Product")}</th>
+                                <th scope="col" className="px-6 py-3.5 text-left text-xs font-semibold text-ink-700 dark:text-slate-300 uppercase tracking-wider">{t("cart.unitPrice", "Unit Price")}</th>
+                                <th scope="col" className="px-6 py-3.5 text-left text-xs font-semibold text-ink-700 dark:text-slate-300 uppercase tracking-wider">{t("cart.quantity", "Quantity")}</th>
+                                <th scope="col" className="px-6 py-3.5 text-left text-xs font-semibold text-ink-700 dark:text-slate-300 uppercase tracking-wider">{t("cart.subtotal", "Subtotal")}</th>
+                                <th scope="col" className="px-6 py-3.5 text-right text-xs font-semibold text-ink-700 dark:text-slate-300 uppercase tracking-wider">{t("cart.actions", "Actions")}</th>
                             </tr>
                         </thead>
                         <tbody className="bg-white dark:bg-slate-900 divide-y divide-sand-300 dark:divide-slate-700">
@@ -198,9 +200,9 @@ export default function Cart() {
             <div className="bg-white dark:bg-slate-900 px-4 sm:px-6 py-5 sm:rounded-2xl sm:shadow-xs sm:border sm:border-sand-300 dark:sm:border-slate-700 border-y border-sand-300 dark:border-slate-700 sm:border-y-0">
                 <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
                     <div className="w-full sm:w-auto flex justify-between items-center sm:block">
-                        <span className="text-ink-700 dark:text-slate-300 font-medium sm:hidden">Total due:</span>
+                        <span className="text-ink-700 dark:text-slate-300 font-medium sm:hidden">{t("cart.totalDue", "Total due:")}</span>
                         <span className="text-xl font-bold text-ink-900 dark:text-white">
-                            <span className="hidden sm:inline">Total: </span>
+                            <span className="hidden sm:inline">{t("cart.total", "Total:")} </span>
                             {formatCurrency(cart.totalAmount)}
                         </span>
                     </div>
@@ -209,16 +211,16 @@ export default function Cart() {
                         disabled={processing}
                         className="w-full sm:w-auto bg-accent-500 text-white px-8 py-3 rounded-xl font-medium hover:bg-accent-600 disabled:bg-accent-500/40 transition-colors text-center shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 min-h-[44px]"
                     >
-                        {processing ? "Processing..." : "Complete Purchase"}
+                        {processing ? t("cart.processing", "Processing...") : t("cart.completePurchase", "Complete Purchase")}
                     </button>
                 </div>
             </div>
 
             <ConfirmDialog
                 isOpen={!!pendingRemoval}
-                title="Remove Item"
-                message="Do you want to remove this product from the cart?"
-                confirmLabel="Remove"
+                title={t("cart.removeItemTitle", "Remove Item")}
+                message={t("cart.removeItemConfirm", "Do you want to remove this product from the cart?")}
+                confirmLabel={t("cart.removeItem", "Remove")}
                 confirmVariant="danger"
                 onConfirm={handleConfirmRemoveItem}
                 onCancel={() => setPendingRemoval(null)}
@@ -226,9 +228,9 @@ export default function Cart() {
 
             <ConfirmDialog
                 isOpen={confirmingCheckout}
-                title="Confirm Purchase"
-                message="Do you want to confirm your purchase? This action cannot be undone."
-                confirmLabel="Confirm Purchase"
+                title={t("cart.confirmPurchaseTitle", "Confirm Purchase")}
+                message={t("cart.confirmPurchasePrompt", "Do you want to confirm your purchase? This action cannot be undone.")}
+                confirmLabel={t("cart.confirmPurchase", "Confirm Purchase")}
                 confirmVariant="primary"
                 onConfirm={handleConfirmCheckout}
                 onCancel={() => setConfirmingCheckout(false)}

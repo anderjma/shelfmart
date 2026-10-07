@@ -7,6 +7,7 @@ import type { Product } from "../types";
 import SEO from "../../../shared/components/SEO";
 import { formatCurrency } from "../../../shared/utils/formatCurrency";
 import { getErrorMessage } from "../../../lib/http-error";
+import { useLanguage } from "../../../lib/i18n-context";
 import toast from "react-hot-toast";
 import {
     ShoppingCart,
@@ -24,6 +25,7 @@ export default function ProductDetail() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const { isAuthenticated, isCustomer } = useAuth();
+    const { t } = useLanguage();
 
     const [product, setProduct] = useState<Product | null>(null);
     const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
@@ -125,15 +127,15 @@ export default function ProductDetail() {
         return (
             <div className="max-w-3xl mx-auto px-4 py-16 text-center space-y-6">
                 <AlertCircle className="w-16 h-16 text-sand-400 mx-auto" />
-                <h1 className="text-2xl font-bold text-ink-900">Product Not Found</h1>
+                <h1 className="text-2xl font-bold text-ink-900">{t("product.notFound", "Product Not Found")}</h1>
                 <p className="text-ink-700 text-sm">
-                    The item you are searching for might have been moved or is no longer available in our catalog.
+                    {t("product.notFoundDesc", "The item you are searching for might have been moved or is no longer available in our catalog.")}
                 </p>
                 <Link
                     to="/catalog"
                     className="inline-flex items-center gap-2 bg-navy-800 text-white px-5 py-2.5 rounded-xl font-medium hover:bg-navy-900 transition-colors"
                 >
-                    <ArrowLeft className="w-4 h-4" /> Return to Catalog
+                    <ArrowLeft className="w-4 h-4" /> {t("product.returnToCatalog", "Return to Catalog")}
                 </Link>
             </div>
         );
@@ -151,11 +153,11 @@ export default function ProductDetail() {
 
             {/* Breadcrumb & Navigation */}
             <nav className="flex items-center gap-2 text-xs sm:text-sm text-ink-700/80 overflow-x-auto whitespace-nowrap" aria-label="Breadcrumb">
-                <Link to="/" className="hover:text-navy-800 transition-colors">Home</Link>
+                <Link to="/" className="hover:text-navy-800 transition-colors">{t("nav.home", "Home")}</Link>
                 <span>/</span>
-                <Link to="/catalog" className="hover:text-navy-800 transition-colors">Catalog</Link>
+                <Link to="/catalog" className="hover:text-navy-800 transition-colors">{t("nav.catalog", "Catalog")}</Link>
                 <span>/</span>
-                <span className="text-ink-900 font-medium">{product.category}</span>
+                <span className="text-ink-900 font-medium">{t(`cat.${product.category}`, product.category)}</span>
                 <span>/</span>
                 <span className="text-ink-900/60 truncate max-w-xs">{product.name}</span>
             </nav>
@@ -167,7 +169,7 @@ export default function ProductDetail() {
                 <div className="bg-white border border-sand-300 rounded-3xl p-6 sm:p-8 flex items-center justify-center relative overflow-hidden shadow-sm group">
                     <div className="absolute top-4 left-4 flex flex-col gap-1.5 z-10 pointer-events-none">
                         <span className="bg-ink-900/80 text-white text-xs uppercase font-bold px-3 py-1 rounded-md backdrop-blur-sm shadow-sm">
-                            {product.category}
+                            {t(`cat.${product.category}`, product.category)}
                         </span>
                         {product.discountPercentage > 0 && (
                             <span className="bg-accent-500 text-white text-xs uppercase font-bold px-3 py-1 rounded-md shadow-sm">
@@ -176,7 +178,7 @@ export default function ProductDetail() {
                         )}
                         {isNew && (
                             <span className="bg-white text-navy-800 border border-sand-300 text-xs uppercase font-bold px-3 py-1 rounded-md shadow-sm">
-                                New Arrival
+                                {t("product.newArrival", "New Arrival")}
                             </span>
                         )}
                     </div>
@@ -194,7 +196,7 @@ export default function ProductDetail() {
                                 }}
                             />
                         ) : (
-                            <span className="text-ink-700 text-sm font-medium">No image available</span>
+                            <span className="text-ink-700 text-sm font-medium">{t("product.noImage", "No image available")}</span>
                         )}
                     </div>
                 </div>
@@ -203,7 +205,7 @@ export default function ProductDetail() {
                 <div className="space-y-6">
                     <div>
                         <div className="text-xs uppercase font-bold tracking-wider text-navy-800 mb-2">
-                            {product.category}
+                            {t(`cat.${product.category}`, product.category)}
                         </div>
                         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-ink-900 tracking-tight leading-tight">
                             {product.name}
@@ -221,7 +223,7 @@ export default function ProductDetail() {
                                     {formatCurrency(product.price)}
                                 </span>
                                 <span className="bg-accent-500/10 text-accent-600 font-bold text-xs px-2.5 py-1 rounded-full">
-                                    Save {product.discountPercentage}%
+                                    {t("product.save", `Save ${product.discountPercentage}%`).replace("{pct}", String(product.discountPercentage))}
                                 </span>
                             </div>
                         )}
@@ -232,24 +234,24 @@ export default function ProductDetail() {
                         {product.stock > 5 ? (
                             <span className="inline-flex items-center gap-1.5 text-emerald-700 font-medium">
                                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                                In Stock ({product.stock} units available)
+                                {t("product.inStock", `In Stock (${product.stock} units available)`).replace("{count}", String(product.stock))}
                             </span>
                         ) : product.stock > 0 ? (
                             <span className="inline-flex items-center gap-1.5 text-amber-700 font-medium">
                                 <span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
-                                Low Stock: Only {product.stock} left!
+                                {t("product.lowStock", `Low Stock: Only ${product.stock} left!`).replace("{count}", String(product.stock))}
                             </span>
                         ) : (
                             <span className="inline-flex items-center gap-1.5 text-rose-700 font-medium">
                                 <span className="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
-                                Sold Out
+                                {t("store.soldOut", "Sold Out")}
                             </span>
                         )}
                     </div>
 
                     {/* Description */}
                     <div className="space-y-2">
-                        <h2 className="text-sm font-semibold uppercase tracking-wider text-ink-900">Description</h2>
+                        <h2 className="text-sm font-semibold uppercase tracking-wider text-ink-900">{t("product.description", "Description")}</h2>
                         <p className="text-ink-700 text-sm sm:text-base leading-relaxed whitespace-pre-line">
                             {product.description || "Premium quality product carefully tested and cataloged for the ShelfMart marketplace."}
                         </p>
@@ -260,7 +262,7 @@ export default function ProductDetail() {
                         <div className="space-y-4 pt-4 border-t border-sand-300 dark:border-slate-700">
                             {/* Quantity Selector */}
                             <div className="flex items-center gap-4">
-                                <span className="text-sm font-semibold text-ink-900 dark:text-white">Quantity:</span>
+                                <span className="text-sm font-semibold text-ink-900 dark:text-white">{t("product.quantity", "Quantity:")}</span>
                                 <div className="flex items-center border border-sand-300 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 overflow-hidden shadow-xs">
                                     <button
                                         type="button"
@@ -285,7 +287,7 @@ export default function ProductDetail() {
                                     </button>
                                 </div>
                                 <span className="text-xs text-ink-700 dark:text-slate-300 font-medium">
-                                    Max {product.stock} per purchase
+                                    {t("product.maxPerPurchase", `Max ${product.stock} per purchase`).replace("{count}", String(product.stock))}
                                 </span>
                             </div>
 
@@ -299,7 +301,7 @@ export default function ProductDetail() {
                                     aria-busy={adding || undefined}
                                 >
                                     <ShoppingCart className="w-5 h-5" aria-hidden="true" />
-                                    {adding ? "Adding..." : "Add to Cart"}
+                                    {adding ? t("product.adding", "Adding...") : t("product.addToCart", "Add to Cart")}
                                 </button>
                                 <button
                                     type="button"
@@ -309,7 +311,7 @@ export default function ProductDetail() {
                                     aria-busy={buyingNow || undefined}
                                 >
                                     <Check className="w-5 h-5" aria-hidden="true" />
-                                    {buyingNow ? "Processing..." : "Buy Now"}
+                                    {buyingNow ? t("product.processing", "Processing...") : t("product.buyNow", "Buy Now")}
                                 </button>
                             </div>
                         </div>
@@ -319,7 +321,7 @@ export default function ProductDetail() {
                                 disabled
                                 className="w-full bg-cream-200 dark:bg-slate-800 text-ink-700/50 dark:text-slate-500 py-3.5 rounded-xl font-medium cursor-not-allowed border border-sand-300 dark:border-slate-700 text-center min-h-[48px]"
                             >
-                                Currently Out of Stock
+                                {t("product.outOfStock", "Currently Out of Stock")}
                             </button>
                         </div>
                     )}
@@ -328,15 +330,15 @@ export default function ProductDetail() {
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 border-t border-sand-300 text-xs text-ink-700">
                         <div className="flex items-center gap-2 p-2 rounded-lg bg-cream-50 border border-sand-300/50">
                             <Truck className="w-4 h-4 text-navy-800 flex-shrink-0" />
-                            <span>Fast & secure delivery</span>
+                            <span>{t("product.fastDelivery", "Fast & secure delivery")}</span>
                         </div>
                         <div className="flex items-center gap-2 p-2 rounded-lg bg-cream-50 border border-sand-300/50">
                             <ShieldCheck className="w-4 h-4 text-navy-800 flex-shrink-0" />
-                            <span>100% Genuine product</span>
+                            <span>{t("product.genuine", "100% Genuine product")}</span>
                         </div>
                         <div className="flex items-center gap-2 p-2 rounded-lg bg-cream-50 border border-sand-300/50">
                             <RotateCcw className="w-4 h-4 text-navy-800 flex-shrink-0" />
-                            <span>30-Day return policy</span>
+                            <span>{t("product.returnPolicy", "30-Day return policy")}</span>
                         </div>
                     </div>
                 </div>
@@ -347,13 +349,13 @@ export default function ProductDetail() {
                 <section className="space-y-6 pt-8 border-t border-sand-300">
                     <div className="flex items-center justify-between">
                         <h2 className="text-xl sm:text-2xl font-bold text-ink-900">
-                            More in {product.category}
+                            {t("product.moreIn", `More in ${product.category}`).replace("{category}", t(`cat.${product.category}`, product.category))}
                         </h2>
                         <Link
                             to="/catalog"
                             className="text-sm font-semibold text-navy-800 hover:text-navy-900 transition-colors flex items-center gap-1"
                         >
-                            View all <ArrowLeft className="w-4 h-4 rotate-180" />
+                            {t("product.viewAll", "View all")} <ArrowLeft className="w-4 h-4 rotate-180" />
                         </Link>
                     </div>
 
@@ -382,7 +384,7 @@ export default function ProductDetail() {
                                                 }}
                                             />
                                         ) : (
-                                            <span className="text-ink-700 text-xs font-medium">No image</span>
+                                            <span className="text-ink-700 text-xs font-medium">{t("product.noImage", "No image")}</span>
                                         )}
                                         {rel.discountPercentage > 0 && (
                                             <span className="absolute top-2 right-2 bg-navy-800 text-white text-xs font-bold px-2 py-0.5 rounded-md">

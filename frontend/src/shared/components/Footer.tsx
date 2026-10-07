@@ -2,9 +2,12 @@
 import { Link } from "react-router-dom";
 import { SiFacebook, SiInstagram, SiTiktok } from "react-icons/si";
 import { Store } from "lucide-react";
+import { useLanguage } from "../../lib/i18n-context";
 
 // This component displays the copyright notice, policies, and quick links below.
 export default function Footer() {
+    const { t } = useLanguage();
+
     return (
         <footer className="bg-cream-50 dark:bg-slate-900 border-t border-sand-300 dark:border-slate-800 mt-auto transition-colors" role="contentinfo" aria-labelledby="footer-heading">
             <h2 id="footer-heading" className="sr-only">Footer</h2>
@@ -20,10 +23,10 @@ export default function Footer() {
 
                 {/* Quick links */}
                 <nav aria-label="Footer navigation" className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm font-medium">
-                    <Link to="/catalog" className="text-ink-700 dark:text-slate-300 hover:text-navy-800 dark:hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 rounded-lg px-2 py-1 min-h-[44px] flex items-center">Catalog</Link>
-                    <Link to="/about" className="text-ink-700 dark:text-slate-300 hover:text-navy-800 dark:hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 rounded-lg px-2 py-1 min-h-[44px] flex items-center">About</Link>
-                    <Link to="/contact" className="text-ink-700 dark:text-slate-300 hover:text-navy-800 dark:hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 rounded-lg px-2 py-1 min-h-[44px] flex items-center">Contact</Link>
-                    <Link to="/privacy" className="text-ink-700 dark:text-slate-300 hover:text-navy-800 dark:hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 rounded-lg px-2 py-1 min-h-[44px] flex items-center">Privacy Policy</Link>
+                    <Link to="/catalog" className="text-ink-700 dark:text-slate-300 hover:text-navy-800 dark:hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 rounded-lg px-2 py-1 min-h-[44px] flex items-center">{t("footer.catalog", "Catalog")}</Link>
+                    <Link to="/about" className="text-ink-700 dark:text-slate-300 hover:text-navy-800 dark:hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 rounded-lg px-2 py-1 min-h-[44px] flex items-center">{t("footer.about", "About")}</Link>
+                    <Link to="/contact" className="text-ink-700 dark:text-slate-300 hover:text-navy-800 dark:hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 rounded-lg px-2 py-1 min-h-[44px] flex items-center">{t("footer.contact", "Contact")}</Link>
+                    <Link to="/privacy" className="text-ink-700 dark:text-slate-300 hover:text-navy-800 dark:hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 rounded-lg px-2 py-1 min-h-[44px] flex items-center">{t("footer.privacy", "Privacy Policy")}</Link>
                 </nav>
 
                 {/* Social media */}
@@ -41,7 +44,7 @@ export default function Footer() {
 
                 <div className="border-t border-sand-300 dark:border-slate-800 pt-6 w-full flex flex-col sm:flex-row justify-between items-center text-xs text-ink-700 dark:text-slate-400 gap-2">
                     <p>
-                        &copy; {new Date().getFullYear()} ShelfMart. All rights reserved.
+                        &copy; {new Date().getFullYear()} ShelfMart. {t("footer.rights", "All rights reserved.")}
                     </p>
                     <p className="font-semibold tracking-wide uppercase bg-cream-200 dark:bg-slate-800 text-ink-700 dark:text-slate-300 px-3 py-1.5 rounded-lg border border-sand-300 dark:border-slate-700 text-xs">
                         Anderson Jesús Monge Alvarado

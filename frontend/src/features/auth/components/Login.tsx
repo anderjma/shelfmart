@@ -5,9 +5,11 @@ import { useAuth } from "../../../lib/auth-context";
 import BackButton from "../../../shared/components/BackButton";
 import { getErrorMessage } from "../../../lib/http-error";
 import { Store } from "lucide-react";
+import { useLanguage } from "../../../lib/i18n-context";
 
 // This component captures and validates the entered credentials to issue the secure session token.
 export default function Login() {
+    const { t } = useLanguage();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -45,9 +47,9 @@ export default function Login() {
                     </Link>
                 </div>
                 <div className="bg-cream-100/85 backdrop-blur-md rounded-2xl shadow-xl border border-white/50 p-8 sm:p-10">
-                    <h1 className="text-2xl sm:text-3xl font-bold text-center text-ink-900 mb-1">Sign In</h1>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-center text-ink-900 mb-1">{t("auth.signIn", "Sign In")}</h1>
                     <p className="text-center text-sm text-ink-700 mb-8">
-                        Don't have an account? <Link to="/register" className="text-navy-800 font-medium hover:underline">Register here</Link>
+                        {t("auth.noAccount", "Don't have an account?")} <Link to="/register" className="text-navy-800 font-medium hover:underline">{t("auth.registerHere", "Register here")}</Link>
                     </p>
 
                     {error && (
@@ -58,7 +60,7 @@ export default function Login() {
 
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div>
-                            <label htmlFor="login-username" className="block text-sm font-semibold text-ink-900 mb-1.5">Username</label>
+                            <label htmlFor="login-username" className="block text-sm font-semibold text-ink-900 mb-1.5">{t("auth.username", "Username")}</label>
                             <input
                                 id="login-username"
                                 type="text"
@@ -72,7 +74,7 @@ export default function Login() {
                         </div>
 
                         <div>
-                            <label htmlFor="login-password" className="block text-sm font-semibold text-ink-900 mb-1.5">Password</label>
+                            <label htmlFor="login-password" className="block text-sm font-semibold text-ink-900 mb-1.5">{t("auth.password", "Password")}</label>
                             <input
                                 id="login-password"
                                 type="password"
@@ -89,7 +91,7 @@ export default function Login() {
                             type="submit"
                             className="w-full flex justify-center items-center py-3 px-4 rounded-xl shadow-xs text-sm font-semibold text-white bg-navy-800 hover:bg-navy-900 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-navy-700 mt-2 min-h-[44px]"
                         >
-                            Sign In
+                            {t("auth.signIn", "Sign In")}
                         </button>
                     </form>
                 </div>

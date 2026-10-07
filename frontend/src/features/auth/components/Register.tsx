@@ -6,9 +6,11 @@ import toast from "react-hot-toast";
 import BackButton from "../../../shared/components/BackButton";
 import { getErrorMessage } from "../../../lib/http-error";
 import { Store } from "lucide-react";
+import { useLanguage } from "../../../lib/i18n-context";
 
 // This component validates the registration fields and sends the initial credentials to the server.
 export default function Register() {
+    const { t } = useLanguage();
     const [formData, setFormData] = useState({ name: "", username: "", email: "", password: "" });
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
@@ -53,9 +55,9 @@ export default function Register() {
                     </Link>
                 </div>
                 <div className="bg-cream-100/85 backdrop-blur-md rounded-2xl shadow-xl border border-white/50 p-8 sm:p-10">
-                    <h1 className="text-2xl sm:text-3xl font-bold text-center text-ink-900 mb-1">Create Account</h1>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-center text-ink-900 mb-1">{t("auth.createAccount", "Create Account")}</h1>
                     <p className="text-center text-sm text-ink-700 mb-8">
-                        Join us to start shopping
+                        {t("auth.joinUs", "Join us to start shopping")}
                     </p>
 
                     {error && <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-4 text-sm text-center" role="alert">{error}</div>}
@@ -63,30 +65,30 @@ export default function Register() {
                     <form className="space-y-5" onSubmit={handleSubmit}>
                         <div className="space-y-4">
                             <div>
-                                <label htmlFor="register-name" className="block text-sm font-semibold text-ink-900 mb-1.5">Full Name</label>
+                                <label htmlFor="register-name" className="block text-sm font-semibold text-ink-900 mb-1.5">{t("auth.fullName", "Full Name")}</label>
                                 <input id="register-name" name="name" type="text" autoComplete="name" aria-required="true" required className="block w-full px-3.5 py-2.5 bg-cream-50/90 border border-sand-400 rounded-xl shadow-xs placeholder-ink-700/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-navy-700 sm:text-sm min-h-[44px]" placeholder="John Smith" onChange={handleChange} />
                             </div>
                             <div>
-                                <label htmlFor="register-email" className="block text-sm font-semibold text-ink-900 mb-1.5">Email</label>
+                                <label htmlFor="register-email" className="block text-sm font-semibold text-ink-900 mb-1.5">{t("auth.email", "Email")}</label>
                                 <input id="register-email" name="email" type="email" autoComplete="email" aria-required="true" required className="block w-full px-3.5 py-2.5 bg-cream-50/90 border border-sand-400 rounded-xl shadow-xs placeholder-ink-700/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-navy-700 sm:text-sm min-h-[44px]" placeholder="john@example.com" onChange={handleChange} />
                             </div>
                             <div>
-                                <label htmlFor="register-username" className="block text-sm font-semibold text-ink-900 mb-1.5">Username</label>
+                                <label htmlFor="register-username" className="block text-sm font-semibold text-ink-900 mb-1.5">{t("auth.username", "Username")}</label>
                                 <input id="register-username" name="username" type="text" autoComplete="username" aria-required="true" required className="block w-full px-3.5 py-2.5 bg-cream-50/90 border border-sand-400 rounded-xl shadow-xs placeholder-ink-700/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-navy-700 sm:text-sm min-h-[44px]" placeholder="johnsmith123" onChange={handleChange} />
                             </div>
                             <div>
-                                <label htmlFor="register-password" className="block text-sm font-semibold text-ink-900 mb-1.5">Password</label>
+                                <label htmlFor="register-password" className="block text-sm font-semibold text-ink-900 mb-1.5">{t("auth.password", "Password")}</label>
                                 <input id="register-password" name="password" type="password" autoComplete="new-password" aria-required="true" required minLength={6} className="block w-full px-3.5 py-2.5 bg-cream-50/90 border border-sand-400 rounded-xl shadow-xs placeholder-ink-700/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-navy-700 sm:text-sm min-h-[44px]" placeholder="Minimum 6 characters" onChange={handleChange} />
                             </div>
                         </div>
 
                         <button type="submit" disabled={loading} className="w-full flex justify-center items-center py-3 px-4 rounded-xl text-sm font-semibold text-white bg-navy-800 hover:bg-navy-900 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-navy-700 disabled:bg-navy-800/40 min-h-[44px]">
-                            {loading ? "Registering..." : "Register"}
+                            {loading ? t("auth.registering", "Registering...") : t("auth.register", "Register")}
                         </button>
 
                         <div className="text-sm text-center">
                             <Link to="/login" className="font-medium text-navy-800 hover:underline">
-                                Already have an account? Sign in
+                                {t("auth.alreadyHaveAccount", "Already have an account? Sign in")}
                             </Link>
                         </div>
                     </form>

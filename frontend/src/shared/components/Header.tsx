@@ -10,7 +10,7 @@ export default function Navbar() {
     const navigate = useNavigate();
     const { user, logout, isCustomer, isAdmin } = useAuth();
     const { theme, toggleTheme } = useTheme();
-    const { language, toggleLanguage } = useLanguage();
+    const { language, toggleLanguage, t } = useLanguage();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const handleLogout = () => {
@@ -33,11 +33,11 @@ export default function Navbar() {
                         </Link>
 
                         <div className="hidden md:flex items-center space-x-5">
-                            <Link to="/catalog" className="text-sm font-medium text-ink-700 hover:text-navy-800 transition-colors">Catalog</Link>
-                            <Link to="/about" className="text-sm font-medium text-ink-700 hover:text-navy-800 transition-colors">About</Link>
-                            <Link to="/contact" className="text-sm font-medium text-ink-700 hover:text-navy-800 transition-colors">Contact</Link>
+                            <Link to="/catalog" className="text-sm font-medium text-ink-700 hover:text-navy-800 transition-colors">{t("nav.catalog", "Catalog")}</Link>
+                            <Link to="/about" className="text-sm font-medium text-ink-700 hover:text-navy-800 transition-colors">{t("nav.about", "About")}</Link>
+                            <Link to="/contact" className="text-sm font-medium text-ink-700 hover:text-navy-800 transition-colors">{t("nav.contact", "Contact")}</Link>
                             {isAdmin && (
-                                <Link to="/admin" className="text-sm font-medium text-ink-700 hover:text-navy-800 transition-colors">Admin</Link>
+                                <Link to="/admin" className="text-sm font-medium text-ink-700 hover:text-navy-800 transition-colors">{t("nav.admin", "Admin")}</Link>
                             )}
                         </div>
                     </div>
@@ -48,8 +48,8 @@ export default function Navbar() {
                             <Link
                                 to={user ? "/cart" : "/login"}
                                 className="text-ink-700 hover:text-navy-800 transition-colors relative p-1.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-700"
-                                aria-label="View cart"
-                                title={user ? "View cart" : "Sign in to view cart"}
+                                aria-label={t("nav.viewCart", "View cart")}
+                                title={user ? t("nav.viewCart", "View cart") : t("nav.signInToCart", "Sign in to view cart")}
                             >
                                 <ShoppingCart className="w-5 h-5" aria-hidden="true" />
                             </Link>
@@ -60,17 +60,17 @@ export default function Navbar() {
                                 <Link to="/perfil" className="text-sm font-medium text-ink-700 hover:text-navy-800 transition-colors flex items-center gap-1.5">
                                     <User className="w-4 h-4" aria-hidden="true" /> {user.name}
                                 </Link>
-                                <button onClick={handleLogout} className="text-ink-700/60 hover:text-red-700 transition-colors p-1 focus:outline-none focus:ring-2 focus:ring-red-500 rounded-lg" title="Log out" aria-label="Log out">
+                                <button onClick={handleLogout} className="text-ink-700/60 hover:text-red-700 transition-colors p-1 focus:outline-none focus:ring-2 focus:ring-red-500 rounded-lg" title={t("nav.logOut", "Log out")} aria-label={t("nav.logOut", "Log out")}>
                                     <LogOut className="w-4 h-4" aria-hidden="true" />
                                 </button>
                             </div>
                         ) : (
                             <div className="flex items-center space-x-3 border-l border-sand-300 pl-4">
                                 <Link to="/login" className="text-sm font-medium text-ink-700 hover:text-navy-800 transition-colors flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-navy-700 rounded-lg px-2 py-1">
-                                    <LogIn className="w-4 h-4" aria-hidden="true" /> Sign In
+                                    <LogIn className="w-4 h-4" aria-hidden="true" /> {t("nav.signIn", "Sign In")}
                                 </Link>
                                 <Link to="/register" className="text-xs font-medium bg-navy-800 text-white px-3 py-1.5 rounded-lg hover:bg-navy-900 transition-colors focus:outline-none focus:ring-2 focus:ring-navy-700 focus:ring-offset-1">
-                                    Create Account
+                                    {t("nav.createAccount", "Create Account")}
                                 </Link>
                             </div>
                         )}
@@ -150,11 +150,11 @@ export default function Navbar() {
             {isMenuOpen && (
                 <div className="md:hidden bg-cream-50 border-t border-sand-300 shadow-lg absolute w-full z-40" id="mobile-menu">
                     <div className="px-4 py-3 space-y-2">
-                        <Link to="/catalog" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-ink-700 hover:bg-cream-200 hover:text-navy-800 rounded-lg">Catalog</Link>
-                        <Link to="/about" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-ink-700 hover:bg-cream-200 hover:text-navy-800 rounded-lg">About</Link>
-                        <Link to="/contact" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-ink-700 hover:bg-cream-200 hover:text-navy-800 rounded-lg">Contact</Link>
+                        <Link to="/catalog" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-ink-700 hover:bg-cream-200 hover:text-navy-800 rounded-lg">{t("nav.catalog", "Catalog")}</Link>
+                        <Link to="/about" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-ink-700 hover:bg-cream-200 hover:text-navy-800 rounded-lg">{t("nav.about", "About")}</Link>
+                        <Link to="/contact" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-ink-700 hover:bg-cream-200 hover:text-navy-800 rounded-lg">{t("nav.contact", "Contact")}</Link>
                         {isAdmin && (
-                            <Link to="/admin" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-ink-700 hover:bg-cream-200 hover:text-navy-800 rounded-lg">Admin</Link>
+                            <Link to="/admin" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-ink-700 hover:bg-cream-200 hover:text-navy-800 rounded-lg">{t("nav.admin", "Admin")}</Link>
                         )}
 
                         <div className="border-t border-sand-300 my-2"></div>
@@ -162,26 +162,26 @@ export default function Navbar() {
                         {user ? (
                             <>
                                 <Link to="/perfil" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-ink-700 hover:bg-cream-200 rounded-lg flex items-center gap-2">
-                                    <User className="w-4 h-4" aria-hidden="true" /> My Profile
+                                    <User className="w-4 h-4" aria-hidden="true" /> {t("nav.myProfile", "My Profile")}
                                 </Link>
                                 {isCustomer && (
                                     <Link to="/cart" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-ink-700 hover:bg-cream-200 rounded-lg flex items-center gap-2">
-                                        <ShoppingCart className="w-4 h-4" aria-hidden="true" /> My Cart
+                                        <ShoppingCart className="w-4 h-4" aria-hidden="true" /> {t("nav.myCart", "My Cart")}
                                     </Link>
                                 )}
                                 <button onClick={() => { handleLogout(); toggleMenu(); }} className="block w-full text-left px-3 py-2 text-sm font-medium text-red-700 hover:bg-red-50 rounded-lg flex items-center gap-2">
-                                    <LogOut className="w-4 h-4" aria-hidden="true" /> Log Out
+                                    <LogOut className="w-4 h-4" aria-hidden="true" /> {t("nav.logOut", "Log Out")}
                                 </button>
                             </>
                         ) : (
                             <>
                                 <Link to="/cart" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-ink-700 hover:bg-cream-200 rounded-lg flex items-center gap-2">
-                                    <ShoppingCart className="w-4 h-4" aria-hidden="true" /> My Cart
+                                    <ShoppingCart className="w-4 h-4" aria-hidden="true" /> {t("nav.myCart", "My Cart")}
                                 </Link>
                                 <Link to="/login" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-ink-700 hover:bg-cream-200 rounded-lg flex items-center gap-2">
-                                    <LogIn className="w-4 h-4" aria-hidden="true" /> Sign In
+                                    <LogIn className="w-4 h-4" aria-hidden="true" /> {t("nav.signIn", "Sign In")}
                                 </Link>
-                                <Link to="/register" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-navy-800 hover:bg-cream-200 rounded-lg">Create Account</Link>
+                                <Link to="/register" onClick={toggleMenu} className="block px-3 py-2 text-sm font-medium text-navy-800 hover:bg-cream-200 rounded-lg">{t("nav.createAccount", "Create Account")}</Link>
                             </>
                         )}
                     </div>

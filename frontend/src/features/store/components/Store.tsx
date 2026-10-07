@@ -10,12 +10,14 @@ import SEO from "../../../shared/components/SEO";
 import Pagination from "../../../shared/components/Pagination";
 import { getErrorMessage } from "../../../lib/http-error";
 import { formatCurrency } from "../../../shared/utils/formatCurrency";
+import { useLanguage } from "../../../lib/i18n-context";
 
 const PAGE_SIZE = 8;
 const SEARCH_DEBOUNCE_MS = 300;
 
 // This component displays products in a grid filterable by category and includes the add-to-cart action.
 export default function Store() {
+    const { t } = useLanguage();
     const [products, setProducts] = useState<Product[]>([]);
     const [totalCount, setTotalCount] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
@@ -82,10 +84,10 @@ export default function Store() {
     const renderBadges = (product: Product) => {
         const isNew = product.createdAt && (new Date().getTime() - new Date(product.createdAt).getTime()) / (1000 * 3600 * 24) <= 7;
 
-        if (product.stock === 0) return <span className="bg-ink-900 text-white text-xs uppercase font-bold px-2 py-1 rounded-md shadow-sm">Sold Out</span>;
-        if (product.stock > 0 && product.stock <= 5) return <span className="bg-ink-900 text-white text-xs uppercase font-bold px-2 py-1 rounded-md shadow-sm">Only {product.stock} left!</span>;
+        if (product.stock === 0) return <span className="bg-ink-900 text-white text-xs uppercase font-bold px-2 py-1 rounded-md shadow-sm">{t("store.soldOut", "Sold Out")}</span>;
+        if (product.stock > 0 && product.stock <= 5) return <span className="bg-ink-900 text-white text-xs uppercase font-bold px-2 py-1 rounded-md shadow-sm">{t("store.onlyLeft", `Only ${product.stock} left!`).replace("{count}", String(product.stock))}</span>;
         if (product.discountPercentage > 0) return <span className="bg-accent-500 text-white text-xs uppercase font-bold px-2 py-1 rounded-md shadow-sm">-{product.discountPercentage}% OFF</span>;
-        if (isNew) return <span className="bg-white text-accent-500 border border-accent-500 text-xs uppercase font-bold px-2 py-1 rounded-md shadow-sm">New</span>;
+        if (isNew) return <span className="bg-white text-accent-500 border border-accent-500 text-xs uppercase font-bold px-2 py-1 rounded-md shadow-sm">{t("store.new", "New")}</span>;
         return null;
     };
 
@@ -103,23 +105,23 @@ export default function Store() {
 
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-            <SEO title="Product Catalog" description="Explore our complete product catalog with real-time stock control and special offers." />
+            <SEO title={t("store.title", "Product Catalog")} description={t("store.subtitle", "Explore our complete product catalog with real-time stock control and special offers.")} />
             <div className="text-center space-y-4 mb-8">
-                <h1 className="text-3xl font-bold text-ink-900">Product Catalog</h1>
-                <p className="text-ink-700">Explore our selection and find what you need.</p>
+                <h1 className="text-3xl font-bold text-ink-900">{t("store.title", "Product Catalog")}</h1>
+                <p className="text-ink-700">{t("store.subtitle", "Explore our selection and find what you need.")}</p>
             </div>
 
             <div className="space-y-6">
                 <div className="max-w-md mx-auto relative">
-                    <label htmlFor="store-search" className="sr-only">Search products</label>
+                    <label htmlFor="store-search" className="sr-only">{t("store.searchPlaceholder", "Search products by name or category...")}</label>
                     <input
                         id="store-search"
                         type="search"
-                        placeholder="Search products by name or category..."
+                        placeholder={t("store.searchPlaceholder", "Search products by name or category...")}
                         value={searchInput}
                         onChange={(e) => setSearchInput(e.target.value)}
                         className="w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-900 border border-sand-300 dark:border-slate-700 rounded-xl shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:border-accent-500 text-sm transition-all min-h-[44px]"
-                        aria-label="Search products by name or category"
+                        aria-label={t("store.searchPlaceholder", "Search products by name or category")}
                     />
                     <Search className="w-5 h-5 text-ink-700/40 dark:text-slate-400 absolute left-3 top-3.5" aria-hidden="true" />
                 </div>
@@ -136,7 +138,7 @@ export default function Store() {
                             }`}
                             aria-pressed={selectedCategory === cat}
                         >
-                            {cat}
+                            {t(`cat.${cat}`, cat)}
                         </button>
                     ))}
                 </div>
@@ -149,8 +151,8 @@ export default function Store() {
             ) : products.length === 0 ? (
                 <div className="text-center p-16 bg-white border border-sand-300 rounded-2xl flex flex-col items-center justify-center">
                     <ShoppingCart className="w-16 h-16 text-sand-400 mb-4" />
-                    <h3 className="text-lg font-medium text-ink-900">No products available</h3>
-                    <p className="text-ink-700 mt-1">Try selecting a different category.</p>
+                    <h3 className="text-lg font-medium text-ink-900">{t("store.noProducts", "No products available")}</h3>
+                    <p className="text-ink-700 mt-1">{t("store.tryCategory", "Try selecting a different category.")}</p>
                 </div>
             ) : (
                 <div className="space-y-8">
@@ -165,7 +167,7 @@ export default function Store() {
                                 <div key={product.productResourceId} className="bg-white border border-sand-300 rounded-2xl shadow-sm overflow-hidden flex flex-col transition-transform hover:-translate-y-1 hover:shadow-md relative group">
                                     <div className="absolute top-2 left-2 right-2 flex justify-between items-start z-10 pointer-events-none">
                                         <span className="bg-ink-900/75 text-white text-xs uppercase font-bold px-2 py-1 rounded-md backdrop-blur-sm">
-                                            {product.category || 'Featured'}
+                                            {t(`cat.${product.category}`, product.category || 'Featured')}
                                         </span>
                                         <div className="flex flex-col gap-1 items-end">
                                             {renderBadges(product)}
@@ -205,11 +207,11 @@ export default function Store() {
                                                     className="w-full bg-accent-500 text-white py-2.5 px-4 rounded-xl font-medium hover:bg-accent-600 transition-colors shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 flex items-center justify-center gap-2 min-h-[44px]"
                                                     aria-label={`Add ${product.name} to cart`}
                                                 >
-                                                    <ShoppingCart className="w-4 h-4" aria-hidden="true" /> Add to Cart
+                                                    <ShoppingCart className="w-4 h-4" aria-hidden="true" /> {t("store.addToCart", "Add to Cart")}
                                                 </button>
                                             ) : (
                                                 <button disabled className="w-full bg-cream-200 dark:bg-slate-800 text-ink-700/40 dark:text-slate-500 py-2.5 rounded-xl font-medium cursor-not-allowed border border-sand-300 dark:border-slate-700 min-h-[44px] flex items-center justify-center">
-                                                    Sold Out
+                                                    {t("store.soldOut", "Sold Out")}
                                                 </button>
                                             )}
                                         </div>
@@ -219,7 +221,7 @@ export default function Store() {
                         })}
                     </div>
 
-                    <p className="text-center text-sm text-ink-700">{totalCount} results</p>
+                    <p className="text-center text-sm text-ink-700">{totalCount} {t("store.results", "results")}</p>
                     <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
                 </div>
             )}
