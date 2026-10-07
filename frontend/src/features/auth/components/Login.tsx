@@ -41,12 +41,12 @@ export default function Login() {
 
             <div className="relative z-10 w-full max-w-md">
                 <div className="flex items-center justify-between mb-4 px-1">
-                    <BackButton className="text-cream-100 hover:text-white" />
+                    <BackButton className="text-cream-100 hover:text-white dark:text-white dark:hover:text-white" />
                     <div className="flex items-center gap-3">
                         <LanguageDropdown />
-                        <Link to="/" className="flex items-center gap-2 text-white dark:text-[#014681] hover:opacity-90 transition-opacity">
-                            <Store className="w-6 h-6 text-white dark:text-[#014681]" aria-hidden="true" />
-                            <span className="font-bold text-xl tracking-tight text-white dark:text-[#014681]">ShelfMart</span>
+                        <Link to="/" className="flex items-center gap-2 text-white dark:text-white hover:opacity-90 transition-opacity">
+                            <Store className="w-6 h-6 text-white dark:text-white" aria-hidden="true" />
+                            <span className="font-bold text-xl tracking-tight text-white dark:text-white">ShelfMart</span>
                         </Link>
                     </div>
                 </div>
