@@ -9,6 +9,7 @@ import SEO from "../../../shared/components/SEO";
 import ConfirmDialog from "../../../shared/components/ConfirmDialog";
 import { getErrorMessage } from "../../../lib/http-error";
 import { formatCurrency } from "../../../shared/utils/formatCurrency";
+import { translateProductName } from "../../../lib/translations";
 
 const statusBadgeClasses: Record<string, string> = {
     Pending: "bg-amber-100 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-800",
@@ -20,7 +21,7 @@ const statusBadgeClasses: Record<string, string> = {
 
 export default function Profile() {
     const { user } = useAuth();
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
     const [orders, setOrders] = useState<Cart[]>([]);
     const [loading, setLoading] = useState(true);
     const [pendingCancelOrderId, setPendingCancelOrderId] = useState<string | null>(null);
@@ -104,11 +105,14 @@ export default function Profile() {
                                 <div className="space-y-2">
                                     <p className="text-xs font-bold text-ink-700 dark:text-slate-400 uppercase tracking-wider">{t("profile.orderId", "Order ID:")} #{order.orderId.substring(0, 8).toUpperCase()}</p>
                                     <ul className="list-disc list-inside text-sm text-ink-700 dark:text-slate-300 space-y-1">
-                                        {order.items.map((item: CartItem) => (
-                                            <li key={item.productId} className="font-medium">
-                                                {item.quantity}x {item.productName} <span className="text-ink-700/70 dark:text-slate-400 font-normal">({formatCurrency(item.unitPrice)} each)</span>
-                                            </li>
-                                        ))}
+                                        {order.items.map((item: CartItem) => {
+                                            const translatedName = translateProductName(item.productName, language);
+                                            return (
+                                                <li key={item.productId} className="font-medium">
+                                                    {item.quantity}x {translatedName} <span className="text-ink-700/70 dark:text-slate-400 font-normal">({formatCurrency(item.unitPrice)} each)</span>
+                                                </li>
+                                            );
+                                        })}
                                     </ul>
                                 </div>
                                 <div className="text-left md:text-right border-t md:border-t-0 border-sand-300 dark:border-slate-700 pt-4 md:pt-0 flex flex-col justify-end gap-2">

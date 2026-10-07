@@ -11,13 +11,14 @@ import Pagination from "../../../shared/components/Pagination";
 import { getErrorMessage } from "../../../lib/http-error";
 import { formatCurrency } from "../../../shared/utils/formatCurrency";
 import { useLanguage } from "../../../lib/i18n-context";
+import { translateProduct } from "../../../lib/translations";
 
 const PAGE_SIZE = 8;
 const SEARCH_DEBOUNCE_MS = 300;
 
 // This component displays products in a grid filterable by category and includes the add-to-cart action.
 export default function Store() {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
     const [products, setProducts] = useState<Product[]>([]);
     const [totalCount, setTotalCount] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
@@ -86,7 +87,7 @@ export default function Store() {
 
         if (product.stock === 0) return <span className="bg-ink-900 text-white text-xs uppercase font-bold px-2 py-1 rounded-md shadow-sm">{t("store.soldOut", "Sold Out")}</span>;
         if (product.stock > 0 && product.stock <= 5) return <span className="bg-ink-900 text-white text-xs uppercase font-bold px-2 py-1 rounded-md shadow-sm">{t("store.onlyLeft", `Only ${product.stock} left!`).replace("{count}", String(product.stock))}</span>;
-        if (product.discountPercentage > 0) return <span className="bg-accent-500 text-white text-xs uppercase font-bold px-2 py-1 rounded-md shadow-sm">-{product.discountPercentage}% OFF</span>;
+        if (product.discountPercentage > 0) return <span className="bg-accent-500 text-white text-xs uppercase font-bold px-2 py-1 rounded-md shadow-sm">{t("store.discountOff", `-${product.discountPercentage}% OFF`).replace("{pct}", String(product.discountPercentage))}</span>;
         if (isNew) return <span className="bg-white text-accent-500 border border-accent-500 text-xs uppercase font-bold px-2 py-1 rounded-md shadow-sm">{t("store.new", "New")}</span>;
         return null;
     };
@@ -159,6 +160,7 @@ export default function Store() {
                     <h2 className="sr-only">Products</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         {products.map((product) => {
+                            const p = translateProduct(product, language);
                             const finalPrice = product.discountPercentage > 0
                                 ? product.price - (product.price * (product.discountPercentage / 100))
                                 : product.price;
@@ -174,26 +176,26 @@ export default function Store() {
                                         </div>
                                     </div>
 
-                                    <Link to={`/products/${product.productResourceId}`} className="h-48 bg-cream-100 flex items-center justify-center overflow-hidden block" aria-label={`View details for ${product.name}`}>
+                                    <Link to={`/products/${product.productResourceId}`} className="h-48 bg-cream-100 flex items-center justify-center overflow-hidden block" aria-label={t("store.viewDetailsFor", `View details for ${p.name}`).replace("{name}", p.name)}>
                                         {product.imageUrl ? (
-                                            <img
-                                                src={product.imageUrl}
-                                                alt={product.name}
-                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                                loading="lazy"
-                                                onError={(e) => {
-                                                    e.currentTarget.onerror = null;
-                                                    e.currentTarget.src = "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80";
-                                                }}
-                                            />
-                                        ) : (
-                                            <span className="text-ink-700 text-sm font-medium">No image</span>
-                                        )}
+                                             <img
+                                                 src={product.imageUrl}
+                                                 alt={p.name}
+                                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                                 loading="lazy"
+                                                 onError={(e) => {
+                                                     e.currentTarget.onerror = null;
+                                                     e.currentTarget.src = "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80";
+                                                 }}
+                                             />
+                                         ) : (
+                                             <span className="text-ink-700 text-sm font-medium">{t("product.noImage", "No image")}</span>
+                                         )}
                                     </Link>
 
                                     <div className="p-5 flex-1 flex flex-col">
                                         <Link to={`/products/${product.productResourceId}`} className="block">
-                                            <h3 className="font-bold text-ink-900 text-lg mb-1 line-clamp-1 hover:text-navy-800 transition-colors" title={product.name}>{product.name}</h3>
+                                            <h3 className="font-bold text-ink-900 text-lg mb-1 line-clamp-1 hover:text-navy-800 transition-colors" title={p.name}>{p.name}</h3>
                                         </Link>
                                         <div className="flex items-baseline gap-2 mb-4">
                                             <p className="text-2xl font-bold text-accent-500">{formatCurrency(finalPrice)}</p>
@@ -205,7 +207,7 @@ export default function Store() {
                                                 <button
                                                     onClick={() => handleAddToCart(product.productResourceId)}
                                                     className="w-full bg-accent-500 text-white py-2.5 px-4 rounded-xl font-medium hover:bg-accent-600 transition-colors shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 flex items-center justify-center gap-2 min-h-[44px]"
-                                                    aria-label={`Add ${product.name} to cart`}
+                                                    aria-label={t("store.addToCartAria", `Add ${p.name} to cart`).replace("{name}", p.name)}
                                                 >
                                                     <ShoppingCart className="w-4 h-4" aria-hidden="true" /> {t("store.addToCart", "Add to Cart")}
                                                 </button>

@@ -8,6 +8,7 @@ import SEO from "../../../shared/components/SEO";
 import { formatCurrency } from "../../../shared/utils/formatCurrency";
 import { getErrorMessage } from "../../../lib/http-error";
 import { useLanguage } from "../../../lib/i18n-context";
+import { translateProduct } from "../../../lib/translations";
 import toast from "react-hot-toast";
 import {
     ShoppingCart,
@@ -25,7 +26,7 @@ export default function ProductDetail() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const { isAuthenticated, isCustomer } = useAuth();
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
 
     const [product, setProduct] = useState<Product | null>(null);
     const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
@@ -79,22 +80,30 @@ export default function ProductDetail() {
         if (!product) return;
 
         if (!isAuthenticated) {
-            toast.error("Please sign in to add items to your cart.");
+            toast.error(t("product.signInRequired", "Please sign in to add items to your cart."));
             navigate("/login");
             return;
         }
 
         if (!isCustomer) {
-            toast.error("Admin accounts cannot make purchases.");
+            toast.error(t("product.adminRestriction", "Admin accounts cannot make purchases."));
             return;
         }
 
         if (redirectToCart) setBuyingNow(true);
         else setAdding(true);
 
+        const currentDisplay = translateProduct(product, language);
+        const unitWord = quantity === 1 ? t("product.unit", "unit") : t("product.units", "units");
+
         try {
             await addToCart({ productId: product.productResourceId, quantity });
-            toast.success(`${quantity} ${quantity === 1 ? "unit" : "units"} of "${product.name}" added to cart!`);
+            toast.success(
+                t("product.addedToCartToast", `${quantity} ${unitWord} of "${currentDisplay.name}" added to cart!`)
+                    .replace("{quantity}", String(quantity))
+                    .replace("{unit}", unitWord)
+                    .replace("{name}", currentDisplay.name)
+            );
             if (redirectToCart) {
                 navigate("/cart");
             }
@@ -146,10 +155,11 @@ export default function ProductDetail() {
         : product.price;
 
     const isNew = product.createdAt && (new Date().getTime() - new Date(product.createdAt).getTime()) / (1000 * 3600 * 24) <= 30;
+    const displayProduct = translateProduct(product, language);
 
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-12">
-            <SEO title={product.name} description={product.description || `${product.name} in ShelfMart`} />
+            <SEO title={displayProduct.name} description={displayProduct.description || `${displayProduct.name} in ShelfMart`} />
 
             {/* Breadcrumb & Navigation */}
             <nav className="flex items-center gap-2 text-xs sm:text-sm text-ink-700/80 overflow-x-auto whitespace-nowrap" aria-label="Breadcrumb">
@@ -159,7 +169,7 @@ export default function ProductDetail() {
                 <span>/</span>
                 <span className="text-ink-900 font-medium">{t(`cat.${product.category}`, product.category)}</span>
                 <span>/</span>
-                <span className="text-ink-900/60 truncate max-w-xs">{product.name}</span>
+                <span className="text-ink-900/60 truncate max-w-xs">{displayProduct.name}</span>
             </nav>
 
             {/* Product Overview Layout */}
@@ -173,7 +183,7 @@ export default function ProductDetail() {
                         </span>
                         {product.discountPercentage > 0 && (
                             <span className="bg-accent-500 text-white text-xs uppercase font-bold px-3 py-1 rounded-md shadow-sm">
-                                -{product.discountPercentage}% OFF
+                                {t("product.discountOff", `-${product.discountPercentage}% OFF`).replace("{pct}", String(product.discountPercentage))}
                             </span>
                         )}
                         {isNew && (
@@ -187,7 +197,7 @@ export default function ProductDetail() {
                         {product.imageUrl ? (
                             <img
                                 src={product.imageUrl}
-                                alt={product.name}
+                                alt={displayProduct.name}
                                 className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                                 loading="eager"
                                 onError={(e) => {
@@ -208,7 +218,7 @@ export default function ProductDetail() {
                             {t(`cat.${product.category}`, product.category)}
                         </div>
                         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-ink-900 tracking-tight leading-tight">
-                            {product.name}
+                            {displayProduct.name}
                         </h1>
                     </div>
 
@@ -253,7 +263,7 @@ export default function ProductDetail() {
                     <div className="space-y-2">
                         <h2 className="text-sm font-semibold uppercase tracking-wider text-ink-900">{t("product.description", "Description")}</h2>
                         <p className="text-ink-700 text-sm sm:text-base leading-relaxed whitespace-pre-line">
-                            {product.description || "Premium quality product carefully tested and cataloged for the ShelfMart marketplace."}
+                            {displayProduct.description || "Premium quality product carefully tested and cataloged for the ShelfMart marketplace."}
                         </p>
                     </div>
 
@@ -361,6 +371,7 @@ export default function ProductDetail() {
 
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
                         {relatedProducts.map(rel => {
+                            const relDisplay = translateProduct(rel, language);
                             const relFinalPrice = rel.discountPercentage > 0
                                 ? rel.price - (rel.price * (rel.discountPercentage / 100))
                                 : rel.price;
@@ -375,7 +386,7 @@ export default function ProductDetail() {
                                         {rel.imageUrl ? (
                                             <img
                                                 src={rel.imageUrl}
-                                                alt={rel.name}
+                                                alt={relDisplay.name}
                                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                                 loading="lazy"
                                                 onError={(e) => {
@@ -393,8 +404,8 @@ export default function ProductDetail() {
                                         )}
                                     </div>
                                     <div className="p-4 flex-1 flex flex-col justify-between">
-                                        <h3 className="font-medium text-ink-900 text-sm line-clamp-2 mb-2" title={rel.name}>
-                                            {rel.name}
+                                        <h3 className="font-medium text-ink-900 text-sm line-clamp-2 mb-2" title={relDisplay.name}>
+                                            {relDisplay.name}
                                         </h3>
                                         <div className="flex items-baseline gap-2 mt-auto">
                                             <span className="text-sm sm:text-base font-bold text-navy-800">

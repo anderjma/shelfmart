@@ -10,10 +10,11 @@ import ConfirmDialog from "../../../shared/components/ConfirmDialog";
 import { getErrorMessage } from "../../../lib/http-error";
 import { formatCurrency } from "../../../shared/utils/formatCurrency";
 import { useLanguage } from "../../../lib/i18n-context";
+import { translateProductName } from "../../../lib/translations";
 
 // This component lists the selected items, calculates totals, and initiates the checkout process.
 export default function Cart() {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
     const [cart, setCart] = useState<CartType | null>(null);
     const [loading, setLoading] = useState(true);
     const [processing, setProcessing] = useState(false);
@@ -57,7 +58,7 @@ export default function Cart() {
         try {
             const updatedCart = await removeFromCart(pendingRemoval);
             setCart(updatedCart);
-            toast.success("Product removed from cart");
+            toast.success(t("cart.removedToast", "Product removed from cart"));
         } catch (err) {
             toast.error(getErrorMessage(err, "Error removing the product."));
         } finally {
@@ -69,7 +70,7 @@ export default function Cart() {
         setProcessing(true);
         try {
             await checkout();
-            toast.success("Purchase processed successfully!");
+            toast.success(t("cart.purchasedToast", "Purchase processed successfully!"));
             navigate("/");
         } catch (err) {
             toast.error(getErrorMessage(err, "Error processing the purchase."));
@@ -115,41 +116,44 @@ export default function Cart() {
                             </tr>
                         </thead>
                         <tbody className="bg-white dark:bg-slate-900 divide-y divide-sand-300 dark:divide-slate-700">
-                            {cart.items.map((item) => (
-                                <tr key={item.productId} className="hover:bg-cream-50 dark:hover:bg-slate-800/40 transition-colors">
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-ink-900 dark:text-white">{item.productName}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-ink-700 dark:text-slate-300">{formatCurrency(item.unitPrice)}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-ink-700 dark:text-slate-300">
-                                        <div className="flex items-center gap-2">
+                            {cart.items.map((item) => {
+                                const translatedName = translateProductName(item.productName, language);
+                                return (
+                                    <tr key={item.productId} className="hover:bg-cream-50 dark:hover:bg-slate-800/40 transition-colors">
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-ink-900 dark:text-white">{translatedName}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-ink-700 dark:text-slate-300">{formatCurrency(item.unitPrice)}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-ink-700 dark:text-slate-300">
+                                            <div className="flex items-center gap-2">
+                                                <button
+                                                    onClick={() => handleUpdateQuantity(item.productId, item.quantity, -1)}
+                                                    className="p-1.5 rounded-lg bg-cream-100 dark:bg-slate-800 hover:bg-cream-200 dark:hover:bg-slate-700 text-ink-700 dark:text-slate-200 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500"
+                                                    aria-label={t("cart.decreaseAria", `Decrease quantity of ${translatedName}`).replace("{name}", translatedName)}
+                                                >
+                                                    <Minus className="w-3.5 h-3.5" aria-hidden="true" />
+                                                </button>
+                                                <span className="font-semibold text-ink-900 dark:text-white w-8 text-center">{item.quantity}</span>
+                                                <button
+                                                    onClick={() => handleUpdateQuantity(item.productId, item.quantity, 1)}
+                                                    className="p-1.5 rounded-lg bg-cream-100 dark:bg-slate-800 hover:bg-cream-200 dark:hover:bg-slate-700 text-ink-700 dark:text-slate-200 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500"
+                                                    aria-label={t("cart.increaseAria", `Increase quantity of ${translatedName}`).replace("{name}", translatedName)}
+                                                >
+                                                    <Plus className="w-3.5 h-3.5" aria-hidden="true" />
+                                                </button>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-ink-900 dark:text-white font-semibold">{formatCurrency(item.subTotal)}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                             <button
-                                                onClick={() => handleUpdateQuantity(item.productId, item.quantity, -1)}
-                                                className="p-1.5 rounded-lg bg-cream-100 dark:bg-slate-800 hover:bg-cream-200 dark:hover:bg-slate-700 text-ink-700 dark:text-slate-200 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500"
-                                                aria-label={`Decrease quantity of ${item.productName}`}
+                                                onClick={() => setPendingRemoval(item.productId)}
+                                                className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 p-2 rounded-xl hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors min-h-[36px] min-w-[36px] inline-flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+                                                aria-label={t("cart.removeAria", `Remove ${translatedName} from cart`).replace("{name}", translatedName)}
                                             >
-                                                <Minus className="w-3.5 h-3.5" aria-hidden="true" />
+                                                <Trash2 className="w-4 h-4" aria-hidden="true" />
                                             </button>
-                                            <span className="font-semibold text-ink-900 dark:text-white w-8 text-center">{item.quantity}</span>
-                                            <button
-                                                onClick={() => handleUpdateQuantity(item.productId, item.quantity, 1)}
-                                                className="p-1.5 rounded-lg bg-cream-100 dark:bg-slate-800 hover:bg-cream-200 dark:hover:bg-slate-700 text-ink-700 dark:text-slate-200 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500"
-                                                aria-label={`Increase quantity of ${item.productName}`}
-                                            >
-                                                <Plus className="w-3.5 h-3.5" aria-hidden="true" />
-                                            </button>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-ink-900 dark:text-white font-semibold">{formatCurrency(item.subTotal)}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <button
-                                            onClick={() => setPendingRemoval(item.productId)}
-                                            className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 p-2 rounded-xl hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors min-h-[36px] min-w-[36px] inline-flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
-                                            aria-label={`Remove ${item.productName} from cart`}
-                                        >
-                                            <Trash2 className="w-4 h-4" aria-hidden="true" />
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
+                                        </td>
+                                    </tr>
+                                );
+                            })}
                         </tbody>
                     </table>
                 </div>
@@ -157,43 +161,46 @@ export default function Cart() {
 
             {/* Mobile cards */}
             <div className="block sm:hidden space-y-4 px-4 sm:px-0" aria-live="polite">
-                {cart.items.map((item) => (
-                    <div key={item.productId} className="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-xs border border-sand-300 dark:border-slate-700 flex flex-col gap-3">
-                        <div className="flex justify-between items-start gap-2">
-                            <h3 className="font-semibold text-ink-900 dark:text-white text-base leading-tight">{item.productName}</h3>
-                            <span className="text-base font-bold text-ink-900 dark:text-white whitespace-nowrap">{formatCurrency(item.subTotal)}</span>
-                        </div>
-                        <div className="flex justify-between items-center text-sm">
-                            <span className="text-ink-700 dark:text-slate-300">Price: {formatCurrency(item.unitPrice)}</span>
-                            <div className="flex items-center gap-3">
-                                <div className="flex items-center gap-1.5 bg-cream-100 dark:bg-slate-800 border border-sand-300 dark:border-slate-700 rounded-xl px-2 py-1">
+                {cart.items.map((item) => {
+                    const translatedName = translateProductName(item.productName, language);
+                    return (
+                        <div key={item.productId} className="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-xs border border-sand-300 dark:border-slate-700 flex flex-col gap-3">
+                            <div className="flex justify-between items-start gap-2">
+                                <h3 className="font-semibold text-ink-900 dark:text-white text-base leading-tight">{translatedName}</h3>
+                                <span className="text-base font-bold text-ink-900 dark:text-white whitespace-nowrap">{formatCurrency(item.subTotal)}</span>
+                            </div>
+                            <div className="flex justify-between items-center text-sm">
+                                <span className="text-ink-700 dark:text-slate-300">{t("cart.price", "Price")}: {formatCurrency(item.unitPrice)}</span>
+                                <div className="flex items-center gap-3">
+                                    <div className="flex items-center gap-1.5 bg-cream-100 dark:bg-slate-800 border border-sand-300 dark:border-slate-700 rounded-xl px-2 py-1">
+                                        <button
+                                            onClick={() => handleUpdateQuantity(item.productId, item.quantity, -1)}
+                                            className="p-1.5 text-ink-700 dark:text-slate-200 hover:text-ink-900 dark:hover:text-white min-h-[36px] min-w-[36px] flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500"
+                                            aria-label={t("cart.decreaseAria", `Decrease quantity of ${translatedName}`).replace("{name}", translatedName)}
+                                        >
+                                            <Minus className="w-3.5 h-3.5" aria-hidden="true" />
+                                        </button>
+                                        <span className="font-semibold text-ink-900 dark:text-white text-xs w-6 text-center">{item.quantity}</span>
+                                        <button
+                                            onClick={() => handleUpdateQuantity(item.productId, item.quantity, 1)}
+                                            className="p-1.5 text-ink-700 dark:text-slate-200 hover:text-ink-900 dark:hover:text-white min-h-[36px] min-w-[36px] flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500"
+                                            aria-label={t("cart.increaseAria", `Increase quantity of ${translatedName}`).replace("{name}", translatedName)}
+                                        >
+                                            <Plus className="w-3.5 h-3.5" aria-hidden="true" />
+                                        </button>
+                                    </div>
                                     <button
-                                        onClick={() => handleUpdateQuantity(item.productId, item.quantity, -1)}
-                                        className="p-1.5 text-ink-700 dark:text-slate-200 hover:text-ink-900 dark:hover:text-white min-h-[36px] min-w-[36px] flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500"
-                                        aria-label={`Decrease quantity of ${item.productName}`}
+                                        onClick={() => setPendingRemoval(item.productId)}
+                                        className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 p-2 rounded-xl hover:bg-red-50 dark:hover:bg-red-950/40 min-h-[40px] min-w-[40px] flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+                                        aria-label={t("cart.removeAria", `Remove ${translatedName} from cart`).replace("{name}", translatedName)}
                                     >
-                                        <Minus className="w-3.5 h-3.5" aria-hidden="true" />
-                                    </button>
-                                    <span className="font-semibold text-ink-900 dark:text-white text-xs w-6 text-center">{item.quantity}</span>
-                                    <button
-                                        onClick={() => handleUpdateQuantity(item.productId, item.quantity, 1)}
-                                        className="p-1.5 text-ink-700 dark:text-slate-200 hover:text-ink-900 dark:hover:text-white min-h-[36px] min-w-[36px] flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500"
-                                        aria-label={`Increase quantity of ${item.productName}`}
-                                    >
-                                        <Plus className="w-3.5 h-3.5" aria-hidden="true" />
+                                        <Trash2 className="w-4 h-4" aria-hidden="true" />
                                     </button>
                                 </div>
-                                <button
-                                    onClick={() => setPendingRemoval(item.productId)}
-                                    className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 p-2 rounded-xl hover:bg-red-50 dark:hover:bg-red-950/40 min-h-[40px] min-w-[40px] flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
-                                    aria-label={`Remove ${item.productName} from cart`}
-                                >
-                                    <Trash2 className="w-4 h-4" aria-hidden="true" />
-                                </button>
                             </div>
                         </div>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
 
             {/* Cart summary */}

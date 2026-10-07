@@ -6,10 +6,11 @@ import type { Product } from "../../features/store/types";
 import SEO from "../components/SEO";
 import { formatCurrency } from "../utils/formatCurrency";
 import { useLanguage } from "../../lib/i18n-context";
+import { translateProduct } from "../../lib/translations";
 
 // This component presents the value proposition and the store's main calls to action.
 export default function Home() {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -98,7 +99,7 @@ export default function Home() {
                             <section>
                                 <SectionHeader title={t("home.featuredDeals", "Featured Deals")} />
                                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
-                                    {offers.map(product => <ProductCard key={`offer-${product.productResourceId}`} product={product} type="offer" t={t} />)}
+                                    {offers.map(product => <ProductCard key={`offer-${product.productResourceId}`} product={product} type="offer" t={t} language={language} />)}
                                 </div>
                             </section>
                         )}
@@ -107,7 +108,7 @@ export default function Home() {
                             <section>
                                 <SectionHeader title={t("home.newArrivals", "New Arrivals")} />
                                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
-                                    {newArrivals.map(product => <ProductCard key={`new-${product.productResourceId}`} product={product} type="new" t={t} />)}
+                                    {newArrivals.map(product => <ProductCard key={`new-${product.productResourceId}`} product={product} type="new" t={t} language={language} />)}
                                 </div>
                             </section>
                         )}
@@ -116,7 +117,7 @@ export default function Home() {
                             <section>
                                 <SectionHeader title={t("home.limitedStock", "Limited Stock")} />
                                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
-                                    {lowStock.map(product => <ProductCard key={`low-${product.productResourceId}`} product={product} type="low" t={t} />)}
+                                    {lowStock.map(product => <ProductCard key={`low-${product.productResourceId}`} product={product} type="low" t={t} language={language} />)}
                                 </div>
                             </section>
                         )}
@@ -139,7 +140,8 @@ const renderBadges = (product: Product, type: 'offer' | 'new' | 'low', t: (k: st
     );
 };
 
-const ProductCard = ({ product, type, t }: { product: Product, type: 'offer' | 'new' | 'low', t: (k: string, f?: string) => string }) => {
+const ProductCard = ({ product, type, t, language }: { product: Product, type: 'offer' | 'new' | 'low', t: (k: string, f?: string) => string, language: "es" | "en" }) => {
+    const p = translateProduct(product, language);
     const finalPrice = product.discountPercentage > 0
         ? product.price - (product.price * (product.discountPercentage / 100))
         : product.price;
@@ -158,7 +160,7 @@ const ProductCard = ({ product, type, t }: { product: Product, type: 'offer' | '
                 {product.imageUrl ? (
                     <img
                         src={product.imageUrl}
-                        alt={product.name}
+                        alt={p.name}
                         className="w-full h-full object-cover group-hover:opacity-90 transition-opacity duration-200"
                         loading="lazy"
                         onError={(e) => {
@@ -167,12 +169,12 @@ const ProductCard = ({ product, type, t }: { product: Product, type: 'offer' | '
                         }}
                     />
                 ) : (
-                    <span className="text-ink-700 text-xs font-medium">No image</span>
+                    <span className="text-ink-700 text-xs font-medium">{t("product.noImage", "No image")}</span>
                 )}
             </div>
 
             <div className="p-3 sm:p-4 flex-1 flex flex-col justify-between bg-white rounded-b-2xl">
-                <h3 className="font-medium text-ink-900 text-sm sm:text-base line-clamp-2 leading-snug mb-3" title={product.name}>{product.name}</h3>
+                <h3 className="font-medium text-ink-900 text-sm sm:text-base line-clamp-2 leading-snug mb-3" title={p.name}>{p.name}</h3>
                 <div className="flex items-center gap-2 mt-auto flex-wrap">
                     <p className="text-accent-500 font-bold text-sm sm:text-base">{formatCurrency(finalPrice)}</p>
                     {product.discountPercentage > 0 && <p className="text-xs text-ink-700/60 line-through">{formatCurrency(product.price)}</p>}
