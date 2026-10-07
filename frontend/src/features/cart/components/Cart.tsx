@@ -100,47 +100,47 @@ export default function Cart() {
             </div>
 
             {/* Desktop table */}
-            <div className="hidden sm:block bg-white rounded-2xl shadow-sm overflow-hidden border border-sand-300">
+            <div className="hidden sm:block bg-white dark:bg-slate-900 rounded-2xl shadow-xs overflow-hidden border border-sand-300 dark:border-slate-700" aria-live="polite">
                 <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-sand-300">
-                        <thead className="bg-cream-100">
+                    <table className="min-w-full divide-y divide-sand-300 dark:divide-slate-700" aria-label="Shopping cart contents">
+                        <thead className="bg-cream-100 dark:bg-slate-800">
                             <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-ink-700 uppercase tracking-wider">Product</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-ink-700 uppercase tracking-wider">Unit Price</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-ink-700 uppercase tracking-wider">Quantity</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-ink-700 uppercase tracking-wider">Subtotal</th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-ink-700 uppercase tracking-wider">Actions</th>
+                                <th scope="col" className="px-6 py-3.5 text-left text-xs font-semibold text-ink-700 dark:text-slate-300 uppercase tracking-wider">Product</th>
+                                <th scope="col" className="px-6 py-3.5 text-left text-xs font-semibold text-ink-700 dark:text-slate-300 uppercase tracking-wider">Unit Price</th>
+                                <th scope="col" className="px-6 py-3.5 text-left text-xs font-semibold text-ink-700 dark:text-slate-300 uppercase tracking-wider">Quantity</th>
+                                <th scope="col" className="px-6 py-3.5 text-left text-xs font-semibold text-ink-700 dark:text-slate-300 uppercase tracking-wider">Subtotal</th>
+                                <th scope="col" className="px-6 py-3.5 text-right text-xs font-semibold text-ink-700 dark:text-slate-300 uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="bg-white divide-y divide-sand-300">
+                        <tbody className="bg-white dark:bg-slate-900 divide-y divide-sand-300 dark:divide-slate-700">
                             {cart.items.map((item) => (
-                                <tr key={item.productId}>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-ink-900">{item.productName}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-ink-700">{formatCurrency(item.unitPrice)}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-ink-700">
+                                <tr key={item.productId} className="hover:bg-cream-50 dark:hover:bg-slate-800/40 transition-colors">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-ink-900 dark:text-white">{item.productName}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-ink-700 dark:text-slate-300">{formatCurrency(item.unitPrice)}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-ink-700 dark:text-slate-300">
                                         <div className="flex items-center gap-2">
                                             <button
                                                 onClick={() => handleUpdateQuantity(item.productId, item.quantity, -1)}
-                                                className="p-1 rounded-lg bg-cream-100 hover:bg-cream-200 text-ink-700 transition-colors"
+                                                className="p-1.5 rounded-lg bg-cream-100 dark:bg-slate-800 hover:bg-cream-200 dark:hover:bg-slate-700 text-ink-700 dark:text-slate-200 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500"
                                                 aria-label={`Decrease quantity of ${item.productName}`}
                                             >
                                                 <Minus className="w-3.5 h-3.5" aria-hidden="true" />
                                             </button>
-                                            <span className="font-semibold text-ink-900 w-8 text-center">{item.quantity}</span>
+                                            <span className="font-semibold text-ink-900 dark:text-white w-8 text-center">{item.quantity}</span>
                                             <button
                                                 onClick={() => handleUpdateQuantity(item.productId, item.quantity, 1)}
-                                                className="p-1 rounded-lg bg-cream-100 hover:bg-cream-200 text-ink-700 transition-colors"
+                                                className="p-1.5 rounded-lg bg-cream-100 dark:bg-slate-800 hover:bg-cream-200 dark:hover:bg-slate-700 text-ink-700 dark:text-slate-200 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500"
                                                 aria-label={`Increase quantity of ${item.productName}`}
                                             >
                                                 <Plus className="w-3.5 h-3.5" aria-hidden="true" />
                                             </button>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-ink-900 font-medium">{formatCurrency(item.subTotal)}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-ink-900 dark:text-white font-semibold">{formatCurrency(item.subTotal)}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <button
                                             onClick={() => setPendingRemoval(item.productId)}
-                                            className="text-red-600 hover:text-red-800 p-1.5 rounded-full hover:bg-red-50 transition-colors"
+                                            className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 p-2 rounded-xl hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors min-h-[36px] min-w-[36px] inline-flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
                                             aria-label={`Remove ${item.productName} from cart`}
                                         >
                                             <Trash2 className="w-4 h-4" aria-hidden="true" />
@@ -154,28 +154,28 @@ export default function Cart() {
             </div>
 
             {/* Mobile cards */}
-            <div className="block sm:hidden space-y-4 px-4 sm:px-0">
+            <div className="block sm:hidden space-y-4 px-4 sm:px-0" aria-live="polite">
                 {cart.items.map((item) => (
-                    <div key={item.productId} className="bg-white p-4 rounded-2xl shadow-sm border border-sand-300 flex flex-col gap-3">
+                    <div key={item.productId} className="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-xs border border-sand-300 dark:border-slate-700 flex flex-col gap-3">
                         <div className="flex justify-between items-start gap-2">
-                            <h3 className="font-bold text-ink-900 text-base leading-tight">{item.productName}</h3>
-                            <span className="text-base font-bold text-ink-900 whitespace-nowrap">{formatCurrency(item.subTotal)}</span>
+                            <h3 className="font-semibold text-ink-900 dark:text-white text-base leading-tight">{item.productName}</h3>
+                            <span className="text-base font-bold text-ink-900 dark:text-white whitespace-nowrap">{formatCurrency(item.subTotal)}</span>
                         </div>
                         <div className="flex justify-between items-center text-sm">
-                            <span className="text-ink-700">Price: {formatCurrency(item.unitPrice)}</span>
+                            <span className="text-ink-700 dark:text-slate-300">Price: {formatCurrency(item.unitPrice)}</span>
                             <div className="flex items-center gap-3">
-                                <div className="flex items-center gap-1.5 bg-cream-100 border border-sand-300 rounded-lg px-1.5 py-0.5">
+                                <div className="flex items-center gap-1.5 bg-cream-100 dark:bg-slate-800 border border-sand-300 dark:border-slate-700 rounded-xl px-2 py-1">
                                     <button
                                         onClick={() => handleUpdateQuantity(item.productId, item.quantity, -1)}
-                                        className="p-0.5 text-ink-700 hover:text-ink-900"
+                                        className="p-1.5 text-ink-700 dark:text-slate-200 hover:text-ink-900 dark:hover:text-white min-h-[36px] min-w-[36px] flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500"
                                         aria-label={`Decrease quantity of ${item.productName}`}
                                     >
                                         <Minus className="w-3.5 h-3.5" aria-hidden="true" />
                                     </button>
-                                    <span className="font-semibold text-ink-900 text-xs w-6 text-center">{item.quantity}</span>
+                                    <span className="font-semibold text-ink-900 dark:text-white text-xs w-6 text-center">{item.quantity}</span>
                                     <button
                                         onClick={() => handleUpdateQuantity(item.productId, item.quantity, 1)}
-                                        className="p-0.5 text-ink-700 hover:text-ink-900"
+                                        className="p-1.5 text-ink-700 dark:text-slate-200 hover:text-ink-900 dark:hover:text-white min-h-[36px] min-w-[36px] flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500"
                                         aria-label={`Increase quantity of ${item.productName}`}
                                     >
                                         <Plus className="w-3.5 h-3.5" aria-hidden="true" />
@@ -183,7 +183,7 @@ export default function Cart() {
                                 </div>
                                 <button
                                     onClick={() => setPendingRemoval(item.productId)}
-                                    className="text-red-600 hover:text-red-800 p-1 rounded-lg hover:bg-red-50"
+                                    className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 p-2 rounded-xl hover:bg-red-50 dark:hover:bg-red-950/40 min-h-[40px] min-w-[40px] flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
                                     aria-label={`Remove ${item.productName} from cart`}
                                 >
                                     <Trash2 className="w-4 h-4" aria-hidden="true" />
@@ -195,11 +195,11 @@ export default function Cart() {
             </div>
 
             {/* Cart summary */}
-            <div className="bg-white px-4 sm:px-6 py-5 sm:rounded-2xl sm:shadow-sm sm:border sm:border-sand-300 border-y border-sand-300 sm:border-y-0">
+            <div className="bg-white dark:bg-slate-900 px-4 sm:px-6 py-5 sm:rounded-2xl sm:shadow-xs sm:border sm:border-sand-300 dark:sm:border-slate-700 border-y border-sand-300 dark:border-slate-700 sm:border-y-0">
                 <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
                     <div className="w-full sm:w-auto flex justify-between items-center sm:block">
-                        <span className="text-ink-700 font-medium sm:hidden">Total due:</span>
-                        <span className="text-xl font-bold text-ink-900">
+                        <span className="text-ink-700 dark:text-slate-300 font-medium sm:hidden">Total due:</span>
+                        <span className="text-xl font-bold text-ink-900 dark:text-white">
                             <span className="hidden sm:inline">Total: </span>
                             {formatCurrency(cart.totalAmount)}
                         </span>
@@ -207,7 +207,7 @@ export default function Cart() {
                     <button
                         onClick={() => setConfirmingCheckout(true)}
                         disabled={processing}
-                        className="w-full sm:w-auto bg-accent-500 text-white px-8 py-3 rounded-xl font-medium hover:bg-accent-600 disabled:bg-accent-500/40 transition-colors text-center shadow-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2"
+                        className="w-full sm:w-auto bg-accent-500 text-white px-8 py-3 rounded-xl font-medium hover:bg-accent-600 disabled:bg-accent-500/40 transition-colors text-center shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 min-h-[44px]"
                     >
                         {processing ? "Processing..." : "Complete Purchase"}
                     </button>

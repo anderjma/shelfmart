@@ -14,24 +14,28 @@ export default function CookieBanner() {
     if (!isVisible) return null;
 
     return (
-        <div className="fixed bottom-0 left-0 right-0 bg-ink-900 text-white p-4 shadow-lg z-50 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
-            <p className="text-sm text-slate-100">
+        <section
+            role="region"
+            aria-label="Cookie consent banner"
+            className="fixed bottom-0 left-0 right-0 bg-ink-900 text-white p-4 shadow-lg z-50 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 border-t border-slate-700"
+        >
+            <p className="text-sm text-slate-100 leading-relaxed">
                 We use cookies to improve your experience. By continuing to visit this site you agree to our use of cookies.
             </p>
             <div className="flex flex-wrap sm:flex-nowrap items-center justify-end gap-3 shrink-0">
                 <Link
                     to="/privacy"
-                    className="border border-sand-400 hover:border-white text-white px-3 py-1.5 rounded-lg text-sm font-medium transition-colors whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-accent-500"
+                    className="border border-sand-400 hover:border-white text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors whitespace-nowrap focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 min-h-[44px] flex items-center justify-center"
                 >
                     Privacy Policy
                 </Link>
                 <button
                     onClick={acceptCookies}
-                    className="bg-accent-500 text-white px-4 py-1.5 rounded-lg text-sm font-medium hover:bg-accent-600 transition-colors whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-accent-500"
+                    className="bg-accent-500 text-white px-5 py-2 rounded-xl text-sm font-medium hover:bg-accent-600 transition-colors whitespace-nowrap focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 min-h-[44px] flex items-center justify-center"
                 >
                     Accept Cookies
                 </button>
             </div>
-        </div>
+        </section>
     );
 }

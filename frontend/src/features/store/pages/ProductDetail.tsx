@@ -257,34 +257,34 @@ export default function ProductDetail() {
 
                     {/* Interactive Action Controls */}
                     {product.stock > 0 ? (
-                        <div className="space-y-4 pt-4 border-t border-sand-300">
+                        <div className="space-y-4 pt-4 border-t border-sand-300 dark:border-slate-700">
                             {/* Quantity Selector */}
                             <div className="flex items-center gap-4">
-                                <span className="text-sm font-medium text-ink-900">Quantity:</span>
-                                <div className="flex items-center border border-sand-300 rounded-xl bg-white overflow-hidden shadow-sm">
+                                <span className="text-sm font-semibold text-ink-900 dark:text-white">Quantity:</span>
+                                <div className="flex items-center border border-sand-300 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 overflow-hidden shadow-xs">
                                     <button
                                         type="button"
                                         onClick={() => handleQuantityChange(-1)}
                                         disabled={quantity <= 1 || adding || buyingNow}
-                                        className="p-2.5 hover:bg-cream-200 text-ink-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                                        className="p-3 hover:bg-cream-200 dark:hover:bg-slate-700 text-ink-700 dark:text-slate-200 disabled:opacity-40 disabled:cursor-not-allowed transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500"
                                         aria-label="Decrease quantity"
                                     >
-                                        <Minus className="w-4 h-4" />
+                                        <Minus className="w-4 h-4" aria-hidden="true" />
                                     </button>
-                                    <span className="w-12 text-center font-semibold text-ink-900 text-sm">
+                                    <span className="w-12 text-center font-bold text-ink-900 dark:text-white text-sm">
                                         {quantity}
                                     </span>
                                     <button
                                         type="button"
                                         onClick={() => handleQuantityChange(1)}
                                         disabled={quantity >= product.stock || adding || buyingNow}
-                                        className="p-2.5 hover:bg-cream-200 text-ink-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                                        className="p-3 hover:bg-cream-200 dark:hover:bg-slate-700 text-ink-700 dark:text-slate-200 disabled:opacity-40 disabled:cursor-not-allowed transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500"
                                         aria-label="Increase quantity"
                                     >
-                                        <Plus className="w-4 h-4" />
+                                        <Plus className="w-4 h-4" aria-hidden="true" />
                                     </button>
                                 </div>
-                                <span className="text-xs text-ink-700 font-medium">
+                                <span className="text-xs text-ink-700 dark:text-slate-300 font-medium">
                                     Max {product.stock} per purchase
                                 </span>
                             </div>
@@ -295,27 +295,29 @@ export default function ProductDetail() {
                                     type="button"
                                     onClick={() => handleAddToCart(false)}
                                     disabled={adding || buyingNow}
-                                    className="w-full bg-accent-500 text-white py-3.5 px-6 rounded-xl font-medium hover:bg-accent-600 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2 flex items-center justify-center gap-2 disabled:opacity-50"
+                                    className="w-full bg-accent-500 text-white py-3.5 px-6 rounded-xl font-medium hover:bg-accent-600 transition-colors shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 flex items-center justify-center gap-2 disabled:opacity-50 min-h-[48px]"
+                                    aria-busy={adding || undefined}
                                 >
-                                    <ShoppingCart className="w-5 h-5" />
+                                    <ShoppingCart className="w-5 h-5" aria-hidden="true" />
                                     {adding ? "Adding..." : "Add to Cart"}
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => handleAddToCart(true)}
                                     disabled={adding || buyingNow}
-                                    className="w-full bg-navy-800 text-white py-3.5 px-6 rounded-xl font-medium hover:bg-navy-900 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-navy-700 focus:ring-offset-2 flex items-center justify-center gap-2 disabled:opacity-50"
+                                    className="w-full bg-navy-800 text-white py-3.5 px-6 rounded-xl font-medium hover:bg-navy-900 transition-colors shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-navy-700 focus-visible:ring-offset-2 flex items-center justify-center gap-2 disabled:opacity-50 min-h-[48px]"
+                                    aria-busy={buyingNow || undefined}
                                 >
-                                    <Check className="w-5 h-5" />
+                                    <Check className="w-5 h-5" aria-hidden="true" />
                                     {buyingNow ? "Processing..." : "Buy Now"}
                                 </button>
                             </div>
                         </div>
                     ) : (
-                        <div className="pt-4 border-t border-sand-300">
+                        <div className="pt-4 border-t border-sand-300 dark:border-slate-700">
                             <button
                                 disabled
-                                className="w-full bg-cream-200 text-ink-700/50 py-3.5 rounded-xl font-medium cursor-not-allowed border border-sand-300 text-center"
+                                className="w-full bg-cream-200 dark:bg-slate-800 text-ink-700/50 dark:text-slate-500 py-3.5 rounded-xl font-medium cursor-not-allowed border border-sand-300 dark:border-slate-700 text-center min-h-[48px]"
                             >
                                 Currently Out of Stock
                             </button>

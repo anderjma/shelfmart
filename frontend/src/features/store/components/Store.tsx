@@ -111,23 +111,28 @@ export default function Store() {
 
             <div className="space-y-6">
                 <div className="max-w-md mx-auto relative">
+                    <label htmlFor="store-search" className="sr-only">Search products</label>
                     <input
-                        type="text"
+                        id="store-search"
+                        type="search"
                         placeholder="Search products by name or category..."
                         value={searchInput}
                         onChange={(e) => setSearchInput(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2.5 bg-white border border-sand-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 text-sm transition-all"
+                        className="w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-900 border border-sand-300 dark:border-slate-700 rounded-xl shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:border-accent-500 text-sm transition-all min-h-[44px]"
+                        aria-label="Search products by name or category"
                     />
-                    <Search className="w-5 h-5 text-ink-700/40 absolute left-3 top-3" />
+                    <Search className="w-5 h-5 text-ink-700/40 dark:text-slate-400 absolute left-3 top-3.5" aria-hidden="true" />
                 </div>
 
-                <div className="flex flex-wrap justify-center gap-2 mb-8">
+                <div className="flex flex-wrap justify-center gap-2 mb-8" role="group" aria-label="Filter by category">
                     {categories.map((cat) => (
                         <button
                             key={cat}
                             onClick={() => { setSelectedCategory(cat); setPage(1); }}
-                            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-accent-500 ${
-                                selectedCategory === cat ? "bg-accent-500 text-white shadow-sm" : "bg-white text-ink-700 border border-sand-300 hover:bg-cream-100"
+                            className={`px-4 py-2.5 rounded-full text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 min-h-[44px] inline-flex items-center justify-center ${
+                                selectedCategory === cat
+                                    ? "bg-accent-500 text-white shadow-xs"
+                                    : "bg-white dark:bg-slate-800 text-ink-700 dark:text-slate-200 border border-sand-300 dark:border-slate-700 hover:bg-cream-100 dark:hover:bg-slate-700"
                             }`}
                             aria-pressed={selectedCategory === cat}
                         >
@@ -197,13 +202,13 @@ export default function Store() {
                                             {product.stock > 0 ? (
                                                 <button
                                                     onClick={() => handleAddToCart(product.productResourceId)}
-                                                    className="w-full bg-accent-500 text-white py-2.5 rounded-xl font-medium hover:bg-accent-600 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2 flex items-center justify-center gap-2"
+                                                    className="w-full bg-accent-500 text-white py-2.5 px-4 rounded-xl font-medium hover:bg-accent-600 transition-colors shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 flex items-center justify-center gap-2 min-h-[44px]"
                                                     aria-label={`Add ${product.name} to cart`}
                                                 >
-                                                    <ShoppingCart className="w-4 h-4" /> Add to Cart
+                                                    <ShoppingCart className="w-4 h-4" aria-hidden="true" /> Add to Cart
                                                 </button>
                                             ) : (
-                                                <button disabled className="w-full bg-cream-200 text-ink-700/40 py-2.5 rounded-xl font-medium cursor-not-allowed border border-sand-300">
+                                                <button disabled className="w-full bg-cream-200 dark:bg-slate-800 text-ink-700/40 dark:text-slate-500 py-2.5 rounded-xl font-medium cursor-not-allowed border border-sand-300 dark:border-slate-700 min-h-[44px] flex items-center justify-center">
                                                     Sold Out
                                                 </button>
                                             )}

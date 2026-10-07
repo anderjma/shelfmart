@@ -1,15 +1,16 @@
-// This file defines the main navigation bar that remains constant throughout the application.
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../lib/auth-context";
 import { useTheme } from "../../lib/theme-context";
+import { useLanguage } from "../../lib/i18n-context";
 // This component provides the dynamic navigation links depending on the user's role.
-import { User, LogOut, LogIn, ShoppingCart, Store, Menu, X, Sun, Moon } from "lucide-react";
+import { User, LogOut, LogIn, ShoppingCart, Store, Menu, X, Sun, Moon, Globe } from "lucide-react";
 
 export default function Navbar() {
     const navigate = useNavigate();
     const { user, logout, isCustomer, isAdmin } = useAuth();
     const { theme, toggleTheme } = useTheme();
+    const { language, toggleLanguage } = useLanguage();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const handleLogout = () => {
@@ -20,8 +21,8 @@ export default function Navbar() {
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
     return (
-        <nav className="bg-cream-50 shadow-sm border-b border-sand-300 sticky top-0 z-50" aria-label="Main navigation">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <header role="banner" className="bg-cream-50 shadow-sm border-b border-sand-300 sticky top-0 z-50">
+            <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Main navigation">
                 <div className="flex justify-between h-16 items-center">
 
                     {/* Brand and catalog */}
@@ -74,10 +75,21 @@ export default function Navbar() {
                             </div>
                         )}
 
+                        {/* Language Selector (W3C i18n & ISO 639-1 / ISO 3166-1) */}
+                        <button
+                            onClick={toggleLanguage}
+                            className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-xl border border-sand-300 text-ink-700 hover:text-navy-800 hover:bg-cream-200 focus:outline-none focus:ring-2 focus:ring-navy-700 min-h-[44px] min-w-[44px] justify-center transition-colors"
+                            aria-label={language === "es" ? "Cambiar idioma a Inglés (EN)" : "Switch language to Spanish (ES)"}
+                            title={language === "es" ? "Idioma actual: Español (CR)" : "Current language: English (US)"}
+                        >
+                            <Globe className="w-4 h-4" aria-hidden="true" />
+                            <span className="uppercase">{language}</span>
+                        </button>
+
                         {/* Theme Toggle (Light / Dark) */}
                         <button
                             onClick={toggleTheme}
-                            className="text-ink-700 hover:text-navy-800 transition-colors p-2 rounded-lg hover:bg-cream-200 focus:outline-none focus:ring-2 focus:ring-navy-700"
+                            className="text-ink-700 hover:text-navy-800 transition-colors p-2 rounded-xl hover:bg-cream-200 focus:outline-none focus:ring-2 focus:ring-navy-700 min-h-[44px] min-w-[44px] flex items-center justify-center"
                             aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
                             title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
                         >
@@ -94,7 +106,7 @@ export default function Navbar() {
                         {(!user || isCustomer) && (
                             <Link
                                 to={user ? "/cart" : "/login"}
-                                className="text-ink-700 hover:text-navy-800 p-2 transition-colors relative"
+                                className="text-ink-700 hover:text-navy-800 p-2.5 transition-colors relative min-h-[44px] min-w-[44px] flex items-center justify-center"
                                 aria-label="View cart"
                                 title={user ? "View cart" : "Sign in to view cart"}
                             >
@@ -102,8 +114,17 @@ export default function Navbar() {
                             </Link>
                         )}
                         <button
+                            onClick={toggleLanguage}
+                            className="text-ink-700 hover:text-navy-800 p-2 transition-colors rounded-xl border border-sand-300 text-xs font-bold min-h-[44px] min-w-[44px] flex items-center justify-center gap-1"
+                            aria-label={language === "es" ? "Cambiar idioma a Inglés (EN)" : "Switch language to Spanish (ES)"}
+                            title={language === "es" ? "Idioma actual: Español (CR)" : "Current language: English (US)"}
+                        >
+                            <Globe className="w-4 h-4" aria-hidden="true" />
+                            <span className="uppercase">{language}</span>
+                        </button>
+                        <button
                             onClick={toggleTheme}
-                            className="text-ink-700 hover:text-navy-800 p-2 transition-colors rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-700"
+                            className="text-ink-700 hover:text-navy-800 p-2 transition-colors rounded-xl focus:outline-none focus:ring-2 focus:ring-navy-700 min-h-[44px] min-w-[44px] flex items-center justify-center"
                             aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
                             title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
                         >
@@ -113,12 +134,17 @@ export default function Navbar() {
                                 <Moon className="w-5 h-5 text-ink-700" aria-hidden="true" />
                             )}
                         </button>
-                        <button onClick={toggleMenu} className="text-ink-700 hover:text-ink-900 p-2 focus:outline-none focus:ring-2 focus:ring-navy-700 rounded-lg" aria-expanded={isMenuOpen} aria-controls="mobile-menu" aria-label={isMenuOpen ? "Close main menu" : "Open main menu"}>
+                        <button
+                            onClick={toggleMenu}
+                            className="text-ink-700 hover:text-ink-900 p-2 focus:outline-none focus:ring-2 focus:ring-navy-700 rounded-xl min-h-[44px] min-w-[44px] flex items-center justify-center"
+                            aria-expanded={isMenuOpen}
+                            aria-controls="mobile-menu"
+                            aria-label={isMenuOpen ? "Close main menu" : "Open main menu"}
+                        >
                             {isMenuOpen ? <X className="w-5 h-5" aria-hidden="true" /> : <Menu className="w-5 h-5" aria-hidden="true" />}
                         </button>
                     </div>
                 </div>
-            </div>
 
             {/* Mobile dropdown */}
             {isMenuOpen && (
@@ -161,6 +187,7 @@ export default function Navbar() {
                     </div>
                 </div>
             )}
-        </nav>
+            </nav>
+        </header>
     );
 }

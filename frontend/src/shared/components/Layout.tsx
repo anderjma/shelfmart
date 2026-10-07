@@ -12,15 +12,23 @@ import AcademicNoticeBanner from "./AcademicNoticeBanner";
 export default function Layout() {
     return (
         <div className="min-h-screen bg-cream-100 flex flex-col">
-            {/* Skip link */}
-            <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-accent-500 text-white px-4 py-2 rounded-lg z-50">
-                Skip to main content
+            {/* Accessible Skip to main content link (WCAG 2.2 2.4.1 Bypass Blocks) */}
+            <a
+                href="#main-content"
+                className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 z-50 bg-accent-500 text-white px-4 py-2.5 rounded-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white transition-transform font-medium"
+            >
+                Saltar al contenido principal / Skip to main content
             </a>
-            {/* Navbar */}
+            {/* Header / Navbar landmark */}
             <Navbar />
 
-            {/* Central container */}
-            <main className="flex-grow w-full max-w-7xl mx-auto py-6 sm:px-6 lg:px-8" id="main-content" tabIndex={-1}>
+            {/* Central container main landmark */}
+            <main
+                role="main"
+                className="flex-grow w-full max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 focus:outline-none"
+                id="main-content"
+                tabIndex={-1}
+            >
                 <BackButton />
                 <ErrorBoundary>
                     <Outlet />

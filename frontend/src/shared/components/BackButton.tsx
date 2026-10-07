@@ -22,12 +22,13 @@ export default function BackButton({ className }: BackButtonProps) {
     return (
         <button
             onClick={handleBack}
-            className={`inline-flex items-center gap-1.5 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-1 rounded-lg px-1 py-1 mb-4 ${
-                className ?? "text-ink-700 hover:text-accent-500"
+            aria-label="Go back to previous page"
+            className={`inline-flex items-center gap-2 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 rounded-xl px-3 py-2 mb-4 min-h-[44px] ${
+                className ?? "text-ink-700 dark:text-slate-300 hover:text-accent-500 dark:hover:text-accent-400 hover:bg-cream-200/50 dark:hover:bg-slate-800"
             }`}
         >
             <ArrowLeft className="w-4 h-4" aria-hidden="true" />
-            Back
+            <span>Back</span>
         </button>
     );
 }

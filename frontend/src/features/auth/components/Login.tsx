@@ -58,11 +58,13 @@ export default function Login() {
 
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div>
-                            <label htmlFor="login-username" className="block text-sm font-medium text-ink-700 mb-1.5">Username</label>
+                            <label htmlFor="login-username" className="block text-sm font-semibold text-ink-900 mb-1.5">Username</label>
                             <input
                                 id="login-username"
                                 type="text"
-                                className="block w-full px-3.5 py-2.5 bg-cream-50/80 border border-sand-400 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-navy-700 focus:border-navy-700"
+                                autoComplete="username"
+                                aria-required="true"
+                                className="block w-full px-3.5 py-2.5 bg-cream-50/90 border border-sand-400 rounded-xl shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-navy-700 min-h-[44px]"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
                                 required
@@ -70,11 +72,13 @@ export default function Login() {
                         </div>
 
                         <div>
-                            <label htmlFor="login-password" className="block text-sm font-medium text-ink-700 mb-1.5">Password</label>
+                            <label htmlFor="login-password" className="block text-sm font-semibold text-ink-900 mb-1.5">Password</label>
                             <input
                                 id="login-password"
                                 type="password"
-                                className="block w-full px-3.5 py-2.5 bg-cream-50/80 border border-sand-400 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-navy-700 focus:border-navy-700"
+                                autoComplete="current-password"
+                                aria-required="true"
+                                className="block w-full px-3.5 py-2.5 bg-cream-50/90 border border-sand-400 rounded-xl shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-navy-700 min-h-[44px]"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
@@ -83,7 +87,7 @@ export default function Login() {
 
                         <button
                             type="submit"
-                            className="w-full flex justify-center py-3 px-4 rounded-xl shadow-sm text-sm font-semibold text-white bg-navy-800 hover:bg-navy-900 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-navy-700 mt-2"
+                            className="w-full flex justify-center items-center py-3 px-4 rounded-xl shadow-xs text-sm font-semibold text-white bg-navy-800 hover:bg-navy-900 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-navy-700 mt-2 min-h-[44px]"
                         >
                             Sign In
                         </button>

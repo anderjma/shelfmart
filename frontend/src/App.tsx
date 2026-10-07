@@ -5,6 +5,7 @@ import Layout from "./shared/components/Layout";
 import ErrorBoundary from "./shared/components/ErrorBoundary";
 import { AuthProvider, useAuth } from "./lib/auth-context";
 import { ThemeProvider } from "./lib/theme-context";
+import { LanguageProvider } from "./lib/i18n-context";
 import type { JSX } from "react";
 import { Toaster } from "react-hot-toast";
 
@@ -56,9 +57,10 @@ const AdminRoute = ({ children }: { children: JSX.Element }) => {
 // This component links the different pages and restricts access via specific roles.
 function App() {
     return (
-        <ThemeProvider>
-            <AuthProvider>
-                <BrowserRouter>
+        <LanguageProvider>
+            <ThemeProvider>
+                <AuthProvider>
+                    <BrowserRouter>
                 <Toaster position="bottom-right" />
                 <Suspense fallback={<PageLoader />}>
                 <Routes>
@@ -97,8 +99,9 @@ function App() {
                 </Routes>
             </Suspense>
         </BrowserRouter>
-    </AuthProvider>
-    </ThemeProvider>
+        </AuthProvider>
+        </ThemeProvider>
+        </LanguageProvider>
     );
 }
 

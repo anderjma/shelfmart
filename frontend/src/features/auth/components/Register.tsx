@@ -63,24 +63,24 @@ export default function Register() {
                     <form className="space-y-5" onSubmit={handleSubmit}>
                         <div className="space-y-4">
                             <div>
-                                <label htmlFor="register-name" className="block text-sm font-medium text-ink-700 mb-1.5">Full Name</label>
-                                <input id="register-name" name="name" type="text" required className="block w-full px-3.5 py-2.5 bg-cream-50/80 border border-sand-400 rounded-xl shadow-sm placeholder-ink-700/40 focus:outline-none focus:ring-2 focus:ring-navy-700 focus:border-navy-700 sm:text-sm" placeholder="John Smith" onChange={handleChange} />
+                                <label htmlFor="register-name" className="block text-sm font-semibold text-ink-900 mb-1.5">Full Name</label>
+                                <input id="register-name" name="name" type="text" autoComplete="name" aria-required="true" required className="block w-full px-3.5 py-2.5 bg-cream-50/90 border border-sand-400 rounded-xl shadow-xs placeholder-ink-700/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-navy-700 sm:text-sm min-h-[44px]" placeholder="John Smith" onChange={handleChange} />
                             </div>
                             <div>
-                                <label htmlFor="register-email" className="block text-sm font-medium text-ink-700 mb-1.5">Email</label>
-                                <input id="register-email" name="email" type="email" required className="block w-full px-3.5 py-2.5 bg-cream-50/80 border border-sand-400 rounded-xl shadow-sm placeholder-ink-700/40 focus:outline-none focus:ring-2 focus:ring-navy-700 focus:border-navy-700 sm:text-sm" placeholder="john@example.com" onChange={handleChange} />
+                                <label htmlFor="register-email" className="block text-sm font-semibold text-ink-900 mb-1.5">Email</label>
+                                <input id="register-email" name="email" type="email" autoComplete="email" aria-required="true" required className="block w-full px-3.5 py-2.5 bg-cream-50/90 border border-sand-400 rounded-xl shadow-xs placeholder-ink-700/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-navy-700 sm:text-sm min-h-[44px]" placeholder="john@example.com" onChange={handleChange} />
                             </div>
                             <div>
-                                <label htmlFor="register-username" className="block text-sm font-medium text-ink-700 mb-1.5">Username</label>
-                                <input id="register-username" name="username" type="text" required className="block w-full px-3.5 py-2.5 bg-cream-50/80 border border-sand-400 rounded-xl shadow-sm placeholder-ink-700/40 focus:outline-none focus:ring-2 focus:ring-navy-700 focus:border-navy-700 sm:text-sm" placeholder="johnsmith123" onChange={handleChange} />
+                                <label htmlFor="register-username" className="block text-sm font-semibold text-ink-900 mb-1.5">Username</label>
+                                <input id="register-username" name="username" type="text" autoComplete="username" aria-required="true" required className="block w-full px-3.5 py-2.5 bg-cream-50/90 border border-sand-400 rounded-xl shadow-xs placeholder-ink-700/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-navy-700 sm:text-sm min-h-[44px]" placeholder="johnsmith123" onChange={handleChange} />
                             </div>
                             <div>
-                                <label htmlFor="register-password" className="block text-sm font-medium text-ink-700 mb-1.5">Password</label>
-                                <input id="register-password" name="password" type="password" required minLength={6} className="block w-full px-3.5 py-2.5 bg-cream-50/80 border border-sand-400 rounded-xl shadow-sm placeholder-ink-700/40 focus:outline-none focus:ring-2 focus:ring-navy-700 focus:border-navy-700 sm:text-sm" placeholder="Minimum 6 characters" onChange={handleChange} />
+                                <label htmlFor="register-password" className="block text-sm font-semibold text-ink-900 mb-1.5">Password</label>
+                                <input id="register-password" name="password" type="password" autoComplete="new-password" aria-required="true" required minLength={6} className="block w-full px-3.5 py-2.5 bg-cream-50/90 border border-sand-400 rounded-xl shadow-xs placeholder-ink-700/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-navy-700 sm:text-sm min-h-[44px]" placeholder="Minimum 6 characters" onChange={handleChange} />
                             </div>
                         </div>
 
-                        <button type="submit" disabled={loading} className="w-full flex justify-center py-3 px-4 rounded-xl text-sm font-semibold text-white bg-navy-800 hover:bg-navy-900 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-navy-700 disabled:bg-navy-800/40">
+                        <button type="submit" disabled={loading} className="w-full flex justify-center items-center py-3 px-4 rounded-xl text-sm font-semibold text-white bg-navy-800 hover:bg-navy-900 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-navy-700 disabled:bg-navy-800/40 min-h-[44px]">
                             {loading ? "Registering..." : "Register"}
                         </button>
 

@@ -1,8 +1,9 @@
 <!doctype html>
-<html lang="en" dir="ltr">
+<html lang="es" dir="ltr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <meta http-equiv="content-language" content="es, en" />
     
     <title>ShelfMart</title>
     <meta name="description" content="Business platform for inventory management, product catalog, and sales control. Optimize your business resources with cutting-edge technology." />
@@ -23,6 +24,12 @@
     <link rel="alternate icon" type="image/x-icon" href="/favicon.ico" />
     <script>
       (function() {
+        try {
+          const savedLang = localStorage.getItem('shelfmart_lang') || 'es';
+          document.documentElement.lang = savedLang;
+          document.documentElement.dir = 'ltr';
+        } catch (e) {}
+
         const updateFavicon = () => {
           let isDark = false;
           try {
