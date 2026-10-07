@@ -257,7 +257,27 @@ export const translations: Record<"es" | "en", Record<string, string>> = {
         "adminNav.products": "Productos",
         "adminNav.orders": "Órdenes",
         "adminNav.users": "Usuarios",
-        "adminNav.auditLog": "Registro de Auditoría"
+        "adminNav.auditLog": "Registro de Auditoría",
+
+        // Authentication (Login & Register)
+        "auth.signIn": "Iniciar Sesión",
+        "auth.noAccount": "¿No tienes una cuenta?",
+        "auth.registerHere": "Regístrate aquí",
+        "auth.username": "Usuario",
+        "auth.password": "Contraseña",
+        "auth.createAccount": "Crear Cuenta",
+        "auth.joinUs": "Únete a nosotros para comenzar a comprar",
+        "auth.fullName": "Nombre Completo",
+        "auth.fullNamePlaceholder": "Ej. Juan Pérez",
+        "auth.email": "Correo Electrónico",
+        "auth.password": "Contraseña",
+        "auth.passwordPlaceholder": "Mínimo 6 caracteres",
+        "auth.register": "Registrarse",
+        "auth.registering": "Registrando...",
+        "auth.alreadyHaveAccount": "¿Ya tienes una cuenta? Inicia sesión",
+        "auth.loginFailed": "Error al iniciar sesión. Por favor verifica tus credenciales.",
+        "auth.accountCreatedSuccess": "¡Cuenta creada exitosamente!",
+        "auth.registerError": "Error al registrar la cuenta."
     },
     en: {
         // Navigation & Header
@@ -515,7 +535,27 @@ export const translations: Record<"es" | "en", Record<string, string>> = {
         "adminNav.products": "Products",
         "adminNav.orders": "Orders",
         "adminNav.users": "Users",
-        "adminNav.auditLog": "Audit Log"
+        "adminNav.auditLog": "Audit Log",
+
+        // Authentication (Login & Register)
+        "auth.signIn": "Sign In",
+        "auth.noAccount": "Don't have an account?",
+        "auth.registerHere": "Register here",
+        "auth.username": "Username",
+        "auth.password": "Password",
+        "auth.createAccount": "Create Account",
+        "auth.joinUs": "Join us to start shopping",
+        "auth.fullName": "Full Name",
+        "auth.fullNamePlaceholder": "John Smith",
+        "auth.email": "Email",
+        "auth.password": "Password",
+        "auth.passwordPlaceholder": "Minimum 6 characters",
+        "auth.register": "Register",
+        "auth.registering": "Registering...",
+        "auth.alreadyHaveAccount": "Already have an account? Sign in",
+        "auth.loginFailed": "Login failed. Please check your credentials.",
+        "auth.accountCreatedSuccess": "Account created successfully!",
+        "auth.registerError": "Error registering the account."
     }
 };
 

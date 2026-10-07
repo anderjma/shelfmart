@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../../lib/auth-context";
 import BackButton from "../../../shared/components/BackButton";
+import LanguageDropdown from "../../../shared/components/LanguageDropdown";
 import { getErrorMessage } from "../../../lib/http-error";
 import { Store } from "lucide-react";
 import { useLanguage } from "../../../lib/i18n-context";
@@ -24,7 +25,7 @@ export default function Login() {
             await login(username, password);
             navigate("/");
         } catch (err) {
-            setError(getErrorMessage(err, "Login failed. Please check your credentials."));
+            setError(getErrorMessage(err, t("auth.loginFailed", "Login failed. Please check your credentials.")));
         }
     };
 
@@ -41,10 +42,13 @@ export default function Login() {
             <div className="relative z-10 w-full max-w-md">
                 <div className="flex items-center justify-between mb-4 px-1">
                     <BackButton className="text-cream-100 hover:text-white" />
-                    <Link to="/" className="flex items-center gap-2 text-white dark:text-[#014681] hover:opacity-90 transition-opacity">
-                        <Store className="w-6 h-6 text-white dark:text-[#014681]" aria-hidden="true" />
-                        <span className="font-bold text-xl tracking-tight text-white dark:text-[#014681]">ShelfMart</span>
-                    </Link>
+                    <div className="flex items-center gap-3">
+                        <LanguageDropdown />
+                        <Link to="/" className="flex items-center gap-2 text-white dark:text-[#014681] hover:opacity-90 transition-opacity">
+                            <Store className="w-6 h-6 text-white dark:text-[#014681]" aria-hidden="true" />
+                            <span className="font-bold text-xl tracking-tight text-white dark:text-[#014681]">ShelfMart</span>
+                        </Link>
+                    </div>
                 </div>
                 <div className="bg-cream-100/85 backdrop-blur-md rounded-2xl shadow-xl border border-white/50 p-8 sm:p-10">
                     <h1 className="text-2xl sm:text-3xl font-bold text-center text-ink-900 mb-1">{t("auth.signIn", "Sign In")}</h1>

@@ -4,6 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { registerCustomer } from "../api/authService";
 import toast from "react-hot-toast";
 import BackButton from "../../../shared/components/BackButton";
+import LanguageDropdown from "../../../shared/components/LanguageDropdown";
 import { getErrorMessage } from "../../../lib/http-error";
 import { Store } from "lucide-react";
 import { useLanguage } from "../../../lib/i18n-context";
@@ -23,10 +24,10 @@ export default function Register() {
 
         try {
             await registerCustomer(formData);
-            toast.success("Account created successfully!");
+            toast.success(t("auth.accountCreatedSuccess", "Account created successfully!"));
             navigate("/login");
         } catch (err) {
-            setError(getErrorMessage(err, "Error registering the account."));
+            setError(getErrorMessage(err, t("auth.registerError", "Error registering the account.")));
         } finally {
             setLoading(false);
         }
@@ -49,10 +50,13 @@ export default function Register() {
             <div className="relative z-10 w-full max-w-md">
                 <div className="flex items-center justify-between mb-4 px-1">
                     <BackButton className="text-cream-100 hover:text-white" />
-                    <Link to="/" className="flex items-center gap-2 text-white dark:text-[#014681] hover:opacity-90 transition-opacity">
-                        <Store className="w-6 h-6 text-white dark:text-[#014681]" aria-hidden="true" />
-                        <span className="font-bold text-xl tracking-tight text-white dark:text-[#014681]">ShelfMart</span>
-                    </Link>
+                    <div className="flex items-center gap-3">
+                        <LanguageDropdown />
+                        <Link to="/" className="flex items-center gap-2 text-white dark:text-[#014681] hover:opacity-90 transition-opacity">
+                            <Store className="w-6 h-6 text-white dark:text-[#014681]" aria-hidden="true" />
+                            <span className="font-bold text-xl tracking-tight text-white dark:text-[#014681]">ShelfMart</span>
+                        </Link>
+                    </div>
                 </div>
                 <div className="bg-cream-100/85 backdrop-blur-md rounded-2xl shadow-xl border border-white/50 p-8 sm:p-10">
                     <h1 className="text-2xl sm:text-3xl font-bold text-center text-ink-900 mb-1">{t("auth.createAccount", "Create Account")}</h1>
@@ -66,7 +70,7 @@ export default function Register() {
                         <div className="space-y-4">
                             <div>
                                 <label htmlFor="register-name" className="block text-sm font-semibold text-ink-900 mb-1.5">{t("auth.fullName", "Full Name")}</label>
-                                <input id="register-name" name="name" type="text" autoComplete="name" aria-required="true" required className="block w-full px-3.5 py-2.5 bg-cream-50/90 border border-sand-400 rounded-xl shadow-xs placeholder-ink-700/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-navy-700 sm:text-sm min-h-[44px]" placeholder="John Smith" onChange={handleChange} />
+                                <input id="register-name" name="name" type="text" autoComplete="name" aria-required="true" required className="block w-full px-3.5 py-2.5 bg-cream-50/90 border border-sand-400 rounded-xl shadow-xs placeholder-ink-700/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-navy-700 sm:text-sm min-h-[44px]" placeholder={t("auth.fullNamePlaceholder", "John Smith")} onChange={handleChange} />
                             </div>
                             <div>
                                 <label htmlFor="register-email" className="block text-sm font-semibold text-ink-900 mb-1.5">{t("auth.email", "Email")}</label>
@@ -78,7 +82,7 @@ export default function Register() {
                             </div>
                             <div>
                                 <label htmlFor="register-password" className="block text-sm font-semibold text-ink-900 mb-1.5">{t("auth.password", "Password")}</label>
-                                <input id="register-password" name="password" type="password" autoComplete="new-password" aria-required="true" required minLength={6} className="block w-full px-3.5 py-2.5 bg-cream-50/90 border border-sand-400 rounded-xl shadow-xs placeholder-ink-700/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-navy-700 sm:text-sm min-h-[44px]" placeholder="Minimum 6 characters" onChange={handleChange} />
+                                <input id="register-password" name="password" type="password" autoComplete="new-password" aria-required="true" required minLength={6} className="block w-full px-3.5 py-2.5 bg-cream-50/90 border border-sand-400 rounded-xl shadow-xs placeholder-ink-700/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-navy-700 sm:text-sm min-h-[44px]" placeholder={t("auth.passwordPlaceholder", "Minimum 6 characters")} onChange={handleChange} />
                             </div>
                         </div>
 
