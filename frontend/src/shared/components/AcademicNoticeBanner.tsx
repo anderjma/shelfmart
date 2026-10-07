@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { GraduationCap, X } from "lucide-react";
+import { useLanguage } from "../../lib/i18n-context";
 
 export default function AcademicNoticeBanner() {
+    const { t } = useLanguage();
     const [isVisible, setIsVisible] = useState(() => {
         return localStorage.getItem("academicNoticeDismissed") !== "true";
     });
@@ -15,7 +17,7 @@ export default function AcademicNoticeBanner() {
 
     return (
         <aside
-            aria-label="Academic project notice"
+            aria-label={t("academic.title", "Academic Project Notice")}
             className="fixed top-18 sm:top-24 right-4 sm:right-6 left-4 sm:left-auto max-w-md sm:w-96 bg-white dark:bg-slate-900 border border-sand-300 dark:border-slate-700 rounded-2xl shadow-xl z-40 p-4 transition-all"
         >
             <div className="flex items-start gap-3">
@@ -24,10 +26,10 @@ export default function AcademicNoticeBanner() {
                 </div>
                 <div className="flex-1 min-w-0 pr-1">
                     <h3 className="text-sm font-semibold text-ink-900 dark:text-white">
-                        Academic Project Notice
+                        {t("academic.title", "Academic Project Notice")}
                     </h3>
                     <p className="mt-1 text-xs text-ink-700 dark:text-slate-300 leading-relaxed">
-                        This store is a portfolio and academic demonstration project. Orders, transactions, and inventory are simulated.
+                        {t("academic.text", "This store is a portfolio and academic demonstration project. Orders, transactions, and inventory are simulated.")}
                     </p>
                     <div className="mt-3 flex items-center justify-end">
                         <button
@@ -35,7 +37,7 @@ export default function AcademicNoticeBanner() {
                             onClick={handleDismiss}
                             className="text-xs font-semibold px-4 py-2 bg-cream-200 dark:bg-slate-800 hover:bg-cream-300 dark:hover:bg-slate-700 text-ink-900 dark:text-slate-200 rounded-xl transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 min-h-[36px]"
                         >
-                            Dismiss
+                            {t("academic.dismiss", "Dismiss")}
                         </button>
                     </div>
                 </div>

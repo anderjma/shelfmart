@@ -1,4 +1,5 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useLanguage } from "../../lib/i18n-context";
 
 export interface PaginationProps {
     page: number;
@@ -7,6 +8,8 @@ export interface PaginationProps {
 }
 
 export default function Pagination({ page, totalPages, onPageChange }: PaginationProps) {
+    const { t } = useLanguage();
+
     if (totalPages <= 1) return null;
 
     return (
@@ -20,20 +23,22 @@ export default function Pagination({ page, totalPages, onPageChange }: Paginatio
                     disabled={page === 1}
                     className="relative inline-flex items-center justify-center rounded-xl border border-sand-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-2 text-sm font-medium text-ink-700 dark:text-slate-200 hover:bg-cream-100 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors min-h-[44px]"
                 >
-                    Previous
+                    {t("pagination.previous", "Previous")}
                 </button>
                 <button
                     onClick={() => onPageChange(Math.min(page + 1, totalPages))}
                     disabled={page === totalPages}
                     className="relative ml-3 inline-flex items-center justify-center rounded-xl border border-sand-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-2 text-sm font-medium text-ink-700 dark:text-slate-200 hover:bg-cream-100 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors min-h-[44px]"
                 >
-                    Next
+                    {t("pagination.next", "Next")}
                 </button>
             </div>
             <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
                 <div>
                     <p className="text-sm text-ink-700 dark:text-slate-300">
-                        Page <span className="font-semibold text-ink-900 dark:text-white">{page}</span> of{" "}
+                        {t("pagination.page", "Page")}{" "}
+                        <span className="font-semibold text-ink-900 dark:text-white">{page}</span>{" "}
+                        {t("pagination.of", "of")}{" "}
                         <span className="font-semibold text-ink-900 dark:text-white">{totalPages}</span>
                     </p>
                 </div>

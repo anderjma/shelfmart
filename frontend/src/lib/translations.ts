@@ -137,7 +137,73 @@ export const translations: Record<"es" | "en", Record<string, string>> = {
         "pagination.page": "Página",
         "pagination.of": "de",
         "pagination.previous": "Anterior",
-        "pagination.next": "Siguiente"
+        "pagination.next": "Siguiente",
+
+        // Language Dropdown
+        "nav.selectLanguage": "Seleccionar idioma",
+
+        // About Us Page
+        "about.title": "Sobre Nosotros",
+        "about.subtitle": "Conoce la historia detrás de ShelfMart",
+        "about.historyTitle": "Nuestra Historia",
+        "about.historyText": "Nacimos de la necesidad de ofrecer productos de alta calidad y accesibles para todos. Lo que comenzó como un proyecto universitario se ha convertido en una plataforma completa que conecta las mejores marcas con clientes en todo el país.",
+        "about.missionTitle": "Nuestra Misión",
+        "about.missionText": "Brindar una experiencia de compra rápida, segura e intuitiva, asegurando siempre el mejor catálogo de productos para nuestra comunidad.",
+        "about.visionTitle": "Nuestra Visión",
+        "about.visionText": "Convertirnos en la tienda en línea líder del país, destacándonos por nuestra innovación tecnológica y un servicio al cliente impecable.",
+
+        // Contact Page
+        "contact.title": "Contáctanos",
+        "contact.subtitle": "¿Tienes alguna duda o consulta? Estamos a tu disposición a través de cualquiera de nuestros canales oficiales.",
+        "contact.customerService": "Atención al Cliente",
+        "contact.phone": "Teléfono",
+        "contact.email": "Correo",
+        "contact.socialMedia": "Nuestras Redes Sociales",
+
+        // Privacy Policy Page
+        "privacy.title": "Política de Privacidad",
+        "privacy.welcome": "Bienvenido a la Política de Privacidad de ShelfMart. Nos tomamos tu privacidad muy en serio.",
+        "privacy.dataCollectionTitle": "Recopilación de Datos",
+        "privacy.dataCollectionText": "Recopilamos la información que nos proporcionas directamente al crear una cuenta, realizar una compra o comunicarte con nosotros.",
+        "privacy.dataUseTitle": "Uso de los Datos",
+        "privacy.dataUseText": "Utilizamos la información recopilada para proporcionar, mantener y mejorar nuestros servicios, así como para procesar tus transacciones.",
+
+        // Profile Page
+        "profile.title": "Mi Perfil",
+        "profile.subtitle": "Administra tu cuenta de usuario y consulta tu historial de compras.",
+        "profile.personalInfo": "Información Personal",
+        "profile.fullName": "Nombre Completo",
+        "profile.username": "Usuario",
+        "profile.accountType": "Tipo de Cuenta",
+        "profile.roleAdmin": "Administrador de la Empresa",
+        "profile.roleCustomer": "Cliente Habitual",
+        "profile.history": "Historial de Compras",
+        "profile.loading": "Cargando tus compras...",
+        "profile.noOrders": "Aún no has realizado ninguna compra en la tienda.",
+        "profile.orderId": "ID de Orden:",
+        "profile.totalAmount": "Monto Total",
+        "profile.cancelOrder": "Cancelar orden",
+        "profile.cancelOrderTitle": "Cancelar Orden",
+        "profile.cancelOrderConfirm": "¿Deseas cancelar esta orden? Esta acción no se puede deshacer.",
+        "profile.cancelSuccess": "Orden cancelada.",
+        "profile.cancelError": "No se pudo cancelar la orden.",
+        "profile.statusPending": "Pendiente",
+        "profile.statusConfirmed": "Confirmada",
+        "profile.statusShipped": "Enviada",
+        "profile.statusDelivered": "Entregada",
+        "profile.statusCancelled": "Cancelada",
+
+        // Not Found (404)
+        "notFound.title": "Página No Encontrada",
+        "notFound.text": "La página que buscas no existe o ha sido movida a otra ubicación.",
+        "notFound.backHome": "Volver al Inicio",
+
+        // Admin Navigation
+        "adminNav.dashboard": "Panel de Control",
+        "adminNav.products": "Productos",
+        "adminNav.orders": "Órdenes",
+        "adminNav.users": "Usuarios",
+        "adminNav.auditLog": "Registro de Auditoría"
     },
     en: {
         // Navigation & Header
@@ -275,6 +341,73 @@ export const translations: Record<"es" | "en", Record<string, string>> = {
         "pagination.page": "Page",
         "pagination.of": "of",
         "pagination.previous": "Previous",
-        "pagination.next": "Next"
+        "pagination.next": "Next",
+
+        // Language Dropdown
+        "nav.selectLanguage": "Select language",
+
+        // About Us Page
+        "about.title": "About Us",
+        "about.subtitle": "Get to know the story behind ShelfMart",
+        "about.historyTitle": "Our History",
+        "about.historyText": "We were born out of the need to offer high-quality products accessible to everyone. What started as a small university project has now grown into a complete platform that seeks to connect the best brands with our customers nationwide.",
+        "about.missionTitle": "Our Mission",
+        "about.missionText": "To provide a fast, secure, and intuitive shopping experience, always ensuring the best product catalog for our community.",
+        "about.visionTitle": "Our Vision",
+        "about.visionText": "To become the country's leading online store, standing out for our technological innovation and impeccable customer service.",
+
+        // Contact Page
+        "contact.title": "Contact Us",
+        "contact.subtitle": "Have a question or inquiry? We're here to help you through any of our official channels.",
+        "contact.customerService": "Customer Service",
+        "contact.phone": "Phone",
+        "contact.email": "Email",
+        "contact.socialMedia": "Our Social Media",
+
+        // Privacy Policy Page
+        "privacy.title": "Privacy Policy",
+        "privacy.welcome": "Welcome to ShelfMart's Privacy Policy. We take your privacy seriously.",
+        "privacy.dataCollectionTitle": "Data Collection",
+        "privacy.dataCollectionText": "We collect information you provide directly to us when you create an account, make a purchase, or communicate with us.",
+        "privacy.dataUseTitle": "Use of Data",
+        "privacy.dataUseText": "We use the information we collect to provide, maintain, and improve our services, and to process your transactions.",
+
+        // Profile Page
+        "profile.title": "My Profile",
+        "profile.subtitle": "Manage your user account and view your purchase history.",
+        "profile.personalInfo": "Personal Information",
+        "profile.fullName": "Full Name",
+        "profile.username": "Username",
+        "profile.accountType": "Account Type",
+        "profile.roleAdmin": "Company Administrator",
+        "profile.roleCustomer": "Regular Customer",
+        "profile.history": "Purchase History",
+        "profile.loading": "Loading your purchases...",
+        "profile.noOrders": "You haven't made any purchases in the store yet.",
+        "profile.orderId": "Order ID:",
+        "profile.totalAmount": "Total Amount",
+        "profile.cancelOrder": "Cancel order",
+        "profile.cancelOrderTitle": "Cancel Order",
+        "profile.cancelOrderConfirm": "Do you want to cancel this order? This action cannot be undone.",
+        "profile.cancelSuccess": "Order cancelled.",
+        "profile.cancelError": "Could not cancel the order.",
+        "profile.statusPending": "Pending",
+        "profile.statusConfirmed": "Confirmed",
+        "profile.statusShipped": "Shipped",
+        "profile.statusDelivered": "Delivered",
+        "profile.statusCancelled": "Cancelled",
+
+        // Not Found (404)
+        "notFound.title": "Page Not Found",
+        "notFound.text": "The page you are looking for does not exist or has been moved to another location.",
+        "notFound.backHome": "Back to Home",
+
+        // Admin Navigation
+        "adminNav.dashboard": "Dashboard",
+        "adminNav.products": "Products",
+        "adminNav.orders": "Orders",
+        "adminNav.users": "Users",
+        "adminNav.auditLog": "Audit Log"
     }
 };
+

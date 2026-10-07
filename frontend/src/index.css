@@ -49,30 +49,32 @@ html {
 
 html.dark {
   color-scheme: dark;
-  --color-chrome: #1e293b;
-  --color-text: #f8fafc;
-  --color-page: #0f172a;
+  /* Harmonized dark palette derived from the brand navy/slate foundation (#0a121e & #101c2e)
+     to achieve authentic aesthetic continuity between light and dark modes */
+  --color-chrome: #101c2e;
+  --color-text: #f1f5f9;
+  --color-page: #0a121e;
 
-  --color-ink-700: #e2e8f0;
-  --color-ink-900: #ffffff;
-  --color-cream-50: #1e293b;
-  --color-cream-100: #0f172a;
-  --color-cream-200: #334155;
-  --color-sand-300: #475569;
-  --color-sand-400: #94a3b8;
+  --color-ink-700: #cbd5e1;
+  --color-ink-900: #f8fafc;
+  --color-cream-50: #101c2e;
+  --color-cream-100: #0a121e;
+  --color-cream-200: #192b45;
+  --color-sand-300: #23395b;
+  --color-sand-400: #64748b;
 
-  --color-accent-500: #38bdf8;
-  --color-accent-600: #0ea5e9;
-  --color-accent-700: #0284c7;
+  --color-accent-500: #3b82f6;
+  --color-accent-600: #2563eb;
+  --color-accent-700: #1d4ed8;
 
-  --color-primary-500: #38bdf8;
-  --color-primary-600: #0ea5e9;
-  --color-primary-700: #0284c7;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
 
-  --color-navy-600: #38bdf8;
-  --color-navy-700: #0ea5e9;
-  --color-navy-800: #38bdf8;
-  --color-navy-900: #0ea5e9;
+  --color-navy-600: #3b82f6;
+  --color-navy-700: #2563eb;
+  --color-navy-800: #3b82f6;
+  --color-navy-900: #2563eb;
 }
 
 html.dark body {
@@ -94,7 +96,7 @@ html.dark .bg-cream-100 {
 }
 
 html.dark .bg-cream-200 {
-  background-color: #334155;
+  background-color: #192b45;
   color: #f8fafc;
 }
 
@@ -133,11 +135,11 @@ html.dark .text-sand-400 {
 }
 
 html.dark .border-sand-300 {
-  border-color: #334155;
+  border-color: #23395b;
 }
 
 html.dark .border-sand-400 {
-  border-color: #475569;
+  border-color: #334e75;
 }
 
 html.dark input:not([type="checkbox"]):not([type="radio"]),
