@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { getProductById, getProducts } from "../api/productService";
-import { addToCart } from "../../cart/api/orderService";
+import { addToCart, checkout } from "../../cart/api/orderService";
 import { useAuth } from "../../../lib/auth-context";
 import type { Product } from "../types";
 import SEO from "../../../shared/components/SEO";
+import ConfirmDialog from "../../../shared/components/ConfirmDialog";
 import { formatCurrency } from "../../../shared/utils/formatCurrency";
 import { getErrorMessage } from "../../../lib/http-error";
 import { useLanguage } from "../../../lib/i18n-context";
@@ -34,6 +35,7 @@ export default function ProductDetail() {
     const [quantity, setQuantity] = useState(1);
     const [adding, setAdding] = useState(false);
     const [buyingNow, setBuyingNow] = useState(false);
+    const [isBuyNowConfirmOpen, setIsBuyNowConfirmOpen] = useState(false);
 
     useEffect(() => {
         if (!id) return;
@@ -76,7 +78,7 @@ export default function ProductDetail() {
         }
     };
 
-    const handleAddToCart = async (redirectToCart = false) => {
+    const handleAddToCart = async () => {
         if (!product) return;
 
         if (!isAuthenticated) {
@@ -90,8 +92,7 @@ export default function ProductDetail() {
             return;
         }
 
-        if (redirectToCart) setBuyingNow(true);
-        else setAdding(true);
+        setAdding(true);
 
         const currentDisplay = translateProduct(product, language);
         const unitWord = quantity === 1 ? t("product.unit", "unit") : t("product.units", "units");
@@ -104,14 +105,44 @@ export default function ProductDetail() {
                     .replace("{unit}", unitWord)
                     .replace("{name}", currentDisplay.name)
             );
-            if (redirectToCart) {
-                navigate("/cart");
-            }
         } catch (error) {
             toast.error(getErrorMessage(error, "Error adding item to cart."));
         } finally {
             setAdding(false);
+        }
+    };
+
+    const handleInitiateBuyNow = () => {
+        if (!product) return;
+
+        if (!isAuthenticated) {
+            toast.error(t("product.signInToBuy", "Please sign in to complete your purchase."));
+            navigate("/login");
+            return;
+        }
+
+        if (!isCustomer) {
+            toast.error(t("product.adminRestriction", "Admin accounts cannot make purchases."));
+            return;
+        }
+
+        setIsBuyNowConfirmOpen(true);
+    };
+
+    const handleConfirmBuyNow = async () => {
+        if (!product) return;
+
+        setBuyingNow(true);
+        try {
+            await addToCart({ productId: product.productResourceId, quantity });
+            await checkout();
+            toast.success(t("product.buyNowSuccess", "Purchase completed successfully! Your order has been processed."));
+            navigate("/profile");
+        } catch (error) {
+            toast.error(getErrorMessage(error, t("product.buyNowError", "Error processing the purchase.")));
+        } finally {
             setBuyingNow(false);
+            setIsBuyNowConfirmOpen(false);
         }
     };
 
@@ -305,7 +336,7 @@ export default function ProductDetail() {
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                                 <button
                                     type="button"
-                                    onClick={() => handleAddToCart(false)}
+                                    onClick={handleAddToCart}
                                     disabled={adding || buyingNow}
                                     className="w-full bg-accent-500 text-white py-3.5 px-6 rounded-xl font-medium hover:bg-accent-600 transition-colors shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 flex items-center justify-center gap-2 disabled:opacity-50 min-h-[48px]"
                                     aria-busy={adding || undefined}
@@ -315,7 +346,7 @@ export default function ProductDetail() {
                                 </button>
                                 <button
                                     type="button"
-                                    onClick={() => handleAddToCart(true)}
+                                    onClick={handleInitiateBuyNow}
                                     disabled={adding || buyingNow}
                                     className="w-full bg-navy-800 text-white py-3.5 px-6 rounded-xl font-medium hover:bg-navy-900 transition-colors shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-navy-700 focus-visible:ring-offset-2 flex items-center justify-center gap-2 disabled:opacity-50 min-h-[48px]"
                                     aria-busy={buyingNow || undefined}
@@ -424,6 +455,21 @@ export default function ProductDetail() {
                     </div>
                 </section>
             )}
+
+            <ConfirmDialog
+                isOpen={isBuyNowConfirmOpen}
+                title={t("product.buyNowConfirmTitle", "Confirm Instant Purchase")}
+                message={t("product.buyNowConfirmMsg", "Do you want to immediately purchase {quantity} {unit} of \"{name}\" for a total of {total}?")
+                    .replace("{quantity}", String(quantity))
+                    .replace("{unit}", quantity === 1 ? t("product.unit", "unit") : t("product.units", "units"))
+                    .replace("{name}", displayProduct?.name || product.name)
+                    .replace("{total}", formatCurrency(finalPrice * quantity))}
+                confirmLabel={t("product.confirmBuyNow", "Confirm and Buy")}
+                cancelLabel={t("common.cancel", "Cancel")}
+                confirmVariant="primary"
+                onConfirm={handleConfirmBuyNow}
+                onCancel={() => setIsBuyNowConfirmOpen(false)}
+            />
         </div>
     );
 }

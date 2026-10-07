@@ -3,10 +3,11 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import ProductDetail from "./ProductDetail";
 
-const { mockGetProductById, mockGetProducts, mockAddToCart, mockUseAuth } = vi.hoisted(() => ({
+const { mockGetProductById, mockGetProducts, mockAddToCart, mockCheckout, mockUseAuth } = vi.hoisted(() => ({
     mockGetProductById: vi.fn(),
     mockGetProducts: vi.fn(),
     mockAddToCart: vi.fn(),
+    mockCheckout: vi.fn(),
     mockUseAuth: vi.fn()
 }));
 
@@ -16,7 +17,8 @@ vi.mock("../api/productService", () => ({
 }));
 
 vi.mock("../../cart/api/orderService", () => ({
-    addToCart: mockAddToCart
+    addToCart: mockAddToCart,
+    checkout: mockCheckout
 }));
 
 vi.mock("../../../lib/auth-context", () => ({
@@ -104,6 +106,30 @@ describe("ProductDetail component", () => {
         });
     });
 
+    it("handles Buy Now instant purchase flow", async () => {
+        mockAddToCart.mockResolvedValue({ id: "order-1" });
+        mockCheckout.mockResolvedValue({ id: "order-1", status: "Pending" });
+        renderComponent();
+
+        expect(await screen.findByRole("heading", { name: "Ergonomic Standing Desk" })).toBeInTheDocument();
+
+        const buyNowBtn = screen.getByRole("button", { name: /Buy Now/i });
+        fireEvent.click(buyNowBtn);
+
+        expect(await screen.findByText(/Confirm Instant Purchase/i)).toBeInTheDocument();
+
+        const confirmBtn = screen.getByRole("button", { name: /Confirm and Buy/i });
+        fireEvent.click(confirmBtn);
+
+        await waitFor(() => {
+            expect(mockAddToCart).toHaveBeenCalledWith({
+                productId: "prod-123",
+                quantity: 1
+            });
+            expect(mockCheckout).toHaveBeenCalled();
+        });
+    });
+
     it("renders Product Not Found state when product fetch fails", async () => {
         mockGetProductById.mockRejectedValue(new Error("Not Found"));
         renderComponent("unknown-id");
@@ -112,4 +138,5 @@ describe("ProductDetail component", () => {
         expect(screen.getByRole("link", { name: /Return to Catalog/i })).toBeInTheDocument();
     });
 });
+
 

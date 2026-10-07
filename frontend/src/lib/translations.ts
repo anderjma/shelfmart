@@ -116,6 +116,12 @@ export const translations: Record<"es" | "en", Record<string, string>> = {
         "product.addedToCartToast": "¡{quantity} {unit} de \"{name}\" añadida(s) al carrito!",
         "product.unit": "unidad",
         "product.units": "unidades",
+        "product.buyNowConfirmTitle": "Confirmar Compra Inmediata",
+        "product.buyNowConfirmMsg": "¿Deseas realizar la compra inmediata de {quantity} {unit} de \"{name}\" por un total de {total}?",
+        "product.confirmBuyNow": "Confirmar y Comprar",
+        "product.buyNowSuccess": "¡Compra realizada con éxito! Tu pedido ha sido procesado.",
+        "product.buyNowError": "Error al procesar la compra.",
+        "product.signInToBuy": "Por favor inicia sesión para realizar tu compra.",
 
         // Cart
         "cart.title": "Mi Carrito de Compras",
@@ -368,6 +374,12 @@ export const translations: Record<"es" | "en", Record<string, string>> = {
         "product.addedToCartToast": "{quantity} {unit} of \"{name}\" added to cart!",
         "product.unit": "unit",
         "product.units": "units",
+        "product.buyNowConfirmTitle": "Confirm Instant Purchase",
+        "product.buyNowConfirmMsg": "Do you want to immediately purchase {quantity} {unit} of \"{name}\" for a total of {total}?",
+        "product.confirmBuyNow": "Confirm and Buy",
+        "product.buyNowSuccess": "Purchase completed successfully! Your order has been processed.",
+        "product.buyNowError": "Error processing the purchase.",
+        "product.signInToBuy": "Please sign in to complete your purchase.",
 
         // Cart
         "cart.title": "My Shopping Cart",
